@@ -1,11 +1,11 @@
 <idea-plugin>
-    <id>com.SoftwareMatrix.SoftwareMetricsPlugin</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <id>com.SoftwareMatrix</id>
+    <name>Software Metrics Evaluator</name>
+    <vendor email="parkjuny@postech.ac.kr" url="http://csed332.postech.ac.kr">Software Matrix</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Software Design Project<br>
+    <em>Software Metrics Evaluator</em> is a tool window that evaluates and shows results.
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -15,7 +15,7 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow id="Software Metrics" anchor="right" factoryClass="com.SoftwareMatrix.MainToolWindowFactory"/>
     </extensions>
 
     <actions>
