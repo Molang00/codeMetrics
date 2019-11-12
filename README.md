@@ -2,12 +2,17 @@
 
 #### Project 1: Software Metrics
 
-Calculate a set of software metric(s) for a project of your choice, and visualize these metrics in an effective way. For example, you may show calculated metrics in a table (for each class or method), possibly together with red/yellow/green ratings like [Maintainability Index](https://blogs.msdn.microsoft.com/zainnab/2011/05/26/code-metrics-maintainability-index). See the following links for a list of software metrics. You may want to implement a plugin that calculates and visualizes a subset of those metrics.
+1. Description
 
-- https://en.wikipedia.org/wiki/Software_metric
-- [Martin's design quality metrics](https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxkZWxsZGVza3RvcGZpbGVzfGd4OjJjOGM1MDk4ZGU5MzAwNjM)
-- [Object-oriented metrics suite](http://www.aivosto.com/project/help/pm-oo-ck.html)
+In the words of Wikipedia, software metrics are standards of measure of a degree to which a software system or process possesses some property. In other words, it gives statistic inference and lots of clues for the evaluation. Since every programmer wants to be able to code neatly and coherently, implementing the plugin that giving mathematical information and imparting it effectively was enough to attract us to decide it as our project.
+Our project would be implementing the IntelliJ plugin, which calculates some software metrics such as the Maintenance index. What we plan is not only calculating for those measures but also visualizing information to convey opportunities to check and consider about the code structure. We wish our project would be useful enough to help many programmers, and we dare.
 
-There is also an existing plugin to compute software metrics as follows. You may get some idea from the plugin, or even extend it with new functionalities or visualizations!
+2. Available version
 
-- [MetricsReloaded](https://github.com/BasLeijdekkers/MetricsReloaded)
+Java 11
+
+3. How to run
+
+> * Clone our project
+> * Set SDK and Gradle JVM version to 11.
+> * Use ```gradle runIde``` to terminal.
