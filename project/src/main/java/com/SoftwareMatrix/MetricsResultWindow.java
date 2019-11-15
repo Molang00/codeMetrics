@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.tree.TreeModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -31,7 +32,7 @@ public class MetricsResultWindow {
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
-        String header[] = { "", "score", "graph" };
+        String header[] = { "Type", "Score", "Graph" };
         String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
         DefaultTableModel model = new DefaultTableModel(body, header) {
             @Override
@@ -46,9 +47,13 @@ public class MetricsResultWindow {
         settingAllStatus();
         tableStructure.setValueAt(MIscore, 0, 1);
         tableStructure.setValueAt(OOscore, 1, 1);
+        tableStructure.getColumn("Type").setCellRenderer(new ButtonRenderer());
+        tableStructure.getColumn("Type").setCellEditor(new ButtonEditor(new JCheckBox()));
         TableColumnModel tcm = tableStructure.getColumnModel();
         TableColumn tm = tcm.getColumn(2);
         tm.setCellRenderer(new ColoredTableCellRenderer());
+        tableStructure.getColumnModel().getColumn(0).setPreferredWidth(100);
+
     }
 
     public Integer getOOsocre() {
@@ -68,8 +73,8 @@ public class MetricsResultWindow {
     }
 
     public void settingAllStatus() {
-        setMIscore(86);
-        setOOscore(46);
+        setMIscore(90);
+        setOOscore(10);
     }
 
     /**
@@ -104,4 +109,5 @@ public class MetricsResultWindow {
             return this;
         }
     }
+
 }
