@@ -28,11 +28,39 @@ public class MetricsResultWindow {
     JTable table, MITable, OOTable;
     JScrollPane tableContent;
     Integer MIscore, OOscore;
+    JButton MIButton, OOButton, defaultButton;
+    JLabel mainLabel;
 
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
+        table = new JTable();
+        mainLabel = new JLabel("Software Metrics");
+        tableContent = new JScrollPane(table);
+        generateDefaultTable();
+        generateDefaultButtons();
+        myToolWindowContent = new JPanel();
+        myToolWindowContent.add(mainLabel);
+        myToolWindowContent.add(defaultButton);
+        myToolWindowContent.add(MIButton);
+        myToolWindowContent.add(tableContent);
+    }
+    
+    void generateDefaultButtons(){
+        MIButton = new JButton("MI detail");
+        MIButton.addActionListener(e -> {
+            System.out.println("Listen button clicked action at MI");
+            this.changeView("MI");
+        });
+        defaultButton = new JButton("Default page");
+        defaultButton.addActionListener(e -> {
+            System.out.println("Listen button clicked action at Default");
+            this.changeView("Default");
+        });
+    }
+
+    void generateDefaultTable(){
         String header[] = { "Type", "Score", "Graph" };
         String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
         DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -41,41 +69,15 @@ public class MetricsResultWindow {
                 return false;
             }
         };
-        table = new JTable();
         table.setModel(model);
-        tableContent = new JScrollPane(table);
-        System.out.println("make table");
 
         settingAllStatus();
         table.setValueAt(MIscore, 0, 1);
         table.setValueAt(OOscore, 1, 1);
-        table.getColumn("Type").setCellRenderer(new ButtonRenderer());
-        table.getColumn("Type").setCellEditor(new ButtonEditor(new JCheckBox(), this));
+        table.getColumn("Type").setCellRenderer(new TableCell(this));
+        table.getColumn("Type").setCellEditor(new TableCell(this));
         table.getColumn("Graph").setCellRenderer(new ColoredTableCellRenderer());
         table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        changeView("MI");
-
-    }
-
-    public Integer getOOsocre() {
-        return OOscore;
-    }
-
-    public Integer getMIscore() {
-        return MIscore;
-    }
-
-    public void setOOscore(Integer s) {
-        OOscore = s;
-    }
-
-    public void setMIscore(Integer s) {
-        MIscore = s;
-    }
-
-    public void settingAllStatus() {
-        setMIscore(90);
-        setOOscore(10);
     }
 
     /**
@@ -83,21 +85,20 @@ public class MetricsResultWindow {
      * 
      * @return whole content of tool window
      */
-    public JScrollPane getContent() {
-        return tableContent;
+    public JPanel getContent() {        
+        return myToolWindowContent;
     }
 
     public void changeView(String label){
-        System.out.println(label);
-        if(MITable == null){
-            System.out.println("start");
+        if(label == "MI"){
             generateMITable();
-            System.out.println("end");
+        }
+        if(label == "Default"){
+            generateDefaultTable();
         }
     }
 
     public void generateMITable(){
-        MITable = new JTable();
         String header[] = { "MI Features", "Score", "Graph" };
         String body[][] = { { "V (Haslstead's volume)", "", "" }, { "G Cyclomatic complexity)", "", "" }, { "LOC(Source lines of code", "", "" } };
         DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -106,11 +107,11 @@ public class MetricsResultWindow {
                 return false;
             }
         };
-        MITable.setModel(model);
-        tableContent = new JScrollPane(MITable);
-        MITable.setValueAt(150, 0, 1); // Set V value
-        MITable.setValueAt(20, 1, 1); // Set G value
-        MITable.setValueAt(300, 2, 1); // Set LOC value
+        table.setModel(model);
+
+        table.setValueAt(150, 0, 1); // Set V value
+        table.setValueAt(20, 1, 1); // Set G value
+        table.setValueAt(300, 2, 1); // Set LOC value
         table.getColumnModel().getColumn(0).setPreferredWidth(200);
     }
 
@@ -138,4 +139,24 @@ public class MetricsResultWindow {
         }
     }
 
+    public Integer getOOsocre() {
+        return OOscore;
+    }
+
+    public Integer getMIscore() {
+        return MIscore;
+    }
+
+    public void setOOscore(Integer s) {
+        OOscore = s;
+    }
+
+    public void setMIscore(Integer s) {
+        MIscore = s;
+    }
+
+    public void settingAllStatus() {
+        setMIscore(90);
+        setOOscore(10);
+    }
 }
