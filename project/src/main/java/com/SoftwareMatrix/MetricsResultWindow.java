@@ -18,13 +18,14 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.awt.image.BufferedImage;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
     JPanel myToolWindowContent;
-    JTable tableStructure;
+    JTable table, MITable, OOTable;
     JScrollPane tableContent;
     Integer MIscore, OOscore;
 
@@ -40,19 +41,19 @@ public class MetricsResultWindow {
                 return false;
             }
         };
-        tableStructure = new JTable();
-        tableStructure.setModel(model);
-        tableContent = new JScrollPane(tableStructure);
+        table = new JTable();
+        table.setModel(model);
+        tableContent = new JScrollPane(table);
+        System.out.println("make table");
 
         settingAllStatus();
-        tableStructure.setValueAt(MIscore, 0, 1);
-        tableStructure.setValueAt(OOscore, 1, 1);
-        tableStructure.getColumn("Type").setCellRenderer(new ButtonRenderer());
-        tableStructure.getColumn("Type").setCellEditor(new ButtonEditor(new JCheckBox()));
-        TableColumnModel tcm = tableStructure.getColumnModel();
-        TableColumn tm = tcm.getColumn(2);
-        tm.setCellRenderer(new ColoredTableCellRenderer());
-        tableStructure.getColumnModel().getColumn(0).setPreferredWidth(100);
+        table.setValueAt(MIscore, 0, 1);
+        table.setValueAt(OOscore, 1, 1);
+        table.getColumn("Type").setCellRenderer(new ButtonRenderer());
+        table.getColumn("Type").setCellEditor(new ButtonEditor(new JCheckBox(), this));
+        table.getColumn("Graph").setCellRenderer(new ColoredTableCellRenderer());
+        table.getColumnModel().getColumn(0).setPreferredWidth(100);
+        changeView("MI");
 
     }
 
@@ -84,6 +85,33 @@ public class MetricsResultWindow {
      */
     public JScrollPane getContent() {
         return tableContent;
+    }
+
+    public void changeView(String label){
+        System.out.println(label);
+        if(MITable == null){
+            System.out.println("start");
+            generateMITable();
+            System.out.println("end");
+        }
+    }
+
+    public void generateMITable(){
+        MITable = new JTable();
+        String header[] = { "MI Features", "Score", "Graph" };
+        String body[][] = { { "V (Haslstead's volume)", "", "" }, { "G Cyclomatic complexity)", "", "" }, { "LOC(Source lines of code", "", "" } };
+        DefaultTableModel model = new DefaultTableModel(body, header) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        MITable.setModel(model);
+        tableContent = new JScrollPane(MITable);
+        MITable.setValueAt(150, 0, 1); // Set V value
+        MITable.setValueAt(20, 1, 1); // Set G value
+        MITable.setValueAt(300, 2, 1); // Set LOC value
+        table.getColumnModel().getColumn(0).setPreferredWidth(200);
     }
 
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
