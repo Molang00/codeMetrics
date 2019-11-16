@@ -49,6 +49,7 @@ public class MICalculator {
     /**
      * Calculating Maintainability Index
      * MI  = 171 - 5.2 * log2(V) - 0.23 * G - 16.2 * log2 (LOC) + 50 * sin (sqrt(2.4 * CM))
+     * N.B. the LOC here means lloc.
      * @param operators the array of total operators in source code
      * @param operands  the array of total operands in source code
      * @param edge  the total number of edges in source code
