@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +20,9 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.Calendar;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
-public class MetricsResultWindow {
+public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
     JPanel myToolWindowContent;
     JTable tableStructure;
@@ -51,7 +53,7 @@ public class MetricsResultWindow {
         tm.setCellRenderer(new ColoredTableCellRenderer());
     }
 
-    public Integer getOOsocre() {
+    public Integer getOOscore() {
         return OOscore;
     }
 
@@ -68,8 +70,9 @@ public class MetricsResultWindow {
     }
 
     public void settingAllStatus() {
-        setMIscore(86);
-        setOOscore(46);
+        Random rand = new Random();
+        setMIscore(rand.nextInt(100));
+        setOOscore(rand.nextInt(100));
     }
 
     /**
@@ -79,6 +82,15 @@ public class MetricsResultWindow {
      */
     public JScrollPane getContent() {
         return tableContent;
+    }
+
+    @Override
+    public void update(Project project, PsiElement element) {
+        settingAllStatus();
+        tableStructure.setValueAt(MIscore, 0, 1);
+        tableStructure.setValueAt(OOscore, 1, 1);
+
+        // color refresh has 5~10 seconds of delay
     }
 
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
