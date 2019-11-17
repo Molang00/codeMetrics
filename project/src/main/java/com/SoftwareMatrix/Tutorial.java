@@ -1,14 +1,22 @@
 package com.SoftwareMatrix;
 
 import com.intellij.ui.treeStructure.Tree;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,16 +39,16 @@ public class Tutorial {
     }
 
     public JTree getResult() {
-        DefaultMutableTreeNode desc = addNode("Project Description", root);
+        addNode("Project Description", root);
         DefaultMutableTreeNode metrics = addNode("Metrics", root);
-        addNode("Maintainability Index", metrics);
-        addNode("Halstead Metrics", metrics);
-        addNode("Cyclomatic Complexity", metrics);
+        addNode("Maintainability_Index", metrics);
+        addNode("Halstead_Metrics", metrics);
+        addNode("Cyclomatic_Complexity", metrics);
         DefaultMutableTreeNode OOM = addNode("Object-Oriented Metrics", metrics);
-        addNode("OOM1", OOM);
+        addNode("Object-Oriented_Metrics", OOM);
         DefaultMutableTreeNode functions = addNode("Functions", root);
         addNode("Calculations", functions);
-        addNode("Export as file", functions);
+        addNode("Exports", functions);
 
         tree = new Tree(root);
 
@@ -57,36 +65,23 @@ public class Tutorial {
                 if (e.getClickCount() == 2) {
                     JTree tt = (JTree) (e.getSource());
                     DefaultMutableTreeNode tn = (DefaultMutableTreeNode) tt.getLastSelectedPathComponent();
-
                     if (tn.isLeaf()) {
-                        System.out.println(tn);
-                        String url = "https://csed332.postech.ac.kr/team3/team_project/wikis/home";
-                        switch(tn.toString()){
-                            case "Project Description":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#description";
-                                break;
-                            case "Maintainability Index":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Maintainability%20Index";
-                                break;
-                            case "Halstead Metrics":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Halstead%20Metircs";
-                                break;
-                            case "Cyclomatic Complexity":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Cyclomatic%20Complexity";
-                                break;
-                            case "OOM1":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Object-Oriented%20Metrics";
-                                break;
-                            case "Calculations":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Calculations";
-                                break;
-                            case "Export as file":
-                                url = "https://csed332.postech.ac.kr/team3/team_project/wikis/Tutorial#Exports";
-                                break;
-                            default:
-                                break;
+                        String url = "";
+                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                        DocumentBuilder builder = null;
+                        Document document = null;
+                        try {
+                            builder = factory.newDocumentBuilder();
+                            document = builder.parse(new File("resources/string.xml"));
+                        } catch (ParserConfigurationException | SAXException | IOException ex) {
+                            ex.printStackTrace();
                         }
-                        String finalUrl = url;
+
+                        NodeList nodeList = document.getElementsByTagName("url");
+                        Node node = nodeList.item(1);
+                        url = node.getNodeValue();
+
+                        String finalUrl = url + "#" + tn.getUserObject();
                         if (Desktop.isDesktopSupported()) {
                             try {
                                 Desktop desktop = Desktop.getDesktop();
