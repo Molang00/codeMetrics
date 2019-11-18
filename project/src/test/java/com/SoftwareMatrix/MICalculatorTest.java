@@ -9,15 +9,16 @@ class MICalculatorTest {
 
     /** Test cases based on example from : https://en.wikipedia.org/wiki/Halstead_complexity_measures#Example
      * */
+    Object operators_string = "main, (), {}, int, scanf, &, &, &, (), (), (), ;, :,  =, +, +, /, ;, printf, ,, ,, ,, ,, ,, ,, ,, ;";
+    Object[] operators = ((String) operators_string).split(", ");       // Single comma is the separator.
+
+    Object operands_string = "a, b, c, avg, '%d %d %d', 3, a, b, c, 'avg = %d', avg, a, b, c, avg";
+    Object[] operands = ((String) operands_string).split(", ");
 
 MICalculator miCalculator= new MICalculator();
     @Test
     void calculateHalstead() {
-        Object operators_string = "main, (), {}, int, scanf, &, &, &, (), (), (), ;, :,  =, +, +, /, ;, printf, ,, ,, ,, ,, ,, ,, ,, ;";
-        Object[] operators = ((String) operators_string).split(", ");       // Single comma is the separator.
 
-        Object operands_string = "a, b, c, avg, '%d %d %d', 3, a, b, c, 'avg = %d', avg, a, b, c, avg";
-        Object[] operands = ((String) operands_string).split(", ");
 
         System.out.println(miCalculator.calculateHalstead(operators,operands));
         Assertions.assertEquals(miCalculator.calculateHalstead(operators,operands),178.4);
@@ -43,11 +44,6 @@ MICalculator miCalculator= new MICalculator();
         int lloc = 100;
         int loc = 150;
         int cloc = 20;
-        Object operators_string = "main, (), {}, int, scanf, &, &, &, (), (), (), ;, :,  =, +, +, /, ;, printf, ,, ,, ,, ,, ,, ,, ,, ;";
-        Object[] operators = ((String) operators_string).split(", ");       // Single comma is the separator.
-
-        Object operands_string = "a, b, c, avg, '%d %d %d', 3, a, b, c, 'avg = %d', avg, a, b, c, avg";
-        Object[] operands = ((String) operands_string).split(", ");
 
         System.out.println(miCalculator.calculateMI(operators, operands, edges,nodes, lloc, loc, cloc));
         Assertions.assertEquals(miCalculator.calculateMI(operators, operands, edges,nodes, lloc, loc, cloc),17);
