@@ -2,6 +2,7 @@ package com.SoftwareMatrix;
 
 import java.util.HashSet;
 import java.lang.Math;
+import java.util.Set;
 
 /**
  *  calculator for Halstead Volume, Cyclomatic Complexity, and Mmaintainability Index.
@@ -16,24 +17,24 @@ public class MICalculator {
      */
     public int calculateHalstead(Object[] operators, Object[] operands) {
         int n, v;
-        Set<String> distinctOperators = new HashSet<Object>;
-        Set<String> distinctOperands = new HashSet<Object>;
+        Set<String> distinctOperators = new HashSet<>();
+        Set<String> distinctOperands = new HashSet<>();
 
-        for (i = 0; i < operators.length; i++) {
+        for (int i = 0; i < operators.length; i++) {
             String operator = operators[i].toString();
             if (!distinctOperators.contains(operator)) {
                 distinctOperators.add(operator);
             }
         }
 
-        for (i = 0; i < operands.length; i++) {
+        for (int i = 0; i < operands.length; i++) {
             String operand = operands[i].toString();
             if (!distinctOperators.contains(operand)) {
                 distinctOperators.add(operand);
             }
         }
 
-        return (operators.length + operands.length) * (Math.log(distinctOperands.size() + distinctOperators.size()) / Math.log(2));
+        return (int) ((operators.length + operands.length) * (Math.log(distinctOperands.size() + distinctOperators.size()) / Math.log(2)));
     }
 
     /**
@@ -64,7 +65,7 @@ public class MICalculator {
         int g = this.calculateCC(edge, node);
         double cm = (double) (cloc / loc);
 
-        return 171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm))));
+        return (int) (171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm)))));
     }
 
 }
