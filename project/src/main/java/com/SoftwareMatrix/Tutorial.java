@@ -1,5 +1,6 @@
 package com.SoftwareMatrix;
 
+import android.os.SystemPropertiesProto;
 import com.intellij.ui.treeStructure.Tree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -21,15 +22,18 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+
 public class Tutorial {
     private JTree tree;
     private DefaultMutableTreeNode root;
+    private StringProducer tutorial_producer;
 
     private static final Icon folderIcon = MetalIconFactory.getTreeFolderIcon();
     private static final Icon leafIcon = MetalIconFactory.getFileChooserDetailViewIcon();
 
     public Tutorial() {
         root = new DefaultMutableTreeNode("Tutorial");
+        tutorial_producer = new StringProducer();
     }
 
     private DefaultMutableTreeNode addNode(String nodeName, DefaultMutableTreeNode parent){
@@ -39,7 +43,7 @@ public class Tutorial {
     }
 
     public JTree getResult() {
-        addNode("Project Description", root);
+        addNode("Project_Description", root);
         DefaultMutableTreeNode metrics = addNode("Metrics", root);
         addNode("Maintainability_Index", metrics);
         addNode("Halstead_Metrics", metrics);
@@ -66,22 +70,9 @@ public class Tutorial {
                     JTree tt = (JTree) (e.getSource());
                     DefaultMutableTreeNode tn = (DefaultMutableTreeNode) tt.getLastSelectedPathComponent();
                     if (tn.isLeaf()) {
-                        String url = "";
-                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder builder = null;
-                        Document document = null;
-                        try {
-                            builder = factory.newDocumentBuilder();
-                            document = builder.parse(new File("resources/string.xml"));
-                        } catch (ParserConfigurationException | SAXException | IOException ex) {
-                            ex.printStackTrace();
-                        }
-
-                        NodeList nodeList = document.getElementsByTagName("url");
-                        Node node = nodeList.item(1);
-                        url = node.getNodeValue();
-
+                        String url =  tutorial_producer.GetTutorial();
                         String finalUrl = url + "#" + tn.getUserObject();
+
                         if (Desktop.isDesktopSupported()) {
                             try {
                                 Desktop desktop = Desktop.getDesktop();
