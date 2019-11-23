@@ -19,10 +19,7 @@ public class UpdateManager {
     private static Thread thread = null; // to track update time
 
     private Project project;
-    private List<UpdateObserver> mObservers; // method observer list
-    private List<UpdateObserver> cObservers; // class observer list
-    private List<UpdateObserver> pObservers; // package observer list
-
+    private List<UpdateObserver> observers; // observer list
 
     private void notifyObserversWrapper(PsiTreeChangeEvent event) {
         System.out.println("CHANGED");
@@ -35,21 +32,23 @@ public class UpdateManager {
                 public void run() {
                     try {
                         Thread.sleep(3000);
+                        ApplicationManager.getApplication().runReadAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                notifyObservers(event);
+                            }
+                        });
                     } catch (InterruptedException ex) {
                         ; // do nothing
                     }
                 }
             };
-            System.out.println("NOTIFY COMPLETE");
-            notifyObservers(event); // only allowed in main thread
             thread.start();
         }
     }
 
     private UpdateManager(@NotNull Project project) {
-        mObservers = new ArrayList<>();
-        cObservers = new ArrayList<>();
-        pObservers = new ArrayList<>();
+        observers = new ArrayList<>();
 
         this.project = project;
         PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiTreeChangeAdapter() {
@@ -78,57 +77,17 @@ public class UpdateManager {
     }
 
     public void notifyObservers(PsiTreeChangeEvent event) {
-        for(PsiElement elem : List.of(event.getChild(), event.getParent())) {
-            PsiPackage pElem = PsiTreeUtil.getParentOfType(elem, PsiPackage.class, false);
-            PsiClass cElem = PsiTreeUtil.getParentOfType(elem, PsiClass.class, false);
-            PsiMethod mElem = PsiTreeUtil.getParentOfType(elem, PsiMethod.class, false);
-
-            if(cElem != null) {
-                if(pElem == null)
-                    pElem = JavaDirectoryService.getInstance().getPackage(
-                            cElem.getContainingFile().getContainingDirectory());
-                for(UpdateObserver observer: cObservers) {
-                    observer.update(project, cElem);
-                }
-            }
-            if(mElem != null) {
-                for(UpdateObserver observer: mObservers) {
-                    observer.update(project, mElem);
-                }
-            }
-            if(elem instanceof PsiDirectory && pElem == null) {
-                pElem = JavaDirectoryService.getInstance().getPackage((PsiDirectory) elem);
-            }
-
-            if(pElem != null) {
-                for(UpdateObserver observer: pObservers) {
-                    observer.update(project, pElem);
-                }
-            }
+        System.out.println("NOTIFY COMPLETE");
+        for(UpdateObserver observer: observers) {
+            observer.update(project);
         }
     }
 
-    public boolean addMethodObserver(UpdateObserver observer) {
-        return mObservers.add(observer);
+    public boolean addObserver(UpdateObserver observer) {
+        return observers.add(observer);
     }
 
-    public boolean removeMethodObserver(UpdateObserver observer) {
-        return mObservers.remove(observer);
-    }
-
-    public boolean addClassObserver(UpdateObserver observer) {
-        return cObservers.add(observer);
-    }
-
-    public boolean removeClassObserver(UpdateObserver observer) {
-        return cObservers.remove(observer);
-    }
-
-    public boolean addPackageObserver(UpdateObserver observer) {
-        return pObservers.add(observer);
-    }
-
-    public boolean removePackageObserver(UpdateObserver observer) {
-        return pObservers.remove(observer);
+    public boolean removeObserver(UpdateObserver observer) {
+        return observers.remove(observer);
     }
 }

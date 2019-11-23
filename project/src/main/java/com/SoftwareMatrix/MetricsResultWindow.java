@@ -85,7 +85,7 @@ public class MetricsResultWindow implements UpdateObserver {
     }
 
     @Override
-    public void update(Project project, PsiElement element) {
+    public void update(Project project) {
         settingAllStatus();
         tableStructure.setValueAt(MIscore, 0, 1);
         tableStructure.setValueAt(OOscore, 1, 1);
