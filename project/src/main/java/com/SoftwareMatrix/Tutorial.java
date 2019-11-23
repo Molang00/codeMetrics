@@ -3,6 +3,7 @@ package com.SoftwareMatrix;
 import com.intellij.ui.treeStructure.Tree;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -28,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 public class Tutorial {
     private JTree tree;
     private DefaultMutableTreeNode root;
+    private String url;
 
     private static final Icon folderIcon = MetalIconFactory.getTreeFolderIcon();
     private static final Icon leafIcon = MetalIconFactory.getFileChooserDetailViewIcon();
@@ -43,12 +45,12 @@ public class Tutorial {
     }
 
     public JTree getResult() {
-        addNode("Project Description", root);
+        addNode("Project_Description", root);
         DefaultMutableTreeNode metrics = addNode("Metrics", root);
         addNode("Maintainability_Index", metrics);
         addNode("Halstead_Metrics", metrics);
         addNode("Cyclomatic_Complexity", metrics);
-        DefaultMutableTreeNode OOM = addNode("Object-Oriented Metrics", metrics);
+        DefaultMutableTreeNode OOM = addNode("Object-Oriented_Metrics", metrics);
         addNode("Object-Oriented_Metrics", OOM);
         DefaultMutableTreeNode functions = addNode("Functions", root);
         addNode("Calculations", functions);
@@ -64,42 +66,21 @@ public class Tutorial {
 
         tree.setCellRenderer(cr);
 
-        InputStream is = Tutorial.class.getResourceAsStream("string.xml");
+        InputStream is = this.getClass().getResourceAsStream("string.xml");
         System.out.println(is);
         assert is != null;
 
-        InputStream iss = this.getClass().getResourceAsStream("string.xml");
-        System.out.println(iss);
-        assert iss != null;
-
-//        try {
-//            String result = IOUtils.toString(is, StandardCharsets.UTF_8);
-//            System.out.println(result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            String result = IOUtils.toString(iss, StandardCharsets.UTF_8);
-//            System.out.println(result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        System.out.println(Tutorial.class.getResource("string.xml").getPath());
-
-//        this.getClass()
-
-//        System.out.println(Tutorial.class);
-//        System.out.println(Tutorial.class.getResource("string.xml"));
-//        System.out.println(Tutorial.class.getResourceAsStream("string.xml"));
-////        System.out.println(Tutorial.class.getResource("main/resources/string.xml").getFile());
-//        System.out.println(Thread.currentThread().getContextClassLoader().getResourceAsStream("string.xml"));
-//
-//        System.out.println(getClass().getClassLoader());
-//        System.out.println(getClass().getClassLoader().getResource("string.xml"));
-//        System.out.println(getClass().getClassLoader().getResource("string.xml").getFile());
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(is);
+            NodeList nl = doc.getElementsByTagName("Tutorial");
+            Node node = nl.item(0);
+            System.out.println(node.getTextContent());
+            url = node.getTextContent();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         tree.addMouseListener(new MouseAdapter() {
             @Override
@@ -109,27 +90,6 @@ public class Tutorial {
                     DefaultMutableTreeNode tn = (DefaultMutableTreeNode) tt.getLastSelectedPathComponent();
                     if (tn.isLeaf()) {
                         System.out.println(tn.getUserObject());
-                        String url = "";
-                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder builder = null;
-                        Document document = null;
-                        try {
-                            builder = factory.newDocumentBuilder();
-                            InputStream is = Tutorial.class.getResourceAsStream("string.xml");
-                            document = builder.parse(new File(Tutorial.class.getResource("string.xml").getFile()));
-                            if (document == null)
-                                document = builder.parse(new File("main/resources/string.xml"));
-                        } catch (ParserConfigurationException | SAXException | IOException ex) {
-                            ex.printStackTrace();
-                        }
-
-                        assert document != null;
-
-                        NodeList nodeList = document.getElementsByTagName("url");
-                        Node node = nodeList.item(1);
-                        url = node.getNodeValue();
-//                        System.out.println(url);
-
                         String finalUrl = url + "#" + tn.getUserObject();
 //                        System.out.println(finalUrl);
                         if (Desktop.isDesktopSupported()) {
@@ -146,9 +106,34 @@ public class Tutorial {
                 }
             }
         });
-
         tree.setRowHeight(20);
+        tree.setCellRenderer(new TranslucentTreeCellRenderer());
 
         return tree;
+    }
+
+    class TransparentTreeCellRenderer extends DefaultTreeCellRenderer {
+        @Override public Component getTreeCellRendererComponent(
+                JTree tree, Object value, boolean isSelected, boolean expanded,
+                boolean leaf, int row, boolean hasFocus) {
+            JComponent c = (JComponent) super.getTreeCellRendererComponent(
+                    tree, value, isSelected, expanded, leaf, row, hasFocus);
+            c.setOpaque(false);
+            return c;
+        }
+        private final Color ALPHA_OF_ZERO = new Color(0, true);
+        @Override public Color getBackgroundNonSelectionColor() {
+            return ALPHA_OF_ZERO;
+        }
+        @Override public Color getBackgroundSelectionColor() {
+            return ALPHA_OF_ZERO;
+        }
+    }
+
+    class TranslucentTreeCellRenderer extends TransparentTreeCellRenderer {
+        private final Color backgroundSelectionColor = new Color(100, 100, 255, 100);
+        @Override public Color getBackgroundSelectionColor() {
+            return backgroundSelectionColor;
+        }
     }
 }

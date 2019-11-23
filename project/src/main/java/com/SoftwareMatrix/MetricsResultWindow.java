@@ -47,6 +47,7 @@ public class MetricsResultWindow {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         JTree t = new Tutorial().getResult();
+        t.setBackground(new Color(0,0,0,1));
 
         t.setAlignmentX(Component.LEFT_ALIGNMENT);
         overallScore.setAlignmentX(Component.LEFT_ALIGNMENT);
