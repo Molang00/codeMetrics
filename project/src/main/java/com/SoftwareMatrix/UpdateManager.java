@@ -1,13 +1,17 @@
 package com.SoftwareMatrix;
 
+import com.intellij.codeInsight.template.postfix.templates.SoutPostfixTemplate;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -44,6 +48,8 @@ public class UpdateManager {
                 }
             };
             thread.start();
+//            System.out.println(Arrays.toString(JavaPsiFacade.getInstance(project)
+//                    .findClasses("", GlobalSearchScope.allScope(project))));
         }
     }
 
@@ -54,16 +60,25 @@ public class UpdateManager {
         PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiTreeChangeAdapter() {
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
+                System.out.println(event.getParent());
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
+                System.out.println(event.getParent());
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }
 
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
+                System.out.println(event.getParent());
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }
         });
