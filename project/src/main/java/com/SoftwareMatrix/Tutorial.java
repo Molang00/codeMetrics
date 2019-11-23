@@ -107,33 +107,25 @@ public class Tutorial {
             }
         });
         tree.setRowHeight(20);
-        tree.setCellRenderer(new TranslucentTreeCellRenderer());
+        tree.setCellRenderer(new DefaultTreeCellRenderer(){
+            @Override public Component getTreeCellRendererComponent(
+                    JTree tree, Object value, boolean isSelected, boolean expanded,
+                    boolean leaf, int row, boolean hasFocus) {
+                JComponent c = (JComponent) super.getTreeCellRendererComponent(
+                        tree, value, isSelected, expanded, leaf, row, hasFocus);
+                c.setOpaque(false);
+                return c;
+            }
+            private final Color ALPHA_OF_ZERO = new Color(0, true);
+            @Override public Color getBackgroundNonSelectionColor() {
+                return ALPHA_OF_ZERO;
+            }
+            private final Color backgroundSelectionColor = new Color(100, 100, 255, 100);
+            @Override public Color getBackgroundSelectionColor() {
+                return backgroundSelectionColor;
+            }
+        });
 
         return tree;
-    }
-
-    class TransparentTreeCellRenderer extends DefaultTreeCellRenderer {
-        @Override public Component getTreeCellRendererComponent(
-                JTree tree, Object value, boolean isSelected, boolean expanded,
-                boolean leaf, int row, boolean hasFocus) {
-            JComponent c = (JComponent) super.getTreeCellRendererComponent(
-                    tree, value, isSelected, expanded, leaf, row, hasFocus);
-            c.setOpaque(false);
-            return c;
-        }
-        private final Color ALPHA_OF_ZERO = new Color(0, true);
-        @Override public Color getBackgroundNonSelectionColor() {
-            return ALPHA_OF_ZERO;
-        }
-        @Override public Color getBackgroundSelectionColor() {
-            return ALPHA_OF_ZERO;
-        }
-    }
-
-    class TranslucentTreeCellRenderer extends TransparentTreeCellRenderer {
-        private final Color backgroundSelectionColor = new Color(100, 100, 255, 100);
-        @Override public Color getBackgroundSelectionColor() {
-            return backgroundSelectionColor;
-        }
     }
 }
