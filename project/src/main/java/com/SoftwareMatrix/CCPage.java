@@ -26,57 +26,57 @@ import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.awt.image.BufferedImage;
 
-public class CCPageFactory {
+public class CCPage {
   /* Declare private fields here */
   MetricsResultWindow window;
-  JPanel CCPage;
+  JPanel page;
   JTable table;
   JScrollPane tableContent;
-  JButton defaultButton;
+  JButton button;
   JLabel mainLabel;
   JPanel tablePanel, bottomPanel, topPanel;
-  int edge = 5, node = 4, CCValue = 11;
+  Integer edge = 5, node = 4, CCValue = 11;
 
-  public CCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
+  public CCPage(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
-    this.CCPage = mainPanel;
+    this.page = mainPanel;
   }
 
   /**
    * Constructor of tool window
    */
-  public JPanel createCCPage() {
-    CCPage.removeAll();
-    CCPage.setLayout(new BorderLayout());
+  public JPanel getPage() {
+    page.removeAll();
+    page.setLayout(new BorderLayout());
 
     topPanel = new JPanel();
     mainLabel = new JLabel("CC Details");
     topPanel.add(mainLabel);
-    CCPage.add(topPanel, "North");
+    page.add(topPanel, "North");
 
     tablePanel = new JPanel();
     table = new JBTable();
     tableContent = new JBScrollPane(table);
-    generateCCTable();
+    generateTable();
     tablePanel.add(tableContent);
-    CCPage.add(tablePanel, "Center");
+    page.add(tablePanel, "Center");
 
     bottomPanel = new JPanel();
-    generateDefaultButtons();
-    bottomPanel.add(defaultButton);
-    CCPage.add(bottomPanel, "South");
+    generateButtons();
+    bottomPanel.add(button);
+    page.add(bottomPanel, "South");
 
-    return CCPage;
+    return page;
   }
 
-  void generateDefaultButtons() {
-    defaultButton = new JButton("Default page");
-    defaultButton.addActionListener(e -> {
+  private void generateButtons() {
+    button = new JButton("Default page");
+    button.addActionListener(e -> {
       window.changeView("Default");
     });
   }
 
-  public void generateCCTable() {
+  private void generateTable() {
     String header[] = {"CC Features", "Score", "Graph"};
     String body[][] = {{"Edge", "", ""}, {"Node", "", ""}, {"CC Value", "", ""}};
     DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -104,11 +104,11 @@ public class CCPageFactory {
     public Component getTableCellRendererComponent(JTable table, Object value,
                                                    boolean isSelected, boolean hasFocus, int row, int column) {
       if (row == 0) {
-        this.setValue(20 - (Integer) edge);
+        this.setValue(20 - edge);
       } else if (row == 1){
-        this.setValue(20 - (Integer) node);
+        this.setValue(20 - node);
       } else {
-        this.setValue(20 - (Integer) CCValue);
+        this.setValue(20 - CCValue);
       }
       return this;
     }

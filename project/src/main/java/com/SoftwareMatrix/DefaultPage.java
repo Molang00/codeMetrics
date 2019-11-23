@@ -24,58 +24,58 @@ import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.awt.image.BufferedImage;
 
-public class DefaultPageFactory {
+public class DefaultPage {
   /* Declare private fields here */
   MetricsResultWindow window;
-  JPanel DefaultPage;
-  Integer CCscore, OOscore;
+  JPanel page;
   JTable table;
   JScrollPane tableContent;
-  JButton CCButton, OOButton;
+  JButton button;
   JLabel mainLabel;
   JPanel tablePanel, bottomPanel, topPanel;
+  Integer CCscore, OOscore;
 
-  public DefaultPageFactory(MetricsResultWindow window, JPanel mainPanel) {
+  public DefaultPage(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
-    this.DefaultPage = mainPanel;
+    this.page = mainPanel;
   }
 
   /**
    * Constructor of tool window
    */
-  public JPanel createDefaultPage() {
-    DefaultPage.removeAll();
-    DefaultPage.setLayout(new BorderLayout());
+  public JPanel getPage() {
+    page.removeAll();
+    page.setLayout(new BorderLayout());
 
     topPanel = new JPanel();
     mainLabel = new JLabel("Software Metrics");
     topPanel.add(mainLabel);
-    DefaultPage.add(topPanel, "North");
+    page.add(topPanel, "North");
 
     tablePanel = new JPanel();
     table = new JBTable();
     tableContent = new JBScrollPane(table);
-    generateDefaultTable();
+    generateTable();
     tablePanel.add(tableContent);
-    DefaultPage.add(tablePanel, "Center");
+    page.add(tablePanel, "Center");
 
     bottomPanel = new JPanel();
     generateDefaultButtons();
-    bottomPanel.add(CCButton);
-    DefaultPage.add(bottomPanel, "South");
+    bottomPanel.add(button);
+    page.add(bottomPanel, "South");
 
-    return DefaultPage;
+    return page;
   }
 
-  void generateDefaultButtons() {
-    CCButton = new JButton("CC detail");
-    CCButton.addActionListener(e -> {
+  private void generateDefaultButtons() {
+    button = new JButton("CC detail");
+    button.addActionListener(e -> {
       System.out.println("Listen button clicked action at CC");
       window.changeView("CC");
     });
   }
 
-  void generateDefaultTable() {
+  private void generateTable() {
     String header[] = { "Type", "Score", "Graph" };
     String body[][] = { { "CC", "", "" }, { "OO", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -117,7 +117,7 @@ public class DefaultPageFactory {
     }
   }
 
-  public Integer getOOsocre() {
+  public Integer getOOscore() {
     return OOscore;
   }
 

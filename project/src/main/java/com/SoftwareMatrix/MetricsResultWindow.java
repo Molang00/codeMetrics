@@ -6,18 +6,18 @@ import javax.swing.*;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
-    JPanel myToolWindowContent;
-    CCPageFactory CCpageFactory;
-    DefaultPageFactory defaultpageFactory;
+    private JPanel myToolWindowContent;
+    private CCPage CCpage;
+    private DefaultPage defaultpage;
 
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
         myToolWindowContent = new JPanel();
-        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
-        CCpageFactory = new CCPageFactory(this, myToolWindowContent);
-        defaultpageFactory.createDefaultPage();
+        defaultpage = new DefaultPage(this, myToolWindowContent);
+        CCpage = new CCPage(this, myToolWindowContent);
+        myToolWindowContent = defaultpage.getPage();
     }
 
     /**
@@ -30,11 +30,16 @@ public class MetricsResultWindow {
     }
 
     public void changeView(String label) {
-        if (label == "CC") {
-            CCpageFactory.createCCPage();
-        }
-        if (label == "Default") {
-            defaultpageFactory.createDefaultPage();
+        switch(label){
+            case "CC":
+                myToolWindowContent.removeAll();
+                myToolWindowContent = CCpage.getPage();
+                myToolWindowContent.updateUI();
+                break;
+            default:
+                myToolWindowContent.removeAll();
+                myToolWindowContent = defaultpage.getPage();
+                myToolWindowContent.updateUI();
         }
     }
 }
