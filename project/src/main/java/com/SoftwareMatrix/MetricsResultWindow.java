@@ -27,7 +27,9 @@ public class MetricsResultWindow {
     /* Declare private fields here */
     JPanel myToolWindowContent;
     MIPageFactory mipageFactory;
+    OOPageFactory oopageFactory;
     DefaultPageFactory defaultpageFactory;
+    String label;
 
     /**
      * Constructor of tool window
@@ -36,6 +38,8 @@ public class MetricsResultWindow {
         myToolWindowContent = new JPanel();
         defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
         mipageFactory = new MIPageFactory(this, myToolWindowContent);
+        oopageFactory = new OOPageFactory(this, myToolWindowContent);
+        label = "Default";
         defaultpageFactory.createDefaultPage();
     }
 
@@ -49,11 +53,16 @@ public class MetricsResultWindow {
     }
 
     public void changeView(String label) {
+        this.label = label;
         if (label == "MI") {
             mipageFactory.createMIPage();
+        }
+        if (label == "OO") {
+            oopageFactory.createOOPage();
         }
         if (label == "Default") {
             defaultpageFactory.createDefaultPage();
         }
+        myToolWindowContent.revalidate();
     }
 }

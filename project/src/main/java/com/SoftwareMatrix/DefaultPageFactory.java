@@ -49,19 +49,20 @@ public class DefaultPageFactory {
     topPanel = new JPanel();
     mainLabel = new JLabel("Software Metrics");
     topPanel.add(mainLabel);
-    DefaultPage.add(topPanel, "North");
+    DefaultPage.add(topPanel, BorderLayout.NORTH);
 
     tablePanel = new JPanel();
     table = new JTable();
-    tableContent = new JScrollPane(table);
     generateDefaultTable();
+    tableContent = new JScrollPane(table);
     tablePanel.add(tableContent);
-    DefaultPage.add(tablePanel, "Center");
+    DefaultPage.add(tablePanel, BorderLayout.CENTER);
 
     bottomPanel = new JPanel();
     generateDefaultButtons();
     bottomPanel.add(MIButton);
-    DefaultPage.add(bottomPanel, "South");
+    bottomPanel.add(OOButton);
+    DefaultPage.add(bottomPanel, BorderLayout.SOUTH);
 
     return DefaultPage;
   }
@@ -71,6 +72,11 @@ public class DefaultPageFactory {
     MIButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at MI");
       window.changeView("MI");
+    });
+    OOButton = new JButton("OO detail");
+    OOButton.addActionListener(e -> {
+      System.out.println("Listen button clicked action at OO");
+      window.changeView("OO");
     });
   }
 

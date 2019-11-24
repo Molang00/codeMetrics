@@ -23,46 +23,46 @@ import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.awt.image.BufferedImage;
 
-public class MIPageFactory {
+public class OOPageFactory {
   /* Declare private fields here */
   MetricsResultWindow window;
-  JPanel MIPage;
+  JPanel OOPage;
   JTable table;
   JScrollPane tableContent;
   JButton defaultButton;
   JLabel mainLabel;
   JPanel tablePanel, bottomPanel, topPanel;
 
-  public MIPageFactory(MetricsResultWindow window, JPanel mainPanel) {
+  public OOPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
-    this.MIPage = mainPanel;
+    this.OOPage = mainPanel;
   }
 
   /**
    * Constructor of tool window
    */
-  public JPanel createMIPage() {
-    MIPage.removeAll();
-    MIPage.setLayout(new BorderLayout());
+  public JPanel createOOPage() {
+    OOPage.removeAll();
+    OOPage.setLayout(new BorderLayout());
 
     topPanel = new JPanel();
-    mainLabel = new JLabel("MI Details");
+    mainLabel = new JLabel("OO Details");
     topPanel.add(mainLabel);
-    MIPage.add(topPanel, "North");
+    OOPage.add(topPanel, "North");
 
     tablePanel = new JPanel();
     table = new JTable();
     tableContent = new JScrollPane(table);
-    generateMITable();
+    generateOOTable();
     tablePanel.add(tableContent);
-    MIPage.add(tablePanel, "Center");
+    OOPage.add(tablePanel, "Center");
 
     bottomPanel = new JPanel();
     generateDefaultButtons();
     bottomPanel.add(defaultButton);
-    MIPage.add(bottomPanel, "South");
+    OOPage.add(bottomPanel, "South");
 
-    return MIPage;
+    return OOPage;
   }
 
   void generateDefaultButtons() {
@@ -73,10 +73,11 @@ public class MIPageFactory {
     });
   }
 
-  public void generateMITable() {
-    String header[] = { "MI Features", "Score" };
-    String body[][] = { { "V (Haslstead's volume)", "" }, { "G (Cyclomatic complexity)", "" },
-        { "LOC(Source lines of code)", "" } };
+  public void generateOOTable() {
+    String header[] = { "OO Features", "Score" };
+    String body[][] = { { "WMC (Weighted method per class", "" }, { "DIT (Depth of Inheritance Tree", "" },
+        { "NOC (Number Of Children)", "" }, { "CBO (Coupling Between Object classes)", "" },
+        { "RFC (Response For Class)", "" }, { "LOCM (Lack Of Cohesion Metrics)", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -85,9 +86,12 @@ public class MIPageFactory {
     };
     table.setModel(model);
 
-    table.setValueAt(150, 0, 1); // Set V value
-    table.setValueAt(20, 1, 1); // Set G value
-    table.setValueAt(300, 2, 1); // Set LOC value
+    table.setValueAt(15, 0, 1); // Set WMC value
+    table.setValueAt(10, 1, 1); // Set DIT value
+    table.setValueAt(5, 2, 1); // Set NOC value
+    table.setValueAt(2, 3, 1); // Set CBO value
+    table.setValueAt(7, 4, 1); // Set RFC value
+    table.setValueAt(3, 5, 1); // Set LOCM value
     table.getColumnModel().getColumn(0).setPreferredWidth(200);
   }
 }
