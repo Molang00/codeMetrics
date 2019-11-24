@@ -1,30 +1,23 @@
 package com.SoftwareMatrix;
 
-import com.google.common.collect.Tables;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.ui.table.JBTable;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
-import java.util.Calendar;
-import java.awt.image.BufferedImage;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
     JPanel myToolWindowContent;
-    JTable tableStructure;
-    JScrollPane tableContent;
+    JTable overallScore;
+    JScrollPane content;
+    JPanel panel;
     Integer MIscore, OOscore;
 
     /**
@@ -39,16 +32,29 @@ public class MetricsResultWindow {
                 return false;
             }
         };
-        tableStructure = new JTable();
-        tableStructure.setModel(model);
-        tableContent = new JScrollPane(tableStructure);
 
+        overallScore = new JBTable();
+        overallScore.setModel(model);
         settingAllStatus();
-        tableStructure.setValueAt(MIscore, 0, 1);
-        tableStructure.setValueAt(OOscore, 1, 1);
-        TableColumnModel tcm = tableStructure.getColumnModel();
+        overallScore.setValueAt(MIscore, 0, 1);
+        overallScore.setValueAt(OOscore, 1, 1);
+        TableColumnModel tcm = overallScore.getColumnModel();
         TableColumn tm = tcm.getColumn(2);
         tm.setCellRenderer(new ColoredTableCellRenderer());
+        overallScore.setCellSelectionEnabled(false);
+        overallScore.setFocusable(false);
+
+        panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JTree t = new Tutorial().getResult();
+        t.setBackground(new Color(0,0,0,1));
+
+        t.setAlignmentX(Component.LEFT_ALIGNMENT);
+        overallScore.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(t);
+        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        panel.add(overallScore);
+        content = new JBScrollPane(panel);
     }
 
     public Integer getOOsocre() {
@@ -78,7 +84,7 @@ public class MetricsResultWindow {
      * @return whole content of tool window
      */
     public JScrollPane getContent() {
-        return tableContent;
+        return content;
     }
 
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
