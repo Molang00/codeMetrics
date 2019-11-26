@@ -1,4 +1,6 @@
-package com.SoftwareMatrix;
+package com.SoftwareMatrix.PageFactory;
+
+import com.SoftwareMatrix.MetricsResultWindow;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;

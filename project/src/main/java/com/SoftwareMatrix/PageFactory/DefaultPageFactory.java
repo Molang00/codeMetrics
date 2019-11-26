@@ -1,36 +1,22 @@
-package com.SoftwareMatrix;
+package com.SoftwareMatrix.PageFactory;
 
-import com.google.common.collect.Tables;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.NotNull;
+import com.SoftwareMatrix.MetricsResultWindow;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import java.awt.BorderLayout;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Calendar;
-import java.awt.image.BufferedImage;
 
-public class DefaultPageFactory {
+public class DefaultPageFactory implements PageFactoryInterface{
   /* Declare private fields here */
   MetricsResultWindow window;
   JPanel DefaultPage;
   Integer MIscore, OOscore;
   JTable table;
   JScrollPane tableContent;
-  JButton MIButton, OOButton;
+  JButton resetButton, MIButton, OOButton;
   JLabel mainLabel;
   JPanel tablePanel, bottomPanel, topPanel;
 
@@ -42,32 +28,57 @@ public class DefaultPageFactory {
   /**
    * Constructor of tool window
    */
-  public JPanel createDefaultPage() {
+  public JPanel createPage() {
     DefaultPage.removeAll();
     DefaultPage.setLayout(new BorderLayout());
+    generateButtons();
+    generateTable();
 
-    topPanel = new JPanel();
-    mainLabel = new JLabel("Software Metrics");
-    topPanel.add(mainLabel);
-    DefaultPage.add(topPanel, BorderLayout.NORTH);
-
-    tablePanel = new JPanel();
-    table = new JTable();
-    generateDefaultTable();
-    tableContent = new JScrollPane(table);
-    tablePanel.add(tableContent);
-    DefaultPage.add(tablePanel, BorderLayout.CENTER);
-
-    bottomPanel = new JPanel();
-    generateDefaultButtons();
-    bottomPanel.add(MIButton);
-    bottomPanel.add(OOButton);
-    DefaultPage.add(bottomPanel, BorderLayout.SOUTH);
+    generateTopView();
+    generateCenterView();
+    generateBottomView();
 
     return DefaultPage;
   }
+  
+  public void generateTopView(){
+    topPanel = new JPanel();
+    topPanel.setLayout(new GridLayout(1,3));
 
-  void generateDefaultButtons() {
+    mainLabel = new JLabel("Software Metrics");
+    mainLabel.setHorizontalAlignment(JLabel.CENTER);
+
+    JPanel jp = new JPanel();
+
+    topPanel.add(jp);
+    topPanel.add(mainLabel);
+    topPanel.add(resetButton);
+
+    DefaultPage.add(topPanel, BorderLayout.NORTH);
+  }
+
+  public void generateCenterView(){
+    if(DefaultPage.getWidth()+DefaultPage.getHeight() != 0)
+      tableContent.setPreferredSize(new Dimension(DefaultPage.getWidth(), DefaultPage.getHeight()/2));
+    tablePanel.add(tableContent);
+
+    DefaultPage.add(tablePanel, BorderLayout.CENTER);
+  }
+
+  public void generateBottomView(){
+    bottomPanel = new JPanel();
+    bottomPanel.add(MIButton);
+    bottomPanel.add(OOButton);
+
+    DefaultPage.add(bottomPanel, BorderLayout.SOUTH);
+  }
+
+  public void generateButtons() {
+    resetButton = new JButton("reset");
+    resetButton.addActionListener(e -> {
+      System.out.println("Listen button clicked action at reset");
+      window.changeView("Default");
+    });
     MIButton = new JButton("MI detail");
     MIButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at MI");
@@ -80,7 +91,10 @@ public class DefaultPageFactory {
     });
   }
 
-  void generateDefaultTable() {
+  public void generateTable() {
+    tablePanel = new JPanel();
+    table = new JTable();
+    tableContent = new JScrollPane(table);
     String header[] = { "Type", "Score", "Graph" };
     String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -90,12 +104,20 @@ public class DefaultPageFactory {
       }
     };
     table.setModel(model);
+    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+    table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+    table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
     settingAllStatus();
     table.setValueAt(MIscore, 0, 1);
     table.setValueAt(OOscore, 1, 1);
+    
     table.getColumn("Graph").setCellRenderer(new ColoredTableCellRenderer());
-    table.getColumnModel().getColumn(0).setPreferredWidth(100);
+
+    table.getColumnModel().getColumn(0).setPreferredWidth(90);
+    table.getColumnModel().getColumn(1).setPreferredWidth(20);
+    table.getColumnModel().getColumn(2).setPreferredWidth(50);
   }
 
   class ColoredTableCellRenderer extends DefaultTableCellRenderer {

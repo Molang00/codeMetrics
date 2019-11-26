@@ -1,27 +1,11 @@
 package com.SoftwareMatrix;
 
-import com.google.common.collect.Tables;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
+import com.SoftwareMatrix.PageFactory.MIPageFactory;
+import com.SoftwareMatrix.PageFactory.OOPageFactory;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
-import java.awt.BorderLayout;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Calendar;
-import java.awt.image.BufferedImage;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
@@ -40,7 +24,7 @@ public class MetricsResultWindow {
         mipageFactory = new MIPageFactory(this, myToolWindowContent);
         oopageFactory = new OOPageFactory(this, myToolWindowContent);
         label = "Default";
-        defaultpageFactory.createDefaultPage();
+        defaultpageFactory.createPage();
     }
 
     /**
@@ -55,13 +39,13 @@ public class MetricsResultWindow {
     public void changeView(String label) {
         this.label = label;
         if (label == "MI") {
-            mipageFactory.createMIPage();
+            mipageFactory.createPage();
         }
         if (label == "OO") {
-            oopageFactory.createOOPage();
+            oopageFactory.createPage();
         }
         if (label == "Default") {
-            defaultpageFactory.createDefaultPage();
+            defaultpageFactory.createPage();
         }
         myToolWindowContent.revalidate();
     }
