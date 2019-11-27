@@ -14,11 +14,15 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class javaparsing {
     CompilationUnit cu;
     Optional<ClassOrInterfaceDeclaration> classA;
+
+    List<Integer> branch_pos;
     /**
      *   Constructor of basic java parser. Standard Unit is a class file.
      *
@@ -29,8 +33,43 @@ public class javaparsing {
     javaparsing(String file_path, String class_name) throws FileNotFoundException {
         cu = StaticJavaParser.parse(new File(file_path));
         classA = cu.getClassByName(class_name);
+        branch_pos = new ArrayList<Integer>();
     }
 
+    /*
+    List<String> get_operands_class()
+    {
+        List<String> operands = new ArrayList<String>();
+    }
+    List<String> get_operands_method(String method_name)
+    {
+
+    }
+
+    List<String> get_operators_class()
+    {
+        List<String> operators = new ArrayList<String>();
+    }
+    List<String> get_operators_method(String method_name)
+    {
+
+    }
+*/
+
+    /**
+     * Give location of each branch. should be done after get_branch_num()
+     * @return List of positions of branches
+     */
+    List<Integer> get_branch_pos(){
+        return branch_pos;
+    }
+    /**
+     * count the number of branch - if / switch / while / for
+     * Assume switch statement has no default context
+     * Only includes implementation in current file(cu)
+     *
+     * @return number of branch
+     */
     int get_branch_num(){
         int sum=0;
         for(MethodDeclaration mitr : classA.get().getMethods()) {
@@ -46,6 +85,35 @@ public class javaparsing {
         }
         return sum;
     }
+
+    /**
+     * get methods list from the class
+     * @return method list
+     */
+    List<MethodDeclaration> get_list_method(){
+        List<MethodDeclaration> ret = new ArrayList<MethodDeclaration>();
+        for(MethodDeclaration mitr : classA.get().getMethods())
+            ret.add(mitr);
+        return ret;
+    }
+
+    /**
+     * get branch number in specific method
+     * @param method : method that wants to be counted
+     * @return the number of branch
+     */
+    int get_branch_num_method(MethodDeclaration method){
+        return calc(method.getBody().get());
+    }
+
+    /**
+     * count the number of branch of each method
+     * No consideration about inner jobs, which mean, if two contexts divided by one branch has same operations,
+     * Still considered as different context.
+     *
+     * @param root : root BlockStmt in the AST node, which contains whole implementation of method.
+     * @return the number of branch, same with get_branch_num()
+     */
     int calc(BlockStmt root) {
         int complexity = 0;
         for(Statement itr : root.getStatements())
@@ -55,9 +123,21 @@ public class javaparsing {
         }
         return complexity;
     }
+
+    /**
+     * count the number of branch, but consider only one statement each.
+     * By recursive calls, it can deal with inner branches.
+     * For example, if(if())
+     *
+     * @param node : each "branch" statement to count
+     * @return the number of branch in one statement
+     */
     int calc_recur(Statement node) {
         if(!node.isIfStmt() && !node.isSwitchStmt() && !node.isForStmt() && !node.isWhileStmt())
             return 0;
+
+        branch_pos.add(node.getRange().get().begin.line);
+
         int complexity = 0;
         if(node.isSwitchStmt()) {
             complexity += node.asSwitchStmt().getEntries().size();
