@@ -67,7 +67,6 @@ public class Tutorial {
         tree.setCellRenderer(cr);
 
         InputStream is = this.getClass().getResourceAsStream("string.xml");
-        System.out.println(is);
         assert is != null;
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -76,7 +75,7 @@ public class Tutorial {
             Document doc = builder.parse(is);
             NodeList nl = doc.getElementsByTagName("Tutorial");
             Node node = nl.item(0);
-            System.out.println(node.getTextContent());
+
             url = node.getTextContent();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -89,9 +88,7 @@ public class Tutorial {
                     JTree tt = (JTree) (e.getSource());
                     DefaultMutableTreeNode tn = (DefaultMutableTreeNode) tt.getLastSelectedPathComponent();
                     if (tn.isLeaf()) {
-                        System.out.println(tn.getUserObject());
                         String finalUrl = url + "#" + tn.getUserObject();
-//                        System.out.println(finalUrl);
                         if (Desktop.isDesktopSupported()) {
                             try {
                                 Desktop desktop = Desktop.getDesktop();
