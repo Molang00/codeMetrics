@@ -61,7 +61,9 @@ public class UpdateManager {
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
                 System.out.println(event.getParent());
+                System.out.println(event.getChild());
                 System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
                 System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }
@@ -69,7 +71,9 @@ public class UpdateManager {
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
                 System.out.println(event.getParent());
+                System.out.println(event.getChild());
                 System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
                 System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }
@@ -77,7 +81,9 @@ public class UpdateManager {
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
                 System.out.println(event.getParent());
+                System.out.println(event.getChild());
                 System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
+                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
                 System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
                 notifyObserversWrapper(event);
             }

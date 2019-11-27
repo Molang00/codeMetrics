@@ -13,10 +13,8 @@ import static org.junit.Assert.*;
 
 public class ParserTest_tmp {
     @Test
-    public void calc_test() throws FileNotFoundException {
-        javaparsing jp = new javaparsing("example2.txt", "MyRenamedClass");
-        System.out.println(jp.get_branch_num_method(jp.get_list_method().get(0)));
-        System.out.println(jp.get_branch_num());
-        System.out.println(jp.get_branch_pos());
+    public void tmp_test() {
+        ParseAdapter pa = new ParseAdapter();
+
     }
 }
