@@ -9,25 +9,25 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class MIPageFactory implements PageFactoryInterface {
-  /* Declare private fields here */
+public class HaslstedVolumPageFacotry implements PageFactoryInterface {
   MetricsResultWindow window;
-  JPanel MIPage;
+  JPanel page;
   JTable table;
   JScrollPane tableContent;
-  JButton resetButton, defaultButton, VButton, GButton, LOCButton;
+  JButton resetButton, backButton;
   JLabel mainLabel;
   JPanel tablePanel, bottomPanel, topPanel;
 
-  public MIPageFactory(MetricsResultWindow window, JPanel mainPanel) {
+  public HaslstedVolumPageFacotry(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
-    this.MIPage = mainPanel;
+    this.page = mainPanel;
   }
 
   @Override
   public JPanel createPage() {
-    MIPage.removeAll();
-    MIPage.setLayout(new BorderLayout());
+    // TODO Auto-generated method stub
+    page.removeAll();
+    page.setLayout(new BorderLayout());
     generateButtons();
     generateTable();
 
@@ -35,7 +35,7 @@ public class MIPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return MIPage;
+    return page;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class MIPageFactory implements PageFactoryInterface {
     topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("MI Details");
+    mainLabel = new JLabel("Haslsted Volum Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -52,26 +52,23 @@ public class MIPageFactory implements PageFactoryInterface {
     topPanel.add(mainLabel);
     topPanel.add(resetButton);
 
-    MIPage.add(topPanel, BorderLayout.NORTH);
+    page.add(topPanel, BorderLayout.NORTH);
   }
 
   @Override
   public void generateCenterView() {
-    tableContent.setPreferredSize(new Dimension(MIPage.getWidth(), MIPage.getHeight() / 2));
+    tableContent.setPreferredSize(new Dimension(page.getWidth(), page.getHeight() / 2));
     tablePanel.add(tableContent);
 
-    MIPage.add(tablePanel, BorderLayout.CENTER);
+    page.add(tablePanel, BorderLayout.CENTER);
   }
 
   @Override
   public void generateBottomView() {
     bottomPanel = new JPanel();
-    bottomPanel.add(defaultButton);
-    bottomPanel.add(VButton);
-    // bottomPanel.add(GButton);
-    bottomPanel.add(LOCButton);
+    bottomPanel.add(backButton);
 
-    MIPage.add(bottomPanel, BorderLayout.SOUTH);
+    page.add(bottomPanel, BorderLayout.SOUTH);
   }
 
   @Override
@@ -79,27 +76,12 @@ public class MIPageFactory implements PageFactoryInterface {
     resetButton = new JButton("reset");
     resetButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at reset");
-      window.changeView("MI");
-    });
-    defaultButton = new JButton("back");
-    defaultButton.addActionListener(e -> {
-      System.out.println("Listen button clicked action at Default");
-      window.changeView("Default");
-    });
-    VButton = new JButton("V page");
-    VButton.addActionListener(e -> {
-      System.out.println("Listen button clicked action at V");
       window.changeView("V");
     });
-    GButton = new JButton("G page");
-    GButton.addActionListener(e -> {
-      System.out.println("Listen button clicked action at G");
-      window.changeView("G");
-    });
-    LOCButton = new JButton("SLOC page");
-    LOCButton.addActionListener(e -> {
-      System.out.println("Listen button clicked action at SLOC");
-      window.changeView("SLOC");
+    backButton = new JButton("back");
+    backButton.addActionListener(e -> {
+      System.out.println("Listen button clicked action at Default");
+      window.changeView("MI");
     });
   }
 
@@ -108,9 +90,9 @@ public class MIPageFactory implements PageFactoryInterface {
     tablePanel = new JPanel();
     table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "MI Features", "Score", "Graph" };
-    String body[][] = { { "V (Haslstead's volume)", "", "" }, { "G (Cyclomatic complexity)", "", "" },
-        { "SLOC(Source lines of code)", "", "" } };
+    String header[] = { "V Features", "Score" };
+    String body[][] = { { "Eta (number of distinct operators & operands)", "" },
+        { "N (total number of operators & operands)", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -123,14 +105,11 @@ public class MIPageFactory implements PageFactoryInterface {
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
-    table.setValueAt(150, 0, 1); // Set V value
-    table.setValueAt(20, 1, 1); // Set G value
-    table.setValueAt(300, 2, 1); // Set SLOC value
-
-    table.getColumn("Graph").setCellRenderer(new ProgressRenderer(0, 500));
+    table.setValueAt(100, 0, 1); // Set V value
+    table.setValueAt(160, 1, 1); // Set G value
 
     table.getColumnModel().getColumn(0).setPreferredWidth(90);
     table.getColumnModel().getColumn(1).setPreferredWidth(20);
-    table.getColumnModel().getColumn(2).setPreferredWidth(50);
   }
+
 }

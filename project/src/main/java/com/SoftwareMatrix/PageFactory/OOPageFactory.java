@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class OOPageFactory implements PageFactoryInterface{
+public class OOPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
   MetricsResultWindow window;
   JPanel OOPage;
@@ -30,7 +30,7 @@ public class OOPageFactory implements PageFactoryInterface{
     OOPage.setLayout(new BorderLayout());
     generateButtons();
     generateTable();
-    
+
     generateTopView();
     generateCenterView();
     generateBottomView();
@@ -41,7 +41,7 @@ public class OOPageFactory implements PageFactoryInterface{
   @Override
   public void generateTopView() {
     topPanel = new JPanel();
-    topPanel.setLayout(new GridLayout(1,3));
+    topPanel.setLayout(new GridLayout(1, 3));
 
     mainLabel = new JLabel("OO Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -54,15 +54,15 @@ public class OOPageFactory implements PageFactoryInterface{
 
     OOPage.add(topPanel, BorderLayout.NORTH);
   }
-  
+
   @Override
   public void generateCenterView() {
-    tableContent.setPreferredSize(new Dimension(OOPage.getWidth(), OOPage.getHeight()/2));
+    tableContent.setPreferredSize(new Dimension(OOPage.getWidth(), OOPage.getHeight() / 2));
     tablePanel.add(tableContent);
 
     OOPage.add(tablePanel, BorderLayout.CENTER);
   }
-  
+
   @Override
   public void generateBottomView() {
     bottomPanel = new JPanel();
@@ -78,7 +78,7 @@ public class OOPageFactory implements PageFactoryInterface{
       System.out.println("Listen button clicked action at reset");
       window.changeView("OO");
     });
-    defaultButton = new JButton("Default page");
+    defaultButton = new JButton("back");
     defaultButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at Default");
       window.changeView("Default");
@@ -112,9 +112,9 @@ public class OOPageFactory implements PageFactoryInterface{
     table.setValueAt(2, 3, 1); // Set CBO value
     table.setValueAt(7, 4, 1); // Set RFC value
     table.setValueAt(3, 5, 1); // Set LOCM value
-    
+
     table.getColumn("Graph").setCellRenderer(new ProgressRenderer(0, 20));
-    
+
     table.getColumnModel().getColumn(0).setPreferredWidth(120);
     table.getColumnModel().getColumn(1).setPreferredWidth(10);
     table.getColumnModel().getColumn(2).setPreferredWidth(40);
