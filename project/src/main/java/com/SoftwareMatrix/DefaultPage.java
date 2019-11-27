@@ -32,7 +32,7 @@ public class DefaultPage {
   JScrollPane tableContent;
   JButton button;
   JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+  JPanel centerPanel, bottomPanel, topPanel;
   Integer CCscore, OOscore;
 
   public DefaultPage(MetricsResultWindow window, JPanel mainPanel) {
@@ -52,12 +52,19 @@ public class DefaultPage {
     topPanel.add(mainLabel);
     page.add(topPanel, "North");
 
-    tablePanel = new JPanel();
+    centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     table = new JBTable();
+    //table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     tableContent = new JBScrollPane(table);
     generateTable();
-    tablePanel.add(tableContent);
-    page.add(tablePanel, "Center");
+
+    JTree t = new Tutorial().getResult();
+    t.setBackground(new Color(0,0,0,1));
+
+    centerPanel.add(t);
+
+    centerPanel.add(tableContent);
+    page.add(centerPanel, "Center");
 
     bottomPanel = new JPanel();
     generateDefaultButtons();
