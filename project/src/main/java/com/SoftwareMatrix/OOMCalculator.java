@@ -13,6 +13,11 @@ public class OOMCalculator {
 
     private int methodNumber, classNumber, attributeNumber;
 
+    private Map<String, Map> classMethod, classAttribute;
+    private Map<String, int[]> method, attribute;
+
+    private Map<String, int[]> classMethodNumber, classAttributeNumber;
+
     OOMCalculator() {
         methodNumber = 0;
         classNumber = 0;
@@ -39,44 +44,38 @@ public class OOMCalculator {
     // TODO: need a overall init function, like provide several maps.
 
     /**
-     * calculate the Method Hiding Factor (MHF)
-     * @param calassCall
-     * @param classMethod
+     * Abreu Metrics:
+     * calculate the Method Hiding Factor (MHF): Ratio of hidden (private or protected) methods to total methods
+     * Recommendation:  A measure of encapsulation
      */
-    public double calculateMHF(Map<String, int> classCall, Map<String, String[]> classMethod) {
-        double callRate = 0;
-
-        for (Map.Entry<String, String[]> entry : classMethod.entrySet()) {
-            String[] methodList = entry.getValue();
-            for (i = 0; i < methodList.size(); i++) {
-                int callNumber = 0;
-                // depend on how the map provided, if the parse team can provide the number of calling.
-                // TODO
-                callRate += 1 - (callNumber / (classNumber - 1));
-            }
+    public double[] calculateMHF() {
+        double val[] = new double[0];
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {
+            val[i] = (classMethodNumber.get(o)[0]-classMethodNumber.get(o)[1])/classMethodNumber.get(o)[0] ;
+            i++;
         }
-        
-        return callRate / double(methodNumber);
+
+        return val;
     }
 
-    /**
-     * calculate the Attribute Hiding Factor (AHF)
-     * 
-     */
-    public double calculateAHF(Map<String, int> classCalll, Map<String, String[]> classAttribute) {
-        double callRate = 0;
 
-        for (Map.Entry<String, String[]> entry : classAttribute.entrySet()) {
-            String[] attributeList = entry.getValue();
-            for (i = 0; i < attributeList.size(); i++) {
-                int callNumber = 0;
-                // depend on how the map provided, if the parse team can provide the number of calling.
-                // TODO
-                callRate += 1 - (callNumber / (classNumber - 1));
-            }
+    /**
+     * Abreu Metrics:
+     * calculate the Attribute Hiding Factor (AHF): Ratio of hidden (private or protected) attributes to total attributes
+     * Recommendation: A measure of encapsulation
+     */
+    public double[] calculateAHF( ) {
+        double val[] = new double[0];
+        int i=0;
+        for(Object o:classAttribute.keySet())
+        {
+            val[i] = (classAttributeNumber.get(o)[0]-classAttributeNumber.get(o)[1])/classAttributeNumber.get(o)[0] ;
+            i++;
         }
 
-        return callRate / double(attributeNumber);
+        return val;
     }
 
     // ********** this two methods can be merged to one method **********
@@ -97,22 +96,37 @@ public class OOMCalculator {
     /**
      * calculate the Attribute Inheritance Factor (AIF)
      */
-    public double calculateAIF(Map<String, String[]> classInheritanceAttribute) {
-        int inheritanceAttributeNumber = 0;
-
-        for (Map.Entry<String, String[]> entry : classInheritanceAttribute.entrySet()) {
-            inheritanceAttributeNumber += entry.getValue().size();
+    public double[] calculateAIF() {
+        double val[] = new double[0];
+        int i=0;
+        for(Object o:classAttribute.keySet())
+        {
+            val[i] = (classAttributeNumber.get(o)[0]-classAttributeNumber.get(o)[1])/classAttributeNumber.get(o)[0] ;
+            i++;
         }
 
-        return double(inheritanceAttributeNumber) / methodNumber;
+        return val;
     }
 
     /**
-     * calculate the Polymorphism Factor (PF)
+     * Abreu Metrics:
+     * calculate the Polymorphism Factor (PF): Ratio of the number of overriding methods in a
+     * class to the total possible number of overridden methods
+     * Recommendation : overriding methods reduces complexity and increases understandability
      */
-    public double calculatePF() {
-        // calculate PF would be somewhat complex
-        // TODO
+    public double[] calculatePF() {
+        //position 3 of classMethodNumber corresponds to number of methods inherited by a class
+
+        int OverriddenMethods[] = this.calculateNMO();
+        double val[] = new double[0];
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {
+           val[i] = classMethodNumber.get(o)[2]/OverriddenMethods[i];
+           i++;
+        }
+
+        return val;
     }
 
     /**
@@ -195,5 +209,91 @@ public class OOMCalculator {
      */
     public double calculateNOM() {
         // TODO
+
     }
+
+    /**
+     * Lorenz Kidd metrics:
+     * Number of Methods : count all the methods public, private , protected of a class
+     */
+    public int[] calculateNM( ) {
+
+        int val[] = new int[0];
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {
+            val[i]=classMethod.get(o).size();
+            i++;
+        }
+
+        return val;
+
+
+    }
+
+    /**
+     * Lorenz Kidd metrics:
+     * Number of Variables per class : count all the variables which are public, private , protected of a class
+     */
+    public int[] calculateNV( ) {
+
+        int val[] = new int[0];
+        int i=0;
+        for(Object o:classAttribute.keySet())
+        {
+            val[i]=classAttribute.get(o).size();
+            i++;
+        }
+
+        return val;
+
+
+    }
+
+    /**
+     * Lorenz Kidd metrics:
+     * Number of Methods overridden by a subclass : counts the number of overridden methods of a class
+     * recommendation : large number of overridden methods indicate a design problem
+     */
+    public int[] calculateNMO( ) {
+
+        int val[] = new int[0];
+
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {    Map<String, int[]> ClassMap = classMethod.get(o);
+             int j=0;
+            for(Object t:ClassMap.keySet())
+            {
+                if(ClassMap.get(t)[1]==1)
+                {
+                    j++;
+                }
+            }
+            val[i]=j;
+            i++;
+        }
+        return val;
+    }
+
+    /**
+     * @param: Map with key as class name and value as the number of lines of code in the class
+     * Lorenz Kidd metrics:
+     * Average method size of class : Ratio of the non comment , non blank source lines divided by the number of methods in the class
+     * recommendation : useful for spotting abnormally large method sizes in a class
+     */
+    public double[] calculateAMS(Map<String, Integer> ClassLinesOfCode){
+        double val[] = new double[0];
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {
+            val[i]=ClassLinesOfCode.get(o)/classMethod.get(o).size();
+            i++;
+        }
+
+        return val;
+    }
+
+
+
 }
