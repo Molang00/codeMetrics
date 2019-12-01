@@ -35,6 +35,11 @@ public class OOMCalculator {
      */
     private Map<String, int[]> classMethodNumber, classAttributeNumber;
 
+    private Map<String, Map> classMethod, classAttribute;
+    private Map<String, int[]> method, attribute;
+
+    private Map<String, int[]> classMethodNumber, classAttributeNumber;
+
     OOMCalculator() {
         // TODO
     }
@@ -59,7 +64,11 @@ public class OOMCalculator {
     /**
      * Abreu Metrics:
      * calculate the Method Hiding Factor (MHF): Ratio of hidden (private or protected) methods to total methods
+<<<<<<< HEAD
      * recommendation:  A measure of encapsulation
+=======
+     * Recommendation:  A measure of encapsulation
+>>>>>>> c19cf79098c8b17a675baa50789d6767ac5c9109
      */
     public double[] calculateMHF() {
         double val[] = new double[0];
@@ -72,6 +81,7 @@ public class OOMCalculator {
 
         return val;
     }
+
 
     /**
      * Abreu Metrics:
@@ -220,9 +230,30 @@ public class OOMCalculator {
      */
     public double calculateNOM() {
         // TODO
+
     }
 
     /**
+     * Lorenz Kidd metrics:
+     * Number of Methods : count all the methods public, private , protected of a class
+     */
+    public int[] calculateNM( ) {
+
+        int val[] = new int[0];
+        int i=0;
+        for(Object o:classMethod.keySet())
+        {
+            val[i]=classMethod.get(o).size();
+            i++;
+        }
+
+        return val;
+
+
+    }
+
+    /**
+<<<<<<< HEAD
      * calculate the Number of Public Methdos (PM)
      */
     public void calculatePM() {
@@ -278,6 +309,8 @@ public class OOMCalculator {
     }
 
     /**
+=======
+>>>>>>> c19cf79098c8b17a675baa50789d6767ac5c9109
      * Lorenz Kidd metrics:
      * Number of Variables per class : count all the variables which are public, private , protected of a class
      */
@@ -292,6 +325,7 @@ public class OOMCalculator {
         }
 
         return val;
+<<<<<<< HEAD
     }
 
     /**
@@ -309,6 +343,10 @@ public class OOMCalculator {
             }
         }
         return privateMethodNumber;
+=======
+
+
+>>>>>>> c19cf79098c8b17a675baa50789d6767ac5c9109
     }
 
     /**
@@ -338,6 +376,7 @@ public class OOMCalculator {
     }
 
     /**
+<<<<<<< HEAD
      * calculate the Number of Methods Added by a subclass (NMA)
      */
     public void calculateNMA() {
@@ -345,6 +384,8 @@ public class OOMCalculator {
     }
 
     /**
+=======
+>>>>>>> c19cf79098c8b17a675baa50789d6767ac5c9109
      * @param: Map with key as class name and value as the number of lines of code in the class
      * Lorenz Kidd metrics:
      * Average method size of class : Ratio of the non comment , non blank source lines divided by the number of methods in the class
@@ -362,6 +403,7 @@ public class OOMCalculator {
         return val;
     }
 
+<<<<<<< HEAD
     /**
      * calculate the Number of times a Class is Reused (NCR)
      * TODO: since we have
@@ -369,5 +411,8 @@ public class OOMCalculator {
     public void calculateNCR() {
 
     }
+=======
+
+>>>>>>> c19cf79098c8b17a675baa50789d6767ac5c9109
 
 }
