@@ -1,6 +1,7 @@
 package com.SoftwareMatrix.PageFactory;
 
 import com.SoftwareMatrix.MetricsResultWindow;
+import com.SoftwareMatrix.Tutorial;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -9,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class DefaultPageFactory implements PageFactoryInterface{
+public class DefaultPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
   MetricsResultWindow window;
   JPanel DefaultPage;
@@ -40,10 +41,10 @@ public class DefaultPageFactory implements PageFactoryInterface{
 
     return DefaultPage;
   }
-  
-  public void generateTopView(){
+
+  public void generateTopView() {
     topPanel = new JPanel();
-    topPanel.setLayout(new GridLayout(1,3));
+    topPanel.setLayout(new GridLayout(1, 3));
 
     mainLabel = new JLabel("Software Metrics");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -57,15 +58,20 @@ public class DefaultPageFactory implements PageFactoryInterface{
     DefaultPage.add(topPanel, BorderLayout.NORTH);
   }
 
-  public void generateCenterView(){
-    if(DefaultPage.getWidth()+DefaultPage.getHeight() != 0)
-      tableContent.setPreferredSize(new Dimension(DefaultPage.getWidth(), DefaultPage.getHeight()/2));
+  public void generateCenterView() {
+    if (DefaultPage.getWidth() + DefaultPage.getHeight() != 0)
+      tableContent.setPreferredSize(new Dimension(DefaultPage.getWidth(), DefaultPage.getHeight() / 2));
+
+    JTree t = new Tutorial().getResult();
+    t.setBackground(new Color(0, 0, 0, 1));
+
+    tablePanel.add(t);
     tablePanel.add(tableContent);
 
     DefaultPage.add(tablePanel, BorderLayout.CENTER);
   }
 
-  public void generateBottomView(){
+  public void generateBottomView() {
     bottomPanel = new JPanel();
     bottomPanel.add(MIButton);
     bottomPanel.add(OOButton);
@@ -92,7 +98,7 @@ public class DefaultPageFactory implements PageFactoryInterface{
   }
 
   public void generateTable() {
-    tablePanel = new JPanel();
+    tablePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     table = new JTable();
     tableContent = new JScrollPane(table);
     String header[] = { "Type", "Score", "Graph" };
@@ -112,7 +118,7 @@ public class DefaultPageFactory implements PageFactoryInterface{
     settingAllStatus();
     table.setValueAt(MIscore, 0, 1);
     table.setValueAt(OOscore, 1, 1);
-    
+
     table.getColumn("Graph").setCellRenderer(new ColoredTableCellRenderer());
 
     table.getColumnModel().getColumn(0).setPreferredWidth(90);

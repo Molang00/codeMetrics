@@ -5,6 +5,7 @@ import com.SoftwareMatrix.PageFactory.HaslstedVolumPageFacotry;
 import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
 import com.SoftwareMatrix.PageFactory.MIPageFactory;
 import com.SoftwareMatrix.PageFactory.OOPageFactory;
+import com.SoftwareMatrix.PageFactory.CCPageFactory;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ public class MetricsResultWindow {
     DefaultPageFactory defaultpageFactory;
     MIPageFactory mipageFactory;
     OOPageFactory oopageFactory;
+    CCPageFactory ccpageFactory;
     HaslstedVolumPageFacotry haslstedVolumpageFactory;
     SLOCPageFactory SLOCpageFactory;
     String label;
@@ -27,6 +29,7 @@ public class MetricsResultWindow {
         defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
         mipageFactory = new MIPageFactory(this, myToolWindowContent);
         oopageFactory = new OOPageFactory(this, myToolWindowContent);
+        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
         haslstedVolumpageFactory = new HaslstedVolumPageFacotry(this, myToolWindowContent);
         SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
         label = "Default";
@@ -44,20 +47,25 @@ public class MetricsResultWindow {
 
     public void changeView(String label) {
         this.label = label;
-        if (label == "Default") {
+        switch (label) {
+        case "Default":
             defaultpageFactory.createPage();
-        }
-        if (label == "MI") {
+            break;
+        case "MI":
             mipageFactory.createPage();
-        }
-        if (label == "OO") {
+            break;
+        case "OO":
             oopageFactory.createPage();
-        }
-        if (label == "V") {
+            break;
+        case "V":
             haslstedVolumpageFactory.createPage();
-        }
-        if (label == "SLOC") {
+            break;
+        case "G":
+            ccpageFactory.createPage();
+            break;
+        case "SLOC":
             SLOCpageFactory.createPage();
+            break;
         }
         myToolWindowContent.revalidate();
     }
