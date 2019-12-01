@@ -1,23 +1,39 @@
 package com.SoftwareMatrix;
 
+import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
+import com.SoftwareMatrix.PageFactory.HaslstedVolumPageFacotry;
+import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
+import com.SoftwareMatrix.PageFactory.MIPageFactory;
+import com.SoftwareMatrix.PageFactory.OOPageFactory;
+import com.SoftwareMatrix.PageFactory.CCPageFactory;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
-    private JPanel myToolWindowContent;
-    private CCPage CCpage;
-    private DefaultPage defaultpage;
+    JPanel myToolWindowContent;
+    DefaultPageFactory defaultpageFactory;
+    MIPageFactory mipageFactory;
+    OOPageFactory oopageFactory;
+    CCPageFactory ccpageFactory;
+    HaslstedVolumPageFacotry haslstedVolumpageFactory;
+    SLOCPageFactory SLOCpageFactory;
+    String label;
 
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
         myToolWindowContent = new JPanel();
-        defaultpage = new DefaultPage(this, myToolWindowContent);
-        CCpage = new CCPage(this, myToolWindowContent);
-        myToolWindowContent = defaultpage.getPage();
+        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
+        mipageFactory = new MIPageFactory(this, myToolWindowContent);
+        oopageFactory = new OOPageFactory(this, myToolWindowContent);
+        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
+        haslstedVolumpageFactory = new HaslstedVolumPageFacotry(this, myToolWindowContent);
+        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
+        label = "Default";
+        defaultpageFactory.createPage();
     }
 
     /**
@@ -30,16 +46,27 @@ public class MetricsResultWindow {
     }
 
     public void changeView(String label) {
-        switch(label){
-            case "CC":
-                myToolWindowContent.removeAll();
-                myToolWindowContent = CCpage.getPage();
-                myToolWindowContent.updateUI();
-                break;
-            default:
-                myToolWindowContent.removeAll();
-                myToolWindowContent = defaultpage.getPage();
-                myToolWindowContent.updateUI();
+        this.label = label;
+        switch (label) {
+        case "Default":
+            defaultpageFactory.createPage();
+            break;
+        case "MI":
+            mipageFactory.createPage();
+            break;
+        case "OO":
+            oopageFactory.createPage();
+            break;
+        case "V":
+            haslstedVolumpageFactory.createPage();
+            break;
+        case "G":
+            ccpageFactory.createPage();
+            break;
+        case "SLOC":
+            SLOCpageFactory.createPage();
+            break;
         }
+        myToolWindowContent.revalidate();
     }
 }
