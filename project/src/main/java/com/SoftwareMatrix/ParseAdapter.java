@@ -1,5 +1,6 @@
 package com.SoftwareMatrix;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -177,5 +178,48 @@ public class ParseAdapter {
                 PsiTreeUtil.findChildrenOfType(p, type));
     }
 
+    /**
+     * Returns the map of attributes of method in given class
+     * Attibutes contains information about access modifier, is override
+     * For access modifier, 0: private, 1: public, 2: protected, 3: none
+     * For override, 0: not override, 1: override
+     *
+     * @param psiClass target class
+     *
+     * @return map of attributes of given method
+     *         Attibutes contains information about access modifier, is override
+     */
+    public static Map<String, int[]> getMethodAttribute(@NotNull PsiClass psiClass) {
+        Map<String, int[]> ret = new HashMap<String, int[]>();
+        for(PsiMethod p : psiClass.getMethods()) {
+            String name = p.getName();
+            int[] attr = new int[2];
+            PsiModifierList modifierList = p.getModifierList();
+            boolean isPrivate = modifierList.hasModifierProperty(PsiModifier.PRIVATE);
+            boolean isPublic = modifierList.hasModifierProperty(PsiModifier.PUBLIC);
+            boolean isProtected = modifierList.hasModifierProperty(PsiModifier.PROTECTED);
+            attr[0] = isPrivate ? 0 : isPublic ? 1 : isProtected ? 2 : 3;
+            attr[1] = p.findSuperMethods().length > 0 ? 1 : 0;
+            ret.put(name, attr);
+        }
+        return ret;
+    }
+
+    /**
+     * Returns map with class name as key and methods as value for given package
+     *
+     * @param psiPackage target package
+     *
+     * @return map with class name as key and methods as value for given package
+     */
+    public static Map<String, Map> getClassMethod(@NotNull PsiPackage psiPackage) {
+        Map<String, Map> ret = new HashMap<>();
+        for(PsiClass p : psiPackage.getClasses()) {
+            String name = p.getName();
+            Map<String, int[]> attr = getMethodAttribute(p);
+            ret.put(name, attr);
+        }
+        return ret;
+    }
 
 }
