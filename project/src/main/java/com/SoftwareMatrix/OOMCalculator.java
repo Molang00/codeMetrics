@@ -20,8 +20,8 @@ public class OOMCalculator {
      * - first number: is public: 1 means public; 0 means not public; 2 means protected
      * - second number: is overrided: 1 means overided; 0 means not overided
      */
-    private Map<String, Map> classMethod, classAttribute;
-    private Map<String, int[]> method, attribute; 
+    private Map<String, OOMMethod[]> classMethod;
+    private Map<String, OOMAttribute[]> classAttribute;
     /**
      * N.B. After modifying, the classMethodNumber and classAttributeNumber would 
      * not be no longer used. 
@@ -64,18 +64,18 @@ public class OOMCalculator {
     public Map<String, int> calculatePM() {
         Map<String, int> classPM = new HashMap<String, int>();
 
-        for (Map.Entry<String, Map> entry : classMethod.entrySet()) {
-            classPM.put(entry.getKey(), calculatePMSingleClass(entry.getValue()));
+        for (Object o:classMethod.keySet()) {
+            classPM.put(o, calculatePMSingleClass(classMethod.get(o)));
         }
 
         return classPM;
     }
 
-    private int calculatePMSingleClass(Map methodMap) {
+    private int calculatePMSingleClass(OOMMethod[] methodList) {
         int publicMethodNumber = 0;
 
-        for (Map.Entry<String, int[]> entry : methodMap.entrySet()) {
-            if (entry.getValue()[0] == 1) {
+        for (OOMMethod method:methodList) {
+            if (method.isPublic()) {
                 publicMethodNumber ++;
             }
         }
@@ -95,20 +95,22 @@ public class OOMCalculator {
         // TODO
         Map<String, int> classNPV = new HashMap<String, int>();
 
-        for (Map.Entry<String, Map> entry : classAttribute.entrySet()) {
-            classNPV.put(entry.getKey(), calculateNPVShingleClass(entry.getValue()));
+        for (Object o:classAttribute.keySet()) {
+            classNPV.put(o, calculateNPVShingleClass(classAttribute.get(o)));
         }
 
         return classNPV;
     }
 
-    private int calculateNPVShingleClass(Map attributeMap) {
+    private int calculateNPVShingleClass(MMOAttribute attributeList) {
         int publicAttributeNumber = 0;
-        for (Map.Entry<String, int[]> entry : attributeMap.entrySet()) {
-            if (entry.getValue()[0] == 1) {
+
+        for (MMOAttribute attribute:attributeList) {
+            if (attribute.isPublic()) {
                 publicAttributeNumber ++;
             }
         }
+
         return publicAttributeNumber;
     }
 
@@ -141,21 +143,9 @@ public class OOMCalculator {
         return 0;
     }
 
-    private int calculatePRMSingleClass(Map methodMap) {
-        int privateMethodNumber = 0;
-
-        for (Map.Entry<String, int[]> entry : methodMap.entrySet()) {
-            if (entry.getValue()[0] == 0) {
-                privateMethodNumber ++;
-            }
-        }
-
-        return privateMethodNumber;
-    }
-
     /**
      * Lorenz Kidd metrics:
-     * Number of Methods overridden by a subclass(NMO): counts the number of overridden 
+     * Number of Methods overridden by a subclass(NMO): counts the number of override 
      * methods of a class
      * @return a map: [class name: the number of overridden methods in this class]
      */
@@ -163,10 +153,10 @@ public class OOMCalculator {
         Map<String, int> classNMO = new HashMap<String, int>();
 
         for(Object o:classMethod.keySet()) {    
-            Map<String, int[]> ClassMap = classMethod.get(o);
+            OOMMethod[] methodList = classMethod.get(o);
             int j=0;
-            for(Object t:ClassMap.keySet()) {
-                if(ClassMap.get(t)[1]==1) { // the second factor means overrided
+            for(Object t:methodList) {
+                if(t.isOverride()) {
                     j++;
                 }
             }
@@ -185,16 +175,17 @@ public class OOMCalculator {
      */
     public int calculateNMA(String parentClass, String childClass) {
         int classNMA = 0;
-        Set<String> parentKeySet = new HashSet<String>();
-        Set<String> childKeySet = new HashSet<String>();
-        parentKeySet = classMethod.getKey(parentClass).keySet();
-        childKeySet = classMethod.getKey(childClass).keySet();
+        OOMMethod[] parentMethodList, childMethodList;
+        parentMethodList = classMethod.get(parentClass);
+        childMethodList = classMethod.get(childClass);
 
-        for (String s : childKeySet) {
-            if (parentKeySet.contains(s)) {
-                continue;
+        for (OOMMethod childMethod:childMethodList) {
+            for (OOMMethod parentMethod:parentMethodList) {
+                if (childMethod.getName().equal(parentMethod.getName())) {
+                    continue;
+                }
+                classNMA++;
             }
-            classNMA++;
         }
 
         return classNMA;
@@ -224,13 +215,13 @@ public class OOMCalculator {
      * Abreu Metrics:
      * calculate the Polymorphism Factor (PF): Ratio of the number of overriding methods in a
      * class to the total possible number of overridden methods
-     * @return a map: [class name: ratio of the number of overriding methods in this class]
+     * @return a map: [class name: ratio of the number of override methods in this class]
      */
     public Map<String, double> calculatePF() {
         Map<String, double> classPF = new HashMap<String, double>();
         Map<String, int> classNMO = this.calculateNMO();
         // TODO
-        int OverriddenMethods = 1; // OverriddenMethods here should be worked
+        int OverriddenMethods = 1; // total possible number of OverriddenMethods here should be worked
 
         for(Object o:classMethod.keySet()) {
            classPF.put(o, calculateNMO.get(o)/OverriddenMethods); 
@@ -238,18 +229,6 @@ public class OOMCalculator {
 
         return classPF;
     }
-
-    /**
-     * Abreu Metrics:
-     * calculate the CouplingFactor (CF): the number of inter-class communications
-     * 
-     */
-    // public double calculateCF() {
-    //     // after defining the structure of classMethod by Map-Map, this part can be 
-    //     // easily done by traversal
-    //     // TODO
-    //     return 0;
-    // }
 
     /**
      * Abreu Metrics:
@@ -299,7 +278,7 @@ public class OOMCalculator {
      * calculate the Attribute Inheritance Factor (AIF): the number of inherited attributes 
      * as a ratio of total attributes
      */
-    public double[] calculateAIF() {
+    public Map<String, double> calculateAIF() {
         Map<String, double> classAIF = new HashMap<String, double>();
 
         for(Object o:classAttribute.keySet()) {
