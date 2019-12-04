@@ -1,40 +1,14 @@
 package com.SoftwareMatrix;
 
-import java.util.HashSet;
-import java.lang.Math;
-import java.util.Set;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  *  the calculator of the Object-Oriented Metrics (OOM)
  */
 public class OOMCalculator {
 
-    /**
-     * the structures of classMethod and classAttribute look like this: 
-     * - e.g. className : [method1Map, method2Map, ...]
-     * and the structure of method1Map looks like this:
-     * - e.g. methodName : [0, 1, 0, ...]
-     * the int numbers are used to descreibe: 
-     * - first number: is public: 1 means public; 0 means not public; 2 means protected
-     * - second number: is overrided: 1 means overided; 0 means not overided
-     */
-    private Map<String, OOMMethod[]> classMethod;
-    private Map<String, OOMAttribute[]> classAttribute;
-    /**
-     * N.B. After modifying, the classMethodNumber and classAttributeNumber would 
-     * not be no longer used. 
-     * classMethodNumber: 
-     * - first: the number of method in classes: calculateNM()
-     * - second: the number of public number of method in classes: calculatePM()
-     * - third: the number of method ingerited: calculateNMI()
-     * - fouth: the number of method overrided: calculateNMO()
-     * classAttributeNumber: the number of attribute in classes
-     * - first: the number of attribute in classes: NV
-     * - second: the number of public number of method in classes: NPV
-     */
-    // private Map<String, int[]> classMethodNumber, classAttributeNumber;
+   private OOMClass[] classList;
 
     OOMCalculator() {
         // TODO
@@ -46,11 +20,12 @@ public class OOMCalculator {
      * private , protected of a class
      * @return a map: [class name: the number of all methods in this class]
      */
-    public Map<String, int> calculateNM() {
-        Map<String, int> classNM = new HashMap<String, int>();
+    public Map<String, Integer> calculateNM() {
+        Map<String, Integer> classNM = new HashMap<String, Integer>();
         
-        for(Object o:classMethod.keySet()) {
-            classNM.put(o, classMethod.get(o).size());
+        for(int i=0; i<classList.length;i++) {
+
+            classNM.put(classList[i].getName(),classList[i].calculateNM());
         }
 
         return classNM;
@@ -61,27 +36,18 @@ public class OOMCalculator {
      * calculate the Number of Public Methdos (PM): the number of public methods in a class
      * @return a map: [class name: number of public methods in this class]
      */
-    public Map<String, int> calculatePM() {
-        Map<String, int> classPM = new HashMap<String, int>();
+    public Map<String, Integer> calculatePM() {
+        Map<String, Integer> classPM = new HashMap<String, Integer>();
 
-        for (Object o:classMethod.keySet()) {
-            classPM.put(o, calculatePMSingleClass(classMethod.get(o)));
+        for(int i=0; i<classList.length;i++) {
+
+            classPM.put(classList[i].getName(),classList[i].calculatePM());
         }
 
         return classPM;
     }
 
-    private int calculatePMSingleClass(OOMMethod[] methodList) {
-        int publicMethodNumber = 0;
 
-        for (OOMMethod method:methodList) {
-            if (method.isPublic()) {
-                publicMethodNumber ++;
-            }
-        }
-
-        return publicMethodNumber;
-    }
 
     /**
      * Lorenz Kidd metrics:
@@ -89,30 +55,17 @@ public class OOMCalculator {
      * variables in a class
      * @return a map: [class name: the number of public variables in this class]
      */
-    public Map<String, int> calculateNPV() {
-        // here has a problem, what we count here is the number of public attributes, 
-        // rather than variables the meaning of this shoule be considered in the future.
-        // TODO
-        Map<String, int> classNPV = new HashMap<String, int>();
+    public Map<String, Integer> calculateNPV() {
+        Map<String, Integer> classNPV = new HashMap<String, Integer>();
 
-        for (Object o:classAttribute.keySet()) {
-            classNPV.put(o, calculateNPVShingleClass(classAttribute.get(o)));
+        for(int i=0; i<classList.length;i++) {
+
+            classNPV.put(classList[i].getName(),classList[i].calculateNPV());
         }
 
         return classNPV;
     }
 
-    private int calculateNPVShingleClass(MMOAttribute attributeList) {
-        int publicAttributeNumber = 0;
-
-        for (MMOAttribute attribute:attributeList) {
-            if (attribute.isPublic()) {
-                publicAttributeNumber ++;
-            }
-        }
-
-        return publicAttributeNumber;
-    }
 
     /**
      * Lorenz Kidd metrics:
@@ -120,14 +73,16 @@ public class OOMCalculator {
      * private , protected of a class
      * @return a map: [class name: the number of all variables in this class]
      */
-    public Map<String, int> calculateNV( ) {
-        Map<String, int> classNV = new HashMap<String, int>();
+    public Map<String, Integer> calculateNV( ) {
+        Map<String, Integer> classNV = new HashMap<String, Integer>();
 
-        for(Object o:classAttribute.keySet()) {
-            classNV.put(o, classAttribute.get(o).size());
+        for(int i=0; i<classList.length;i++) {
+
+            classNV.put(classList[i].getName(),classList[i].calculateNV());
         }
 
         return classNV;
+
     }
 
     /**
@@ -136,11 +91,14 @@ public class OOMCalculator {
      * methods inherited by a subclass
      * @return a map: [class name: the number of methods inherited by a subclass in this class]
      */
-    public int calculateNMI(String parentClass, String childClass) {
-        // here we should to know how to find the parent of a class, maybe here would 
-        // need a new map or tree to complete this
-        // TODO
-        return 0;
+    public Map<String, Integer> calculateNMI() {
+        Map<String, Integer> classNMI= new HashMap<String, Integer>();;
+        for(int i = 0; i<classList.length; i++) {
+
+            classNMI.put(classList[i].getName(),classList[i].calculateNMI());
+        }
+
+        return classNMI;
     }
 
     /**
@@ -149,43 +107,27 @@ public class OOMCalculator {
      * methods of a class
      * @return a map: [class name: the number of overridden methods in this class]
      */
-    public Map<String, int> calculateNMO( ) {
-        Map<String, int> classNMO = new HashMap<String, int>();
+    public Map<String, Integer> calculateNMO( ) {
+        Map<String, Integer> classNMO= new HashMap<String, Integer>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for(Object o:classMethod.keySet()) {    
-            OOMMethod[] methodList = classMethod.get(o);
-            int j=0;
-            for(Object t:methodList) {
-                if(t.isOverride()) {
-                    j++;
-                }
-            }
-            classNMO.put(o, j);
+            classNMO.put(classList[i].getName(),classList[i].calculateNMO());
         }
 
         return classNMO;
+
     }
 
     /**
      * Lorenz Kidd metrics:
      * calculate the Number of Methods Added by a subclass (NMA)
-     * @param parentClass   the super class
-     * @param childClass    the subclass
      * @return the number of methods subclass added
      */
-    public int calculateNMA(String parentClass, String childClass) {
-        int classNMA = 0;
-        OOMMethod[] parentMethodList, childMethodList;
-        parentMethodList = classMethod.get(parentClass);
-        childMethodList = classMethod.get(childClass);
+    public Map<String, Integer> calculateNMA(String parentClass, String childClass) {
+        Map<String, Integer> classNMA= new HashMap<String, Integer>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for (OOMMethod childMethod:childMethodList) {
-            for (OOMMethod parentMethod:parentMethodList) {
-                if (childMethod.getName().equal(parentMethod.getName())) {
-                    continue;
-                }
-                classNMA++;
-            }
+            classNMA.put(classList[i].getName(),classList[i].calculateNMA());
         }
 
         return classNMA;
@@ -195,17 +137,14 @@ public class OOMCalculator {
      * Lorenz Kidd metrics:
      * Average method size of class : Ratio of the non comment, non blank source lines 
      * divided by the number of methods in the class
-     * @param classLine the number of lines of classes without blank and comment lines 
      * in map formate: [class name: number of lines]
      * @return a map: [class name: the average method size in this class]
      */
-    public Map<String, doubel> calculateAMS(Map<String, int> classLine){
-        // here we need a new input, please consider this when init this calculator
-        // TODO
-        Map<String, double> classAMS = new HashMap<String, double>();
+    public Map<String, Double> calculateAMS(){
+        Map<String, Double> classAMS= new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for(Object o:classMethod.keySet()) {
-            classAMS.put(o, ClassLinesOfCode.get(o)/classMethod.get(o).size());
+            classAMS.put(classList[i].getName(),classList[i].calculateAMS());
         }
 
         return classAMS;
@@ -217,14 +156,11 @@ public class OOMCalculator {
      * class to the total possible number of overridden methods
      * @return a map: [class name: ratio of the number of override methods in this class]
      */
-    public Map<String, double> calculatePF() {
-        Map<String, double> classPF = new HashMap<String, double>();
-        Map<String, int> classNMO = this.calculateNMO();
-        // TODO
-        int OverriddenMethods = 1; // total possible number of OverriddenMethods here should be worked
+    public Map<String, Double> calculatePF() {
+        Map<String, Double> classPF= new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for(Object o:classMethod.keySet()) {
-           classPF.put(o, calculateNMO.get(o)/OverriddenMethods); 
+            classPF.put(classList[i].getName(),classList[i].calculatePF());
         }
 
         return classPF;
@@ -236,11 +172,12 @@ public class OOMCalculator {
      * methods to total methods
      * @return a map: [class name: ratio of hidden methods in this class]
      */
-    public Map<String, double> calculateMHF() {
-        Map<String, double> classMHF = new HashMap<String, double>();
+    public Map<String, Double> calculateMHF() {
+        Map<String, Double> classMHF= new HashMap<String,Double>();
 
-        for(Object o:classMethod.keySet()) {
-            classMHF.put(o, (calculateNM().get(o)-calculatePM().get(o))/calculateNM().get(o));
+        for(int i = 0; i<classList.length; i++) {
+
+            classMHF.put(classList[i].getName(),classList[i].calculateMHF());
         }
 
         return classMHF;
@@ -252,9 +189,14 @@ public class OOMCalculator {
      * a ratio of total methods
      * @return a map: [class name: ratio of inherited methods in this class]
      */
-    public Map<String, double> calculateMIF() {
-        // we consider that here we need to know parent's situation
-        // TODO
+    public Map<String, Double> calculateMIF() {
+        Map<String, Double> classMIF = new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
+
+            classMIF.put(classList[i].getName(),classList[i].calculateMIF());
+        }
+
+        return classMIF;
     }
 
     /**
@@ -263,11 +205,11 @@ public class OOMCalculator {
      * attributes to total attributes
      * @return a map: [class name: ratio of hidden attributes in this class]
      */
-    public Map<String, double> calculateAHF( ) {
-        Map<String, double> classAHF = new HashMap<String, double>();
+    public Map<String, Double> calculateAHF( ) {
+        Map<String, Double> classAHF= new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for(Object o:classAttribute.keySet()) {
-            classAHF.put(o, (calculateNV.get(o)-calculateNPV.get(o))/calculateNV.get(o));
+            classAHF.put(classList[i].getName(),classList[i].calculateAHF());
         }
 
         return classAHF;
@@ -278,58 +220,55 @@ public class OOMCalculator {
      * calculate the Attribute Inheritance Factor (AIF): the number of inherited attributes 
      * as a ratio of total attributes
      */
-    public Map<String, double> calculateAIF() {
-        Map<String, double> classAIF = new HashMap<String, double>();
+    public Map<String, Double> calculateAIF() {
+        Map<String, Double> classAIF= new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
 
-        for(Object o:classAttribute.keySet()) {
-            classAIF.put(o, (calculateNV.get(o)-calculateNPV.get(o))/calculateNV.get(o));
+            classAIF.put(classList[i].getName(),classList[i].calculateAIF());
         }
 
         return classAIF;
     }
 
-    /**
-     * Chidamber and Kemerer Metrics:
-     * calculate the Coupling Between Objects (CBO): the level of coupling between classes, 
-     * coupling between two classes is said to occur when one class uses functions or variables 
-     * of another class. 
-     * @param class1
-     * @param class2
-     * @return the level of coupling between these two methods
-     */
-    public double calculateCBO(String class1, String class2) {
-        int couplingNumber = 0;
-        // since there is no standart measure method for this metrics
-        // it is necessray to disscuss our methods to measure this
-        // TODO
-        return couplingNumber;
-    }
 
     /**
      * Chidamber and Kemerer Metrics:
      * calculate the Depth of Inheritance Tree (DIT): the maximum level of the inheritance 
      * hierarchy of a class
-     * @param class the class we would liek to measure
      * @return the number of level of inheritance
      */
-    public int calculateDIT(String class) {
-        int interitanceDepth = 0;
-        // to complete this, it would be necessart to know the tree of inheritance
-        // TODO
-        return interitanceDepth;
+    public Map<String, Double> calculateDIT() {
+        Double interitanceDepth;
+        Map<String, Double> classDIT= new HashMap<String, Double>();
+        for(int i = 0; i<classList.length; i++) {
+            interitanceDepth=0.0;
+            OOMClass aClass= classList[i];
+            while(aClass.getParent()!=null)
+            {
+                interitanceDepth++;
+                aClass= aClass.getParent();
+            }
+
+            classDIT.put(classList[i].getName(),interitanceDepth);
+        }
+
+        return classDIT;
+
     }
 
     /**
      * Chidamber and Kemerer Metrics:
      * calculate the Number of Children (NOC): number of subclasses belonging to a class
-     * @param class the class we would like to measure
      * @return the number of subclasses belonging to this class
      */
-    public int calculateNOC() {
-        int subclassNumber = 0;
-        // to complete this, it would be necessart to know the tree of inheritance
-        // TODO
-        return subclassNumber;
+    public Map<String, Double> calculateNOC() {
+        Map<String, Double> classNOC= new HashMap<String, Double>();;
+        for(int i = 0; i<classList.length; i++) {
+
+            classNOC.put(classList[i].getName(),classList[i].calculateNOC());
+        }
+
+        return classNOC;
     }
 
     /**
@@ -337,11 +276,11 @@ public class OOMCalculator {
      * calculate the Weighted Methods per Class (WMC):  the number of methods in a class
      * @return a map: [class name: the number of methods in this class]
      */
-    public Map<String, int> calculateWMC() {
+    public Map<String, Integer> calculateWMC() {
         return calculateNM();
     }
 
-    /**
+    /** ------------------------------------------------------------------------------------------------
      * Chidamber and Kemerer Metrics:
      * calculate the Lack of Cohesion in Methods (LCOM): the lack of cohesion in the methods 
      * of a class
@@ -350,37 +289,25 @@ public class OOMCalculator {
     public double calculateLCOM() {
         // there is no standart for measuring this, it would be necessary to discuss this
         // TODO
-    }
-
-    // ********** ADDITIONAL PART OF METRACS **********
-
-    /**
-     * calculate the Specialisation Index per Class (SIX)
-     */
-    public double calculateSIX() {
-        // TODO
+        return 0.0;
     }
 
     /**
-     * calculate the Response For a Class (RFC)
+     * Chidamber and Kemerer Metrics:
+     * calculate the Coupling Between Objects (CBO): the level of coupling between classes,
+     * coupling between two classes is said to occur when one class uses functions or variables
+     * of another class.
+     * @param class1
+     * @param class2
+     * @return the level of coupling between these two methods
      */
-    public double calculateRFC() {
-        // TODO
+    public double calculateCBO(String class1, String class2) {
+        int couplingNumber = 0;
+        // since there is no standart measure method for this metrics
+        // it is necessray to disscuss our methods to measure this
+        // TODO--------------
+        return couplingNumber;
     }
 
-    /**
-     * calculate the Lines of Code per method (LOC)
-     */
-    public double calculateLOC() {
-        // TODO
-    }
-
-    /**
-     * calculate the Number of Messages Send (NOM)
-     */
-    public double calculateNOM() {
-        // TODO
-
-    }
 
 }
