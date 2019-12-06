@@ -1,10 +1,20 @@
 package com.SoftwareMatrix;
 
+import android.os.SystemPropertiesProto;
+import com.intellij.ide.projectView.ProjectViewSettings;
+import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.projectView.impl.nodes.PackageUtil;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
+import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 
 /*
@@ -176,6 +186,58 @@ public class ParseAdapter {
 
         return Collections.unmodifiableCollection(
                 PsiTreeUtil.findChildrenOfType(p, type));
+    }
+
+
+    /**
+     * Returns the List of PsiPackages which are in target project
+     *
+     * @param project target project
+     *
+     * @return List of PsiPackages in that Project
+     */
+    public static List<PsiPackage> getPrjoectPackages (@NotNull Project project) {
+        Project myProject = project;
+        ViewSettings viewSettings = ProjectViewSettings.DEFAULT;
+
+        final List<VirtualFile> sourceRoots = new ArrayList<VirtualFile>();
+        final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myProject);
+        ContainerUtil.addAll(sourceRoots, projectRootManager.getContentSourceRoots());
+
+        final PsiManager psiManager = PsiManager.getInstance(myProject);
+        final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+        final Set<PsiPackage> topLevelPackages = new HashSet<PsiPackage>();
+
+        for (final VirtualFile root : sourceRoots) {
+            final PsiDirectory directory = psiManager.findDirectory(root);
+            if (directory == null) {
+                continue;
+            }
+            final PsiPackage directoryPackage = JavaDirectoryService.getInstance().getPackage(directory);
+            if (directoryPackage == null || PackageUtil.isPackageDefault(directoryPackage)) {
+                // add subpackages
+                final PsiDirectory[] subdirectories = directory.getSubdirectories();
+                for (PsiDirectory subdirectory : subdirectories) {
+                    final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(subdirectory);
+
+                    if (aPackage != null && !PackageUtil.isPackageDefault(aPackage)) {
+                        PsiPackage[] subPackages = aPackage.getSubPackages();
+                        for (PsiPackage p : subPackages) {
+                            System.out.println(p); // PsiPackage:com.google, PsiPackage:com.SoftwareMatrix, ... etc
+                        }
+
+                        topLevelPackages.add(aPackage); // Toplevels. com, META-INF, ... etc
+                    }
+                }
+                // add non-dir items
+                children.addAll(ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(directory, viewSettings, false));
+            } else {
+                // this is the case when a source root has package prefix assigned
+                topLevelPackages.add(directoryPackage);
+            }
+        }
+
+        return new ArrayList<PsiPackage>(topLevelPackages);
     }
 
     /**
