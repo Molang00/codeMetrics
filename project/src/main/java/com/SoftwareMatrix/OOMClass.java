@@ -1,9 +1,10 @@
 package com.SoftwareMatrix;
 
-import java.util.HashSet;
+import com.intellij.psi.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 import java.lang.Math;
-import java.util.Set;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -11,22 +12,56 @@ import java.util.Map.Entry;
  */
 public class OOMClass {
     private String name;
-    private OOMMethod[] methodList;
-    private OOMAttribute[] attributeList;
+    private List<OOMMethod> methodList;
+    private List<OOMAttribute> attributeList;
     private Integer ClassLength;
     OOMClass parent;
-    OOMClass[] childrenList;
+    List<OOMClass> childrenList;
 
 
-    OOMClass() {
+    OOMClass(@NotNull PsiClass psiClass) {
         // TODO
+        String name = psiClass.getName();
+
+        //attributeList
+        methodList = new ArrayList<>();
+        for(PsiMethod p : psiClass.getMethods()) {
+            OOMMethod oomMethod = new OOMMethod();
+            oomMethod.setName(p.getName());
+            PsiModifierList modifierList = p.getModifierList();
+            oomMethod.setPrivate(modifierList.hasModifierProperty(PsiModifier.PRIVATE));
+            oomMethod.setPublic(modifierList.hasModifierProperty(PsiModifier.PUBLIC));
+            oomMethod.setProtected(modifierList.hasModifierProperty(PsiModifier.PROTECTED));
+            oomMethod.setOverride(p.findSuperMethods().length > 0);
+            methodList.add(oomMethod);
+        }
+
+        //attributeList
+        attributeList = new ArrayList<>();
+        for(PsiField p : psiClass.getFields()) {
+            OOMAttribute oomAttribute = new OOMAttribute();
+            PsiModifierList modifierList = p.getModifierList();
+            oomAttribute.setPrivate(modifierList.hasModifierProperty(PsiModifier.PRIVATE));
+            oomAttribute.setPublic(modifierList.hasModifierProperty(PsiModifier.PUBLIC));
+            oomAttribute.setProtected(modifierList.hasModifierProperty(PsiModifier.PROTECTED));
+            attributeList.add(oomAttribute);
+        }
+
+        //What is ClassLength?
+
+        //psiClass.getParent() could be package, and inherit could be occur in multiple class
+        //I don't know actual meaning of 'OOMClass parent'
+
+        for(PsiClass c : psiClass.getInnerClasses()) {
+            childrenList.add(new OOMClass(c));
+        }
     }
 
-    public OOMMethod[] getMethodList() {
+    public List<OOMMethod> getMethodList() {
         return this.methodList;
     }
 
-    public OOMAttribute[] getAttributeList() {
+    public List<OOMAttribute> getAttributeList() {
         return this.attributeList;
     }
 
@@ -38,7 +73,7 @@ public class OOMClass {
         return this.parent;
     }
 
-    public OOMClass[] getChildrenList() {
+    public List<OOMClass> getChildrenList() {
         return this.childrenList;
     }
 
@@ -70,7 +105,7 @@ public class OOMClass {
      * @return a map: [class name: the number of all methods in this class]
      */
     public int calculateNM() {
-        return methodList.length;
+        return methodList.size();
     }
 
     /**
@@ -98,7 +133,7 @@ public class OOMClass {
      * @return a map: [class name: the number of all variables in this class]
      */
     public int calculateNV( ) {
-        return attributeList.length;
+        return attributeList.size();
     }
 
     
@@ -169,7 +204,7 @@ public class OOMClass {
         int classNMA = 0;
 
         for (OOMClass child:childrenList) {
-            OOMMethod[] childMethodList = child.getMethodList();
+            List<OOMMethod> childMethodList = child.getMethodList();
 
             for (OOMMethod childMethod:childMethodList) {
                 for (OOMMethod parentMethod:this.methodList) {
@@ -237,7 +272,7 @@ public class OOMClass {
      */
     public double calculateNOC(){
 
-        return (double)(childrenList.length);
+        return (double)(childrenList.size());
     }
     /**
      * Abreu Metrics:
