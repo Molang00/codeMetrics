@@ -1,5 +1,6 @@
 package com.SoftwareMatrix;
 
+import android.icu.impl.number.Parse;
 import com.google.common.collect.Tables;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -85,12 +86,17 @@ public class MetricsResultWindow implements UpdateObserver {
     }
 
     @Override
-    public void update(Project project) {
+    public void update(Project project, PsiElement elem) {
         settingAllStatus();
         tableStructure.setValueAt(MIscore, 0, 1);
         tableStructure.setValueAt(OOscore, 1, 1);
 
         // color refresh has 5~10 seconds of delay
+
+        System.out.println(elem);
+        System.out.println(ParseAdapter.getContainingMethod(elem));
+        System.out.println(ParseAdapter.getContainingClass(elem));
+        System.out.println(ParseAdapter.getContainingPackage(elem));
     }
 
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {

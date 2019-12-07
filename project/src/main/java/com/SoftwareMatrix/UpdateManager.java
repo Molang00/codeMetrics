@@ -1,17 +1,18 @@
 package com.SoftwareMatrix;
 
-import com.intellij.codeInsight.template.postfix.templates.SoutPostfixTemplate;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Caret;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.event.CaretEvent;
+import com.intellij.openapi.editor.event.CaretListener;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.ClassInheritorsSearch;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.messages.MessageBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -25,8 +26,9 @@ public class UpdateManager {
     private Project project;
     private List<UpdateObserver> observers; // observer list
 
-    private void notifyObserversWrapper(PsiTreeChangeEvent event) {
-        System.out.println("CHANGED");
+    private PsiElement lastTrackedElement; // last caret position
+
+    private void notifyObserversWrapper() {
         if(thread != null && thread.isAlive()) {
             ; // do nothing
         }
@@ -39,7 +41,7 @@ public class UpdateManager {
                         ApplicationManager.getApplication().runReadAction(new Runnable() {
                             @Override
                             public void run() {
-                                notifyObservers(event);
+                                notifyObservers();
                             }
                         });
                     } catch (InterruptedException ex) {
@@ -48,46 +50,102 @@ public class UpdateManager {
                 }
             };
             thread.start();
-//            System.out.println(Arrays.toString(JavaPsiFacade.getInstance(project)
-//                    .findClasses("", GlobalSearchScope.allScope(project))));
         }
     }
 
     private UpdateManager(@NotNull Project project) {
         observers = new ArrayList<>();
+        lastTrackedElement = null;
 
         this.project = project;
         PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiTreeChangeAdapter() {
             @Override
             public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                System.out.println(event.getParent());
-                System.out.println(event.getChild());
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
-                notifyObserversWrapper(event);
+                notifyObserversWrapper();
             }
 
             @Override
             public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-                System.out.println(event.getParent());
-                System.out.println(event.getChild());
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
-                notifyObserversWrapper(event);
+                notifyObserversWrapper();
             }
 
             @Override
             public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-                System.out.println(event.getParent());
-                System.out.println(event.getChild());
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getParent(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.findChildrenOfType(event.getChild(), PsiIfStatement.class));
-                System.out.println(PsiTreeUtil.getContextOfType(event.getParent(), PsiIfStatement.class, false));
-                notifyObserversWrapper(event);
+                notifyObserversWrapper();
             }
         });
+
+        CaretListener caretListener = new CaretListener() {
+            @Override
+            public void caretPositionChanged(@NotNull CaretEvent event) {
+                PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(event.getEditor().getDocument());
+                Caret caret = event.getCaret();
+                if(caret != null && pFile != null) {
+                    lastTrackedElement = pFile.findElementAt(caret.getOffset());
+                }
+                notifyObserversWrapper();
+            }
+
+            @Override
+            public void caretAdded(@NotNull CaretEvent event) {
+                PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(event.getEditor().getDocument());
+                Caret caret = event.getCaret();
+                if(caret != null && pFile != null) {
+                    lastTrackedElement = pFile.findElementAt(caret.getOffset());
+                }
+                notifyObserversWrapper();
+            }
+        };
+
+        MessageBus messageBus = project.getMessageBus();
+        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter() {
+            @Override
+            public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+                super.fileOpened(source, file);
+                Editor editor = source.getSelectedTextEditor();
+                if(editor != null) {
+                    editor.getCaretModel().removeCaretListener(caretListener);
+                    editor.getCaretModel().addCaretListener(caretListener);
+
+                    PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+                    Caret caret = editor.getCaretModel().getCurrentCaret();
+                    if(pFile != null) {
+                        lastTrackedElement = pFile.findElementAt(caret.getOffset());
+                    }
+                    notifyObserversWrapper();
+                }
+            }
+
+            @Override
+            public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+                super.fileClosed(source, file);
+                notifyObserversWrapper();
+            }
+
+            @Override
+            public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+                super.selectionChanged(event);
+                Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+                if(editor != null) {
+                    editor.getCaretModel().removeCaretListener(caretListener);
+                    editor.getCaretModel().addCaretListener(caretListener);
+
+                    PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+                    Caret caret = editor.getCaretModel().getCurrentCaret();
+                    if(pFile != null) {
+                        lastTrackedElement = pFile.findElementAt(caret.getOffset());
+                    }
+                    notifyObserversWrapper();
+                }
+            }
+        });
+
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        if(editor != null) {
+            editor.getCaretModel().removeCaretListener(caretListener);
+            editor.getCaretModel().addCaretListener(caretListener);
+            notifyObserversWrapper();
+        }
     }
 
     public static UpdateManager getInstance(@NotNull Project project) {
@@ -97,10 +155,9 @@ public class UpdateManager {
         return instance;
     }
 
-    public void notifyObservers(PsiTreeChangeEvent event) {
-        System.out.println("NOTIFY COMPLETE");
+    public void notifyObservers() {
         for(UpdateObserver observer: observers) {
-            observer.update(project);
+            observer.update(project, lastTrackedElement); // note that lastTrackedElement may be null
         }
     }
 
