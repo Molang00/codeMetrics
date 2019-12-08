@@ -1,5 +1,6 @@
 package com.SoftwareMatrix;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,7 @@ public class OOMClass {
 
     OOMClass(@NotNull PsiClass psiClass) {
         // TODO
-        String name = psiClass.getName();
+        name = psiClass.getName();
 
         //attributeList
         methodList = new ArrayList<>();
@@ -47,11 +48,20 @@ public class OOMClass {
             attributeList.add(oomAttribute);
         }
 
-        //What is ClassLength?
+        //ClassLength
+        System.out.println("CLASSLENGTH");
+        Document document = PsiDocumentManager.getInstance(psiClass.getProject()).getDocument(psiClass.getContainingFile());
+        ClassLength = document.getLineNumber(psiClass.getTextRange().getEndOffset()) - document.getLineNumber(psiClass.getTextRange().getStartOffset()) + 1;
 
-        //psiClass.getParent() could be package, and inherit could be occur in multiple class
-        //I don't know actual meaning of 'OOMClass parent'
+        //parent
+        if(psiClass.getParent() instanceof PsiClass) {
+            parent = new OOMClass((PsiClass) psiClass.getParent());
+        }
+        else {
+            parent = null;
+        }
 
+        //childrenList
         for(PsiClass c : psiClass.getInnerClasses()) {
             childrenList.add(new OOMClass(c));
         }
