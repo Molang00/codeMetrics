@@ -8,5 +8,5 @@ import com.intellij.psi.PsiElement;
     to update with every change event
  */
 public interface UpdateObserver {
-    void update(Project project);
+    void update(Project project, PsiElement elem); // note that elem may be null
 }
