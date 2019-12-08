@@ -23,36 +23,36 @@ import java.util.Collection;
 import java.util.Collections;
 import static org.junit.Assert.*;
 
-public class ParserTest_tmp {
+public class ParseTest {
     @Test
     public void tmp_test() {
-        ParseAdapter pa = new ParseAdapter();
-
-        Path currentRelativePath = Paths.get("");
-        String ProjectPath = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Current Absolute path is: " + ProjectPath);
-
-        String filepath = ProjectPath + "/src/test/java/com/SoftwareMatrix/ParserTest_tmp";
-        System.out.println(filepath);
-        File file = new File(filepath);
-
-        Project[] projects = ProjectManager.getInstance().getOpenProjects(); // getInstance Failed
-        Project activeProject = null;
-        for (Project project : projects) {
-            Window window = WindowManager.getInstance().suggestParentWindow(project);
-            if (window != null && window.isActive()) {
-                activeProject = project;
-            }
-        }
-
-        if (activeProject == null){
-            System.out.println("NULL");
-        }
-
-        System.out.println(activeProject);
-
-        VirtualFile vf = LocalFileSystem.getInstance().findFileByIoFile(file); // getInstance Failed
-        System.out.println(vf);
+//        ParseAdapter pa = new ParseAdapter();
+//
+//        Path currentRelativePath = Paths.get("");
+//        String ProjectPath = currentRelativePath.toAbsolutePath().toString();
+//        System.out.println("Current Absolute path is: " + ProjectPath);
+//
+//        String filepath = ProjectPath + "/src/test/java/com/SoftwareMatrix/ParserTest_tmp";
+//        System.out.println(filepath);
+//        File file = new File(filepath);
+//
+//        Project[] projects = ProjectManager.getInstance().getOpenProjects(); // getInstance Failed
+//        Project activeProject = null;
+//        for (Project project : projects) {
+//            Window window = WindowManager.getInstance().suggestParentWindow(project);
+//            if (window != null && window.isActive()) {
+//                activeProject = project;
+//            }
+//        }
+//
+//        if (activeProject == null){
+//            System.out.println("NULL");
+//        }
+//
+//        System.out.println(activeProject);
+//
+//        VirtualFile vf = LocalFileSystem.getInstance().findFileByIoFile(file); // getInstance Failed
+//        System.out.println(vf);
 
 
         // If we can obtain activeProject or VirtualFile, we can make test code
