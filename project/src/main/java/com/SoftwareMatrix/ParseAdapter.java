@@ -225,7 +225,7 @@ public class ParseAdapter {
             System.out.println("Empty list would be returned");
         }
 
-        return new ArrayList<PsiPackage>(ret);
+        return Collections.unmodifiableList(new ArrayList<PsiPackage>(ret));
 
     }
 }
