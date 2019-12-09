@@ -1,9 +1,24 @@
 package com.SoftwareMatrix;
 
+import android.os.SystemPropertiesProto;
+import com.intellij.ide.projectView.ProjectViewSettings;
+import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.projectView.impl.nodes.PackageUtil;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
+import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.ide.highlighter.JavaFileType;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 
 /*
@@ -396,4 +411,39 @@ public class ParseAdapter {
     }
 
 
+    /**
+     * Returns the List of PsiPackages which are in target project
+     *
+     * @param project target project
+     *
+     * @return List of PsiPackages in that Project
+     */
+    public static List<PsiPackage> getPrjoectPackages (@NotNull Project project) {
+        Set<PsiPackage> ret = new HashSet<PsiPackage>();
+
+        Collection<VirtualFile> virtualFiles =
+                FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, JavaFileType.INSTANCE,
+                        GlobalSearchScope.projectScope(project));
+        // Get only java files which is contained by PROJECT
+
+
+        for (VirtualFile vf: virtualFiles) {
+            PsiFile psifile = PsiManager.getInstance(project).findFile(vf);
+
+            if (psifile instanceof PsiJavaFile) {
+                PsiJavaFile psiJavaFile = (PsiJavaFile) psifile;
+                String PackageName = psiJavaFile.getPackageName();
+                PsiPackage pack = JavaPsiFacade.getInstance(project).findPackage(PackageName);
+                ret.add(pack);
+            }
+        }
+
+        if (ret.isEmpty()) {
+            System.out.println("Can not find packages!");
+            System.out.println("Empty list would be returned");
+        }
+
+        return Collections.unmodifiableList(new ArrayList<PsiPackage>(ret));
+
+    }
 }
