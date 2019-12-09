@@ -1,75 +1,39 @@
 package com.SoftwareMatrix;
 
-import com.google.common.collect.Tables;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
+import com.SoftwareMatrix.PageFactory.HaslstedVolumPageFacotry;
+import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
+import com.SoftwareMatrix.PageFactory.MIPageFactory;
+import com.SoftwareMatrix.PageFactory.OOPageFactory;
+import com.SoftwareMatrix.PageFactory.CCPageFactory;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
-import java.awt.*;
-import java.util.Calendar;
-import java.awt.image.BufferedImage;
 
 public class MetricsResultWindow {
     /* Declare private fields here */
     JPanel myToolWindowContent;
-    JTable tableStructure;
-    JScrollPane tableContent;
-    Integer MIscore, OOscore;
+    DefaultPageFactory defaultpageFactory;
+    MIPageFactory mipageFactory;
+    OOPageFactory oopageFactory;
+    CCPageFactory ccpageFactory;
+    HaslstedVolumPageFacotry haslstedVolumpageFactory;
+    SLOCPageFactory SLOCpageFactory;
+    String label;
 
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
-        String header[] = { "", "score", "graph" };
-        String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
-        DefaultTableModel model = new DefaultTableModel(body, header) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableStructure = new JTable();
-        tableStructure.setModel(model);
-        tableContent = new JScrollPane(tableStructure);
-
-        settingAllStatus();
-        tableStructure.setValueAt(MIscore, 0, 1);
-        tableStructure.setValueAt(OOscore, 1, 1);
-        TableColumnModel tcm = tableStructure.getColumnModel();
-        TableColumn tm = tcm.getColumn(2);
-        tm.setCellRenderer(new ColoredTableCellRenderer());
-    }
-
-    public Integer getOOsocre() {
-        return OOscore;
-    }
-
-    public Integer getMIscore() {
-        return MIscore;
-    }
-
-    public void setOOscore(Integer s) {
-        OOscore = s;
-    }
-
-    public void setMIscore(Integer s) {
-        MIscore = s;
-    }
-
-    public void settingAllStatus() {
-        setMIscore(86);
-        setOOscore(46);
+        myToolWindowContent = new JPanel();
+        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
+        mipageFactory = new MIPageFactory(this, myToolWindowContent);
+        oopageFactory = new OOPageFactory(this, myToolWindowContent);
+        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
+        haslstedVolumpageFactory = new HaslstedVolumPageFacotry(this, myToolWindowContent);
+        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
+        label = "Default";
+        defaultpageFactory.createPage();
     }
 
     /**
@@ -77,31 +41,32 @@ public class MetricsResultWindow {
      * 
      * @return whole content of tool window
      */
-    public JScrollPane getContent() {
-        return tableContent;
+    public JPanel getContent() {
+        return myToolWindowContent;
     }
 
-    class ColoredTableCellRenderer extends DefaultTableCellRenderer {
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focused,
-                int row, int column) {
-            setEnabled(table == null || table.isEnabled()); // see question above
-            int r, g, b = 0;
-
-            if (row == 0) {
-                r = (int) ((100 - MIscore) * 2.55);
-                g = (int) ((MIscore) * 2.55);
-                Color c = new Color(r, g, b);
-                setBackground(c);
-            } else {
-                r = (int) ((100 - OOscore) * 2.55);
-                g = (int) ((OOscore) * 2.55);
-                Color c = new Color(r, g, b);
-                setBackground(c);
-            }
-
-            super.getTableCellRendererComponent(table, value, selected, focused, row, column);
-
-            return this;
+    public void changeView(String label) {
+        this.label = label;
+        switch (label) {
+        case "Default":
+            defaultpageFactory.createPage();
+            break;
+        case "MI":
+            mipageFactory.createPage();
+            break;
+        case "OO":
+            oopageFactory.createPage();
+            break;
+        case "V":
+            haslstedVolumpageFactory.createPage();
+            break;
+        case "G":
+            ccpageFactory.createPage();
+            break;
+        case "SLOC":
+            SLOCpageFactory.createPage();
+            break;
         }
+        myToolWindowContent.revalidate();
     }
 }
