@@ -290,34 +290,4 @@ public class OOMCalculator {
         return calculateNM();
     }
 
-    /** ------------------------------------------------------------------------------------------------
-     * Chidamber and Kemerer Metrics:
-     * calculate the Lack of Cohesion in Methods (LCOM): the lack of cohesion in the methods 
-     * of a class
-     * @return the level of cohesion in methods
-     */
-    public double calculateLCOM() {
-        // there is no standart for measuring this, it would be necessary to discuss this
-        // TODO
-        return 0.0;
-    }
-
-    /**
-     * Chidamber and Kemerer Metrics:
-     * calculate the Coupling Between Objects (CBO): the level of coupling between classes,
-     * coupling between two classes is said to occur when one class uses functions or variables
-     * of another class.
-     * @param class1
-     * @param class2
-     * @return the level of coupling between these two methods
-     */
-    public double calculateCBO(String class1, String class2) {
-        int couplingNumber = 0;
-        // since there is no standart measure method for this metrics
-        // it is necessray to disscuss our methods to measure this
-        // TODO--------------
-        return couplingNumber;
-    }
-
-
 }
