@@ -1,6 +1,7 @@
 package com.SoftwareMatrix;
 
 import android.os.SystemPropertiesProto;
+import android.provider.Settings;
 import com.intellij.ide.projectView.ProjectViewSettings;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
@@ -249,7 +250,8 @@ public class ParseAdapter {
         else if(stmt instanceof PsiIfStatement) {
             operands.addAll(getOperands_Exp(((PsiIfStatement) stmt).getCondition()));
             operands.addAll(getOperands_Stmt(((PsiIfStatement) stmt).getThenBranch()));
-            operands.addAll(getOperands_Stmt(((PsiIfStatement) stmt).getElseBranch()));
+            if (((PsiIfStatement) stmt).getElseBranch() != null)
+                operands.addAll(getOperands_Stmt(((PsiIfStatement) stmt).getElseBranch()));
         }
         //return
         else if(stmt instanceof PsiReturnStatement)
@@ -263,11 +265,18 @@ public class ParseAdapter {
         }
         else if(stmt instanceof PsiSwitchLabelStatement)
         {
-            for(PsiExpression e : ((PsiSwitchLabelStatement) stmt).getCaseValues().getExpressions())
+            for(PsiExpression e : ((PsiSwitchLabelStatement) stmt).getCaseValues().getExpressions()) {
                 operands.addAll(getOperands_Exp(e));
+            }
+
             PsiCodeBlock pcb = ((PsiSwitchLabelStatement) stmt).getEnclosingSwitchBlock().getBody();
-            for(PsiStatement s : pcb.getStatements())
-                operands.addAll(getOperands_Stmt(s));
+            for(PsiStatement s : pcb.getStatements()) {
+                if (!(s instanceof PsiSwitchLabelStatement)) {
+                    operands.addAll(getOperands_Stmt(s));
+                }
+            }
+
+
         }
         //synchronized
         else if(stmt instanceof PsiSynchronizedStatement)
@@ -288,8 +297,10 @@ public class ParseAdapter {
                 for(PsiStatement s : pcb.getStatements())
                     operands.addAll(getOperands_Stmt(s));
             }
-            for(PsiStatement s : ((PsiTryStatement) stmt).getFinallyBlock().getStatements())
-                operands.addAll(getOperands_Stmt(s));
+            if (((PsiTryStatement) stmt).getFinallyBlock() != null) {
+                for (PsiStatement s : ((PsiTryStatement) stmt).getFinallyBlock().getStatements())
+                    operands.addAll(getOperands_Stmt(s));
+            }
             operands.addAll(Arrays.asList(((PsiTryStatement) stmt).getCatchBlockParameters()));
         }
         //while
@@ -320,11 +331,15 @@ public class ParseAdapter {
 
         for(PsiMethod m : _class.getAllMethods())
         {
-            for(PsiStatement s : m.getBody().getStatements())
+
+            for(PsiStatement s : m.getBody().getStatements()) {
                 operands.addAll(getOperands_Stmt(s));
+            }
         }
         for(PsiClass c : _class.getAllInnerClasses())               //recursion for all inner-class
             operands.addAll(getOperands(c));
+
+        while(operands.remove(null));
 
         return operands;
     }

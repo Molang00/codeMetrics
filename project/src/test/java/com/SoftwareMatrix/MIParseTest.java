@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ParserTestOperand extends LightJavaCodeInsightFixtureTestCase {
+public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
 
     ParseAdapter pa = new ParseAdapter();
 
@@ -46,25 +46,45 @@ public class ParserTestOperand extends LightJavaCodeInsightFixtureTestCase {
     }
 
     @Test
-    public void testGetOperandsSimple() {
+    public void testMISimple() {
         PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase1.txt");
-        System.out.println("test 1 : " + psiClasses.length);
+
         for(int i = 0; i < psiClasses.length; i++) {
             List<PsiElement> operands = pa.getOperands(psiClasses[i]);
-            System.out.println(operands.size());
-            assertFalse(operands.isEmpty());
+            System.out.println("test simple operand size = " + operands.size());
+            for(int j = 0; j < operands.size(); j++) {
+                System.out.println("operand " + j + " : " + operands.get(j).toString());
+            }
+            assertEquals(operands.size(), 4);
+
+            List<PsiElement> operators = pa.getOperators(psiClasses[i]);
+            System.out.println("test simple operator size = " + operators.size());
+            for(int j = 0; j < operators.size(); j++) {
+                System.out.println("operator " + j + " : " + operators.get(j).toString());
+            }
+            assertEquals(operators.size(), 2);
         }
     }
 
 
     @Test
-    public void testGetOperandsMany() {
+    public void testMIMany() {
         PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase2.txt");
-        System.out.println("test 2 : " + psiClasses.length);
         for(int i = 0; i < psiClasses.length; i++) {
             List<PsiElement> operands = pa.getOperands(psiClasses[i]);
-            System.out.println(operands.toString());
-            assertFalse(operands.isEmpty());
+            System.out.println("test many operand size = " + operands.size());
+            for(int j = 0; j < operands.size(); j++) {
+                Object obj = operands.get(j);
+                System.out.println("operand " + j + " : " + obj.toString());
+            }
+            assertEquals(operands.size(), 41);
+
+            List<PsiElement> operators = pa.getOperators(psiClasses[i]);
+            System.out.println("test many operator size = " + operators.size());
+            for(int j = 0; j < operators.size(); j++) {
+                System.out.println("operator " + j + " : " + operators.get(j).toString());
+            }
+            assertEquals(operators.size(), 21);
         }
     }
 
