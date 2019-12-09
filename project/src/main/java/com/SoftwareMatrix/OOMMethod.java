@@ -16,6 +16,14 @@ public class OOMMethod {
     private boolean isProtected;
     private boolean isOverride;
 
+    OOMMethod(String name, boolean isPublic, boolean isPrivate, boolean isProtected, boolean isOverride) {
+        setName(name);
+        setPublic(isPublic);
+        setPrivate(isPrivate);
+        setProtected(isProtected);
+        setOverride(isOverride);
+    }
+
     public void setName(String name) {
         this.name = name;
     }

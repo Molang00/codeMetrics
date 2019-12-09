@@ -14,12 +14,47 @@ public class OOMClass {
     private OOMMethod[] methodList;
     private OOMAttribute[] attributeList;
     private Integer ClassLength;
-    OOMClass parent;
-    OOMClass[] childrenList;
+    private OOMClass parent;
+    private OOMClass[] childrenList;
 
 
-    OOMClass() {
-        // TODO
+    OOMClass(String name, OOMMethod[] methodList, OOMAttribute[] attributeList, Integer ClassLength, OOMClass parent, OOMClass[] childrenList) {
+        setName(name);
+        for (OOMMethod m:methodList) {
+            addMethod(m);
+        }
+        for (OOMAttribute a:attributeList) {
+            addAttribute(a);
+        }
+        setClassLength(ClassLength);
+        setParent(parent);
+        for (OOMClass c:childrenList) {
+            addChild(c);
+        }
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addMethod(OOMMethod method) {
+        methodList.add(method);
+    }
+
+    public void addAttribute(OOMAttribute attribute) {
+        attributeList.add(attributeList);
+    }
+
+    public void setClassLength(Integer length) {
+        ClassLength = length;
+    }
+
+    public void setParent(OOMClass parent) {
+        this.parent = parent;
+    }
+
+    public void addChild(OOMClass child) {
+        childrenList.add(child);
     }
 
     public OOMMethod[] getMethodList() {
