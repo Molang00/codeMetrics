@@ -1,0 +1,13 @@
+public class TestCase1 {
+
+    int k;
+
+    public TestCase1(int k)
+    {
+        this.k = k;
+    }
+
+    public int getK() {
+        return this.k;
+    }
+}
