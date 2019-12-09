@@ -23,13 +23,15 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
         So, its return file is 'aaa.java' (I think this is just the default name)
         Anyway, the important point is that this doesn't give the original file of filepath.
      */
-    public PsiFile makePsiFile(String filepath) {
+    private PsiFile makePsiFile(String filepath) {
         byte[] code = null;
         try {
             File file = new File(filepath);
             FileInputStream file_in = new FileInputStream(file);
             code = new byte[(int) file.length()];
-            file_in.read(code);
+            if(file_in.read(code) == -1) {
+                fail(); // Unexpected EOF
+            }
             file_in.close();
         }
         catch(Exception e) {
@@ -67,8 +69,8 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
         for(PsiMethod method: methods) {
             // There is two methods in "code1.java". "main" and "AddOne"
 
-            List<PsiElement> list = ParseAdapter.getBranch(method);
-            assertContainsElements(list); // two methods both contain one if statement
+            Set<PsiElement> set = ParseAdapter.getBranch(method);
+            assertContainsElements(set); // two methods both contain one if statement
         }
 
     }

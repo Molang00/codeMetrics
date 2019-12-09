@@ -1,25 +1,15 @@
 package com.SoftwareMatrix;
 
-import android.os.SystemPropertiesProto;
-import android.provider.Settings;
-import com.intellij.ide.projectView.ProjectViewSettings;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.PackageUtil;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.*;
 
 /*
@@ -103,8 +93,8 @@ public class ParseAdapter {
      * @param method : a method to get branches
      * @return the list of PsiElement
      */
-    public static List<PsiElement> getBranch(@NotNull PsiMethod method) {
-        List<PsiElement> branch = new ArrayList<PsiElement>();
+    public static Set<PsiElement> getBranch(@NotNull PsiMethod method) {
+        Set<PsiElement> branch = new HashSet<>();
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiIfStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiWhileStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiDoWhileStatement.class));
@@ -117,26 +107,26 @@ public class ParseAdapter {
     /**
      * get operands from PsiExpression
      * @param exp : psi expression
-     * @return list of operands
+     * @return set of operands
      */
-    public static List<PsiElement> getOperands_Exp(PsiExpression exp)
+    public static Set<PsiElement> getOperandsExp(PsiExpression exp)
     {
-        List<PsiElement> operands = new ArrayList<PsiElement>();
+        Set<PsiElement> operands = new HashSet<>();
         //Array Access
         if(exp instanceof PsiArrayAccessExpression) {
-            operands.addAll(getOperands_Exp(((PsiArrayAccessExpression) exp).getArrayExpression()));
-            operands.addAll(getOperands_Exp(((PsiArrayAccessExpression) exp).getIndexExpression()));
+            operands.addAll(getOperandsExp(((PsiArrayAccessExpression) exp).getArrayExpression()));
+            operands.addAll(getOperandsExp(((PsiArrayAccessExpression) exp).getIndexExpression()));
         }
         //Array Initializer???
         //Assign
         else if(exp instanceof PsiAssignmentExpression) {
-            operands.addAll(getOperands_Exp(((PsiAssignmentExpression) exp).getLExpression()));
-            operands.addAll(getOperands_Exp(((PsiAssignmentExpression) exp).getRExpression()));
+            operands.addAll(getOperandsExp(((PsiAssignmentExpression) exp).getLExpression()));
+            operands.addAll(getOperandsExp(((PsiAssignmentExpression) exp).getRExpression()));
         }
         //Binary
         else if(exp instanceof PsiBinaryExpression) {
-            operands.addAll(getOperands_Exp(((PsiBinaryExpression) exp).getLOperand()));
-            operands.addAll(getOperands_Exp(((PsiBinaryExpression) exp).getROperand()));
+            operands.addAll(getOperandsExp(((PsiBinaryExpression) exp).getLOperand()));
+            operands.addAll(getOperandsExp(((PsiBinaryExpression) exp).getROperand()));
         }
         //Call Expression would be dealt through method call expression
         //Class Object Access
@@ -144,48 +134,49 @@ public class ParseAdapter {
             operands.add(((PsiClassObjectAccessExpression) exp).getOperand());
         //Condition
         else if(exp instanceof PsiConditionalExpression) {
-            operands.addAll(getOperands_Exp(((PsiConditionalExpression) exp).getCondition()));
-            operands.addAll(getOperands_Exp(((PsiConditionalExpression) exp).getThenExpression()));
-            operands.addAll(getOperands_Exp(((PsiConditionalExpression) exp).getElseExpression()));
+            operands.addAll(getOperandsExp(((PsiConditionalExpression) exp).getCondition()));
+            operands.addAll(getOperandsExp(((PsiConditionalExpression) exp).getThenExpression()));
+            operands.addAll(getOperandsExp(((PsiConditionalExpression) exp).getElseExpression()));
         }
         //Functional Expression???
         //Instance of
         else if(exp instanceof PsiInstanceOfExpression)
-            operands.addAll(getOperands_Exp(((PsiInstanceOfExpression) exp).getOperand()));
+            operands.addAll(getOperandsExp(((PsiInstanceOfExpression) exp).getOperand()));
         //Lambda
         else if(exp instanceof PsiLambdaExpression) {
             operands.addAll(Arrays.asList((((PsiLambdaExpression) exp).getParameterList()).getParameters()));
             if(((PsiLambdaExpression) exp).getBody() instanceof PsiCodeBlock) {
                 PsiCodeBlock pcb = (PsiCodeBlock)((PsiLambdaExpression) exp).getBody();
-                for(PsiStatement s : pcb.getStatements())
-                    operands.addAll(getOperands_Stmt(s));
+                if(pcb != null)
+                    for(PsiStatement s : pcb.getStatements())
+                        operands.addAll(getOperandsStmt(s));
             }
             else if(((PsiLambdaExpression) exp).getBody() instanceof PsiExpression)
-                operands.addAll(getOperands_Exp((PsiExpression)((PsiLambdaExpression) exp).getBody()));
+                operands.addAll(getOperandsExp((PsiExpression)((PsiLambdaExpression) exp).getBody()));
         }
         //literal?
         //Method call
         else if(exp instanceof PsiMethodCallExpression) {
             for(PsiExpression e : ((PsiMethodCallExpression) exp).getArgumentList().getExpressions())
-                operands.addAll(getOperands_Exp(e));
+                operands.addAll(getOperandsExp(e));
         }
         //Method Reference ???
         //new(constructor) expression ???
         // ()
         else if(exp instanceof PsiParenthesizedExpression)
-            operands.addAll(getOperands_Exp(((PsiParenthesizedExpression) exp).getExpression()));
+            operands.addAll(getOperandsExp(((PsiParenthesizedExpression) exp).getExpression()));
         else if(exp instanceof PsiPolyadicExpression) {
             for(PsiExpression e : ((PsiPolyadicExpression) exp).getOperands())
-                operands.addAll(getOperands_Exp(e));
+                operands.addAll(getOperandsExp(e));
         }
         else if(exp instanceof PsiPostfixExpression)
-            operands.addAll(getOperands_Exp(((PsiPostfixExpression) exp).getOperand()));
+            operands.addAll(getOperandsExp(((PsiPostfixExpression) exp).getOperand()));
         else if(exp instanceof PsiResourceExpression)
-            operands.addAll(getOperands_Exp(((PsiResourceExpression) exp).getExpression()));
+            operands.addAll(getOperandsExp(((PsiResourceExpression) exp).getExpression()));
         else if(exp instanceof PsiTypeCastExpression)
-            operands.addAll(getOperands_Exp(((PsiTypeCastExpression) exp).getOperand()));
+            operands.addAll(getOperandsExp(((PsiTypeCastExpression) exp).getOperand()));
         else if(exp instanceof PsiUnaryExpression)
-            operands.addAll(getOperands_Exp(((PsiUnaryExpression) exp).getOperand()));
+            operands.addAll(getOperandsExp(((PsiUnaryExpression) exp).getOperand()));
         else
             operands.add(exp);
 
@@ -195,19 +186,19 @@ public class ParseAdapter {
     /**
      * get Operands from PsiStatement for Halstead complexity
      * @param stmt : PsiStatement
-     * @return List of PsiElement = List of operands. allow duplication.
+     * @return Set of PsiElement = Set of operands. allow duplication.
      */
-    public static List<PsiElement> getOperands_Stmt(@NotNull PsiStatement stmt)
+    public static Set<PsiElement> getOperandsStmt(@NotNull PsiStatement stmt)
     {
-        List<PsiElement> operands = new ArrayList<PsiElement>();
+        Set<PsiElement> operands = new HashSet<>();
         //Assertion
         if(stmt instanceof PsiAssertStatement)
-            operands.addAll(getOperands_Exp(((PsiAssertStatement) stmt).getAssertCondition()));
+            operands.addAll(getOperandsExp(((PsiAssertStatement) stmt).getAssertCondition()));
         //Block
         else if(stmt instanceof PsiBlockStatement) {
             PsiCodeBlock pcb = ((PsiBlockStatement) stmt).getCodeBlock();
             for(PsiStatement s : pcb.getStatements())
-                operands.addAll(getOperands_Stmt(s));
+                operands.addAll(getOperandsStmt(s));
         }
         //Break, continue, label
         else if(stmt instanceof PsiBreakStatement)
@@ -215,99 +206,126 @@ public class ParseAdapter {
         else if(stmt instanceof PsiContinueStatement)
             operands.add(((PsiContinueStatement) stmt).getLabelIdentifier());
         else if(stmt instanceof PsiLabeledStatement) {
-            operands.add(((PsiContinueStatement) stmt).getLabelIdentifier());
-            operands.addAll(getOperands_Stmt(((PsiLabeledStatement) stmt).getStatement()));
+            PsiStatement lStmt = ((PsiLabeledStatement) stmt).getStatement();
+            if(lStmt != null)
+                operands.addAll(getOperandsStmt(lStmt));
         }
         //Variable declaration
         else if(stmt instanceof PsiDeclarationStatement)
             operands.addAll(Arrays.asList(((PsiDeclarationStatement) stmt).getDeclaredElements()));
         //Do While
         else if(stmt instanceof PsiDoWhileStatement) {
-            operands.addAll(getOperands_Exp(((PsiDoWhileStatement) stmt).getCondition()));
-            operands.addAll(getOperands_Stmt(((PsiDoWhileStatement) stmt).getBody()));
+            operands.addAll(getOperandsExp(((PsiDoWhileStatement) stmt).getCondition()));
+            PsiStatement body = ((PsiDoWhileStatement) stmt).getBody();
+            if(body != null)
+                operands.addAll(getOperandsStmt(body));
         }
         //Expression List
         else if(stmt instanceof PsiExpressionListStatement) {
             for(PsiExpression e : ((PsiExpressionListStatement) stmt).getExpressionList().getExpressions())
-                operands.addAll(getOperands_Exp(e));
+                operands.addAll(getOperandsExp(e));
         }
         //Expression
         else if(stmt instanceof PsiExpressionStatement)
-            operands.addAll(getOperands_Exp(((PsiExpressionStatement) stmt).getExpression()));
+            operands.addAll(getOperandsExp(((PsiExpressionStatement) stmt).getExpression()));
         //For
         else if(stmt instanceof PsiForStatement) {
-            operands.addAll(getOperands_Exp(((PsiForStatement) stmt).getCondition())); //Need to check duplicate with Initialization
-            operands.addAll(getOperands_Stmt(((PsiForStatement) stmt).getInitialization()));
-            operands.addAll(getOperands_Stmt(((PsiForStatement) stmt).getBody()));
+            operands.addAll(getOperandsExp(((PsiForStatement) stmt).getCondition())); //Need to check duplicate with Initialization
+            PsiStatement init = ((PsiForStatement) stmt).getInitialization();
+            if(init != null)
+                operands.addAll(getOperandsStmt(init));
+            PsiStatement body = ((PsiForStatement) stmt).getBody();
+            if(body != null)
+                operands.addAll(getOperandsStmt(body));
         }
         //Foreach
         else if(stmt instanceof PsiForeachStatement) {
-            operands.addAll(getOperands_Exp(((PsiForeachStatement) stmt).getIteratedValue()));
+            operands.addAll(getOperandsExp(((PsiForeachStatement) stmt).getIteratedValue()));
             operands.add(((PsiForeachStatement) stmt).getIterationParameter());
-            operands.addAll(getOperands_Stmt(((PsiForeachStatement) stmt).getBody()));
+            PsiStatement body = ((PsiForeachStatement) stmt).getBody();
+            if(body != null)
+                operands.addAll(getOperandsStmt(body));
         }
         //If
         else if(stmt instanceof PsiIfStatement) {
-            operands.addAll(getOperands_Exp(((PsiIfStatement) stmt).getCondition()));
-            operands.addAll(getOperands_Stmt(((PsiIfStatement) stmt).getThenBranch()));
-            if (((PsiIfStatement) stmt).getElseBranch() != null)
-                operands.addAll(getOperands_Stmt(((PsiIfStatement) stmt).getElseBranch()));
+            operands.addAll(getOperandsExp(((PsiIfStatement) stmt).getCondition()));
+            PsiStatement thenBranch = ((PsiIfStatement) stmt).getThenBranch();
+            if(thenBranch != null)
+                operands.addAll(getOperandsStmt(thenBranch));
+            PsiStatement elseBranch = ((PsiIfStatement) stmt).getElseBranch();
+            if (elseBranch != null)
+                operands.addAll(getOperandsStmt(elseBranch));
         }
         //return
         else if(stmt instanceof PsiReturnStatement)
-            operands.addAll(getOperands_Exp(((PsiReturnStatement) stmt).getReturnValue()));
+            operands.addAll(getOperandsExp(((PsiReturnStatement) stmt).getReturnValue()));
         //Switch
         else if(stmt instanceof PsiSwitchStatement){
-            operands.addAll(getOperands_Exp(((PsiSwitchStatement) stmt).getExpression()));
+            operands.addAll(getOperandsExp(((PsiSwitchStatement) stmt).getExpression()));
             PsiCodeBlock pcb = ((PsiSwitchStatement) stmt).getBody();
-            for(PsiStatement s : pcb.getStatements())
-                operands.addAll(getOperands_Stmt(s));
+            if(pcb != null)
+                for(PsiStatement s : pcb.getStatements())
+                    operands.addAll(getOperandsStmt(s));
         }
         else if(stmt instanceof PsiSwitchLabelStatement)
         {
-            for(PsiExpression e : ((PsiSwitchLabelStatement) stmt).getCaseValues().getExpressions()) {
-                operands.addAll(getOperands_Exp(e));
-            }
-
-            PsiCodeBlock pcb = ((PsiSwitchLabelStatement) stmt).getEnclosingSwitchBlock().getBody();
-            for(PsiStatement s : pcb.getStatements()) {
-                if (!(s instanceof PsiSwitchLabelStatement)) {
-                    operands.addAll(getOperands_Stmt(s));
+            PsiExpressionList eList = ((PsiSwitchLabelStatement) stmt).getCaseValues();
+            if(eList != null) {
+                for (PsiExpression e : eList.getExpressions()){
+                    operands.addAll(getOperandsExp(e));
                 }
             }
 
-
+            PsiSwitchBlock switchBlock = ((PsiSwitchLabelStatement) stmt).getEnclosingSwitchBlock();
+            PsiCodeBlock pcb = switchBlock == null ? null : switchBlock.getBody();
+            if(pcb != null) {
+                for (PsiStatement s : pcb.getStatements()) {
+                    if (!(s instanceof PsiSwitchLabelStatement)) {
+                        operands.addAll(getOperandsStmt(s));
+                    }
+                }
+            }
         }
         //synchronized
         else if(stmt instanceof PsiSynchronizedStatement)
         {
-            for(PsiStatement s : ((PsiSynchronizedStatement) stmt).getBody().getStatements())
-                operands.addAll(getOperands_Stmt(s));
+            PsiCodeBlock body = ((PsiSynchronizedStatement) stmt).getBody();
+            if(body != null) {
+                for (PsiStatement s : body.getStatements())
+                    operands.addAll(getOperandsStmt(s));
+            }
         }
         //throw
         else if(stmt instanceof PsiThrowStatement)
-            operands.addAll(getOperands_Exp(((PsiThrowStatement) stmt).getException()));
+            operands.addAll(getOperandsExp(((PsiThrowStatement) stmt).getException()));
         //try catch finally
         else if(stmt instanceof PsiTryStatement)
         {
-            for(PsiStatement s : ((PsiTryStatement) stmt).getTryBlock().getStatements())
-                operands.addAll(getOperands_Stmt(s));
+            PsiCodeBlock tryBlock = ((PsiTryStatement) stmt).getTryBlock();
+            if(tryBlock != null) {
+                for (PsiStatement s : tryBlock.getStatements())
+                    operands.addAll(getOperandsStmt(s));
+            }
             for(PsiCodeBlock pcb : ((PsiTryStatement) stmt).getCatchBlocks())
             {
                 for(PsiStatement s : pcb.getStatements())
-                    operands.addAll(getOperands_Stmt(s));
+                    operands.addAll(getOperandsStmt(s));
             }
-            if (((PsiTryStatement) stmt).getFinallyBlock() != null) {
-                for (PsiStatement s : ((PsiTryStatement) stmt).getFinallyBlock().getStatements())
-                    operands.addAll(getOperands_Stmt(s));
+            PsiCodeBlock finallyBlock = ((PsiTryStatement) stmt).getFinallyBlock();
+            if (finallyBlock != null) {
+
+                for (PsiStatement s : finallyBlock.getStatements())
+                    operands.addAll(getOperandsStmt(s));
             }
             operands.addAll(Arrays.asList(((PsiTryStatement) stmt).getCatchBlockParameters()));
         }
         //while
         else if(stmt instanceof PsiWhileStatement)
         {
-            operands.addAll(getOperands_Exp(((PsiWhileStatement) stmt).getCondition()));
-            operands.addAll(getOperands_Stmt(((PsiWhileStatement) stmt).getBody()));
+            operands.addAll(getOperandsExp(((PsiWhileStatement) stmt).getCondition()));
+            PsiStatement body = ((PsiWhileStatement) stmt).getBody();
+            if(body != null)
+                operands.addAll(getOperandsStmt(body));
         }
         else
         {
@@ -324,62 +342,70 @@ public class ParseAdapter {
         }
         return operands;
     }
-    public static List<PsiElement> getOperands(@NotNull PsiClass _class)
+
+    public static Set<PsiElement> getOperands(@NotNull PsiClass _class)
     {
-        List<PsiElement> operands = new ArrayList<PsiElement>();
-        operands.addAll(Arrays.asList(_class.getAllFields()));       //All global variables
+        Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
 
         for(PsiMethod m : _class.getAllMethods())
         {
-
-            for(PsiStatement s : m.getBody().getStatements()) {
-                operands.addAll(getOperands_Stmt(s));
+            PsiCodeBlock body = m.getBody();
+            if(body == null) continue;
+            for(PsiStatement s : body.getStatements()) {
+                operands.addAll(getOperandsStmt(s));
             }
         }
         for(PsiClass c : _class.getAllInnerClasses())               //recursion for all inner-class
             operands.addAll(getOperands(c));
 
-        while(operands.remove(null));
+        while(operands.remove(null)) { ; }
 
         return operands;
     }
 
-    public static List<PsiElement> getOperators_Method(PsiMethod _method)
+    public static Set<PsiElement> getOperatorsMethod(PsiMethod _method)
     {
-        List<PsiElement> operators = new ArrayList<PsiElement>();
+        Set<PsiElement> operators = new HashSet<>();
 
-        //Functions calls are considered as operators.
+        // Functions calls are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiMethodCallExpression.class));
-        //All looping statements are considered as operators.
+
+        // All looping statements are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiWhileStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiDoWhileStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiForStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiForeachStatement.class));
-        //In control construct switch ( ) {case:...}, switch as well as all the case statements are considered as operators.
+
+        // In control construct switch ( ) {case:...}, switch as well as all the case statements are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiSwitchStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiSwitchLabelStatement.class));
-        //The reserve words like return, default, continue, break, sizeof, etc., are considered as operators.
+
+        // The reserve words like return, default, continue, break, sizeof, etc., are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiReturnStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiContinueStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiBreakStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiInstanceOfExpression.class));
-        //All the brackets, commas, and terminators are considered as operators.
+
+        // All the brackets, commas, and terminators are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiArrayAccessExpression.class));
-        //Normal binary/Assign expressions
+
+        // Normal binary/Assign expressions
         for(PsiElement e : PsiTreeUtil.findChildrenOfType(_method, PsiAssignmentExpression.class)) {
             operators.add(((PsiAssignmentExpression)e).getOperationSign());
         }
         for(PsiElement e : PsiTreeUtil.findChildrenOfType(_method, PsiBinaryExpression.class)) {
             operators.add(((PsiBinaryExpression)e).getOperationSign());
         }
-        //No way to count . ->
+
+        // No way to count . ->
         return operators;
     }
-    public static List<PsiElement> getOperators(@NotNull PsiClass _class)
+
+    public static Set<PsiElement> getOperators(@NotNull PsiClass _class)
     {
-        List<PsiElement> operators = new ArrayList<PsiElement>();
+        Set<PsiElement> operators = new HashSet<>();
         for(PsiMethod m : _class.getAllMethods())
-            operators.addAll(getOperators_Method(m));
+            operators.addAll(getOperatorsMethod(m));
         return operators;
     }
 
@@ -427,14 +453,14 @@ public class ParseAdapter {
 
 
     /**
-     * Returns the List of PsiPackages which are in target project
+     * Returns the Set of PsiPackages which are in target project
      *
      * @param project target project
      *
-     * @return List of PsiPackages in that Project
+     * @return Set of PsiPackages in that Project
      */
-    public static List<PsiPackage> getPrjoectPackages (@NotNull Project project) {
-        Set<PsiPackage> ret = new HashSet<PsiPackage>();
+    public static Set<PsiPackage> getProjectPackages (@NotNull Project project) {
+        Set<PsiPackage> ret = new HashSet<>();
 
         Collection<VirtualFile> virtualFiles =
                 FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, JavaFileType.INSTANCE,
@@ -458,7 +484,7 @@ public class ParseAdapter {
             System.out.println("Empty list would be returned");
         }
 
-        return Collections.unmodifiableList(new ArrayList<PsiPackage>(ret));
+        return Set.copyOf(ret);
 
     }
 }

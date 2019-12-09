@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -47,17 +48,19 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
         PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase1.txt");
 
         for (PsiClass psiClass : psiClasses) {
-            List<PsiElement> operands = ParseAdapter.getOperands(psiClass);
+            Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
             System.out.println("test simple operand size = " + operands.size());
-            for (int j = 0; j < operands.size(); j++) {
-                System.out.println("operand " + j + " : " + operands.get(j).toString());
+            int j = 0;
+            for(PsiElement elem: operands) {
+                System.out.println("operand " + (++j) + " : " + elem.toString());
             }
             assertEquals(operands.size(), 4);
 
-            List<PsiElement> operators = ParseAdapter.getOperators(psiClass);
+            Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
             System.out.println("test simple operator size = " + operators.size());
-            for (int j = 0; j < operators.size(); j++) {
-                System.out.println("operator " + j + " : " + operators.get(j).toString());
+            j = 0;
+            for(PsiElement elem: operators) {
+                System.out.println("operators " + (++j) + " : " + elem.toString());
             }
             assertEquals(operators.size(), 2);
         }
@@ -68,18 +71,19 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
     public void testMIMany() {
         PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase2.txt");
         for (PsiClass psiClass : psiClasses) {
-            List<PsiElement> operands = ParseAdapter.getOperands(psiClass);
+            Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
             System.out.println("test many operand size = " + operands.size());
-            for (int j = 0; j < operands.size(); j++) {
-                Object obj = operands.get(j);
-                System.out.println("operand " + j + " : " + obj.toString());
+            int j = 0;
+            for(PsiElement elem: operands) {
+                System.out.println("operand " + (++j) + " : " + elem.toString());
             }
-            assertEquals(operands.size(), 41);
+            assertEquals(operands.size(), 31);
 
-            List<PsiElement> operators = ParseAdapter.getOperators(psiClass);
+            Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
             System.out.println("test many operator size = " + operators.size());
-            for (int j = 0; j < operators.size(); j++) {
-                System.out.println("operator " + j + " : " + operators.get(j).toString());
+            j = 0;
+            for(PsiElement elem: operators) {
+                System.out.println("operators " + (++j) + " : " + elem.toString());
             }
             assertEquals(operators.size(), 21);
         }

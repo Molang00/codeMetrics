@@ -25,17 +25,17 @@ import java.util.Random;
 
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
-    JPanel myToolWindowContent;
-    JTable tableStructure;
-    JScrollPane tableContent;
-    Integer MIscore, OOscore;
+    private JPanel myToolWindowContent;
+    private JTable tableStructure;
+    private JScrollPane tableContent;
+    private Integer MIscore, OOscore;
 
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
-        String header[] = { "", "score", "graph" };
-        String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
+        String[] header = { "", "score", "graph" };
+        String[][] body = { { "MI", "", "" }, { "OO", "", "" } };
         DefaultTableModel model = new DefaultTableModel(body, header) {
             @Override
             public boolean isCellEditable(int row, int column) {
