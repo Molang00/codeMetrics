@@ -1,26 +1,18 @@
 package com.SoftwareMatrix;
 
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilder;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
 import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.structuralsearch.StructuralSearchTemplateBuilder;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import org.junit.Test;
-import org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
 
-    private String TestResourcePath = "./src/test/resources/testcases/";
+    private String basePath = "./src/test/resources/testcases/";
 
     /*
         This is an helper method to make PsiFile using path.
@@ -31,7 +23,7 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
         So, its return file is 'aaa.java' (I think this is just the default name)
         Anyway, the important point is that this doesn't give the original file of filepath.
      */
-    public PsiFile MakePsiFile(String filepath) {
+    public PsiFile makePsiFile(String filepath) {
         byte[] code = null;
         try {
             File file = new File(filepath);
@@ -42,46 +34,22 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
         }
         catch(Exception e) {
             e.printStackTrace();
-            assertTrue(false);
+            fail();
         }
 
         return myFixture.configureByText(JavaFileType.INSTANCE, new String(code));
     }
 
-
-    @Test
-    public void testEmpty() {
-        PsiFile psiFile = myFixture.configureByText(JavaFileType.INSTANCE, "class A {}");
-
-        // test code
-
-        System.out.println(PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class));
-        assertNotNull(PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class));
-
-    }
-
-
-    @Test
-    public void testGetContainingMethod() {
-        String code1 = TestResourcePath + "code1.java";
-        PsiFile psiFile = MakePsiFile(code1);
-
-        Collection<PsiClass> cla = PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class);
-        assertNotNull(PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class));
-    }
-
-
     @Test
     public void testGetContainingClass() {
-        String code1 = TestResourcePath + "code1.java";
-        PsiFile psiFile = MakePsiFile(code1);
+        String code1 = basePath + "code1.java";
+        PsiFile psiFile = makePsiFile(code1);
 
-        ParseAdapter pa = new ParseAdapter();
         Collection<PsiClass> cla = PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class);
 
         for (PsiClass p : cla) {
             for (PsiMethod m : p.getMethods()) {
-                assertEquals(p, pa.getContainingClass(m));
+                assertEquals(p, ParseAdapter.getContainingClass(m));
             }
         }
 
@@ -90,17 +58,16 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
 
     @Test
     public void testGetBranch() {
-        String code1 = TestResourcePath + "code1.java";
-        PsiFile psiFile = MakePsiFile(code1);
+        String code1 = basePath + "code1.java";
+        PsiFile psiFile = makePsiFile(code1);
 
-        ParseAdapter pa = new ParseAdapter();
         Collection<PsiMethod> methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod.class);
 
 
         for(PsiMethod method: methods) {
             // There is two methods in "code1.java". "main" and "AddOne"
 
-            List<PsiElement> list = pa.getBranch(method);
+            List<PsiElement> list = ParseAdapter.getBranch(method);
             assertContainsElements(list); // two methods both contain one if statement
         }
 
@@ -108,12 +75,11 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
 
     @Test
     public void testGetTokensType() {
-        String code1 = TestResourcePath + "code1.java";
-        PsiFile psiFile = MakePsiFile(code1);
+        String code1 = basePath + "code1.java";
+        PsiFile psiFile = makePsiFile(code1);
 
         HashSet<PsiClass> set1 = new HashSet<>();
         HashSet<PsiClass> set2 = new HashSet<>();
-        ParseAdapter pa = new ParseAdapter();
 
         PsiElement[] elems = psiFile.getChildren();
         for(PsiElement e: elems) {
@@ -121,14 +87,13 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
                 set1.add( (PsiClass) e);
         }
 
-        Collection<?> col = pa.getTokensType(psiFile, PsiClass.class);
-        Iterator<?> it  = col.iterator();
-        while (it.hasNext()) {
-            PsiClass pc = (PsiClass) it.next();
+        Collection<?> col = ParseAdapter.getTokensType(psiFile, PsiClass.class);
+        for (Object o : col) {
+            PsiClass pc = (PsiClass) o;
             set2.add(pc);
         }
 
-        assertTrue(set1.equals(set2));
+        assertEquals(set1, set2);
     }
 
 
