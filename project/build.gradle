@@ -6,8 +6,6 @@ plugins {
 group 'com.SoftwareMatrix'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 11
-
 repositories {
     mavenCentral()
 }
@@ -18,6 +16,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
+    plugins 'java'
     version '2019.2.1'
 }
 patchPluginXml {
