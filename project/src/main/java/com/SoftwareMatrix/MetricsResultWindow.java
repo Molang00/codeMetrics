@@ -23,17 +23,37 @@ import java.util.Calendar;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
+import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
+import com.SoftwareMatrix.PageFactory.HaslstedVolumPageFacotry;
+import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
+import com.SoftwareMatrix.PageFactory.MIPageFactory;
+import com.SoftwareMatrix.PageFactory.OOPageFactory;
+import com.SoftwareMatrix.PageFactory.CCPageFactory;
+import com.intellij.openapi.wm.ToolWindow;
+
+
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
+
     private JPanel myToolWindowContent;
     private JTable tableStructure;
     private JScrollPane tableContent;
     private Integer MIscore, OOscore;
 
+    JPanel myToolWindowContent;
+    DefaultPageFactory defaultpageFactory;
+    MIPageFactory mipageFactory;
+    OOPageFactory oopageFactory;
+    CCPageFactory ccpageFactory;
+    HaslstedVolumPageFacotry haslstedVolumpageFactory;
+    SLOCPageFactory SLOCpageFactory;
+    String label;
+
     /**
      * Constructor of tool window
      */
     public MetricsResultWindow(ToolWindow toolWindow) {
+
         String[] header = { "", "score", "graph" };
         String[][] body = { { "MI", "", "" }, { "OO", "", "" } };
         DefaultTableModel model = new DefaultTableModel(body, header) {
@@ -74,6 +94,17 @@ public class MetricsResultWindow implements UpdateObserver {
         Random rand = new Random();
         setMIscore(rand.nextInt(100));
         setOOscore(rand.nextInt(100));
+
+        myToolWindowContent = new JPanel();
+        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
+        mipageFactory = new MIPageFactory(this, myToolWindowContent);
+        oopageFactory = new OOPageFactory(this, myToolWindowContent);
+        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
+        haslstedVolumpageFactory = new HaslstedVolumPageFacotry(this, myToolWindowContent);
+        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
+        label = "Default";
+        defaultpageFactory.createPage();
+
     }
 
     /**
@@ -81,9 +112,10 @@ public class MetricsResultWindow implements UpdateObserver {
      * 
      * @return whole content of tool window
      */
-    public JScrollPane getContent() {
-        return tableContent;
+    public JPanel getContent() {
+        return myToolWindowContent;
     }
+
 
     @Override
     public void update(Project project, PsiElement elem) {
@@ -120,6 +152,29 @@ public class MetricsResultWindow implements UpdateObserver {
             super.getTableCellRendererComponent(table, value, selected, focused, row, column);
 
             return this;
+
+    public void changeView(String label) {
+        this.label = label;
+        switch (label) {
+        case "Default":
+            defaultpageFactory.createPage();
+            break;
+        case "MI":
+            mipageFactory.createPage();
+            break;
+        case "OO":
+            oopageFactory.createPage();
+            break;
+        case "V":
+            haslstedVolumpageFactory.createPage();
+            break;
+        case "G":
+            ccpageFactory.createPage();
+            break;
+        case "SLOC":
+            SLOCpageFactory.createPage();
+            break;
         }
+        myToolWindowContent.revalidate();
     }
 }
