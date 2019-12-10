@@ -464,6 +464,52 @@ public class ParseAdapter {
     }
 
     /**
+     * return lines of code in a class
+     * @param _class : psiClass object that want to get loc.
+     * @return lines of code of its class.
+     */
+    public static int getLoc(@NotNull PsiClass _class) {
+        String str = _class.getText();
+        if(str == null) {
+            return 0;
+        }
+        else {
+            String[] lines = str.split("\r\n|\r|\n");
+            return  lines.length;
+        }
+    }
+
+    /**
+     * return logical lines of code in a class
+     * @param _class : psiClass object that want to get lloc.
+     * @return logical lines of code of its class.
+     */
+    public static int getLLoc(@NotNull PsiClass _class) {
+        return _class.getChildren().length;
+    }
+
+    /**
+     *
+     * @param _class
+     * @return
+     */
+    public static int getCLoc(@NotNull PsiClass _class) {
+        Set<PsiComment> set = new HashSet<>();
+        int cloc = 0;
+
+        set.addAll(PsiTreeUtil.findChildrenOfType(_class, PsiComment.class));
+
+
+        for (PsiComment comment : set) {
+            String str = comment.getText();
+            String[] lines = str.split("\r\n|\r|\n");
+            cloc += lines.length;
+        }
+
+        return cloc;
+    }
+
+    /**
      * Returns the list of instances of given class type
      *  that exists in containing class of target element
      *
