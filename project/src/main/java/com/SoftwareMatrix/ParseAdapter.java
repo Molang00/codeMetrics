@@ -110,8 +110,8 @@ public class ParseAdapter {
      * @param method : a method to get edges
      * @return the number of edges
      */
-    public int getEdge(@NotNull PsiMethod method) {
-        Set<PsiElement> branch = this.getBranch(method);
+    public static int getEdge(@NotNull PsiMethod method) {
+        Set<PsiElement> branch = getBranch(method);
 
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
 
@@ -134,8 +134,8 @@ public class ParseAdapter {
      * @param method : a method to get nodes
      * @return the number of nodes
      */
-    public int getNode(@NotNull PsiMethod method) {
-        Set<PsiElement> branch = this.getBranch(method);
+    public static int getNode(@NotNull PsiMethod method) {
+        Set<PsiElement> branch = getBranch(method);
 
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiReturnStatement.class));

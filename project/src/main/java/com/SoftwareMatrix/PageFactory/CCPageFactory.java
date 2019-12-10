@@ -1,6 +1,11 @@
 package com.SoftwareMatrix.PageFactory;
 
+import com.SoftwareMatrix.MICalculator;
 import com.SoftwareMatrix.MetricsResultWindow;
+import com.SoftwareMatrix.ParseAdapter;
+import com.SoftwareMatrix.UpdateObserver;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -9,17 +14,35 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class CCPageFactory implements PageFactoryInterface {
+public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
   /* Declare private fields here */
   private MetricsResultWindow window;
   private JPanel page;
   private JScrollPane tableContent;
   private JButton resetButton, backButton;
   private JPanel tablePanel;
+  private Integer edge, node, CCValue;
 
   public CCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.page = mainPanel;
+    edge = 0;
+    node = 0;
+    CCValue = 0;
+  }
+
+  public void update(Project project, PsiElement elem){
+    // color refresh has 5~10 seconds of delay
+      if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
+          edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
+          node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
+          CCValue = MICalculator.calculateCC(edge, node);
+      }
+
+    System.out.println("111" + elem);
+    System.out.println("222" + ParseAdapter.getContainingMethod(elem));
+    System.out.println("333" + ParseAdapter.getContainingClass(elem));
+    System.out.println("444" + ParseAdapter.getContainingPackage(elem));
   }
 
   @Override
@@ -70,7 +93,7 @@ public class CCPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateButtons() {
-    resetButton = new JButton("reset");
+    resetButton = new JButton("update");
     resetButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at reset");
       window.changeView("G");
@@ -101,11 +124,8 @@ public class CCPageFactory implements PageFactoryInterface {
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
-    Integer edge = 5;
     table.setValueAt(edge, 0, 1); // Set edge value
-    Integer node = 4;
     table.setValueAt(node, 1, 1); // Set node value
-    Integer CCValue = 11;
     table.setValueAt(CCValue, 2, 1); // Set CC value
 
     table.getColumn("Graph").setCellRenderer(new ProgressRenderer(0, 20));

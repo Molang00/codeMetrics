@@ -19,14 +19,11 @@ import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
 import com.SoftwareMatrix.PageFactory.MIPageFactory;
 import com.SoftwareMatrix.PageFactory.OOPageFactory;
 import com.SoftwareMatrix.PageFactory.CCPageFactory;
+import org.jetbrains.annotations.NotNull;
 
 
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
-
-    private JTable tableStructure;
-    private Integer MIscore, OOscore;
-
     private JPanel myToolWindowContent;
     private DefaultPageFactory defaultpageFactory;
     private MIPageFactory mipageFactory;
@@ -35,52 +32,17 @@ public class MetricsResultWindow implements UpdateObserver {
     private HalsteadVolumePageFactory halsteadVolumePageFactory;
     private SLOCPageFactory SLOCpageFactory;
     private String label;
+    private UpdateManager uManager;
 
     /**
      * Constructor of tool window
      */
-    public MetricsResultWindow(ToolWindow toolWindow) {
-
-        String[] header = { "", "score", "graph" };
-        String[][] body = { { "MI", "", "" }, { "OO", "", "" } };
-        DefaultTableModel model = new DefaultTableModel(body, header) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableStructure = new JTable();
-        tableStructure.setModel(model);
-        JScrollPane tableContent = new JScrollPane(tableStructure);
-
+    public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
+        uManager = UpdateManager.getInstance(project); // init update manager
         settingAllStatus();
-        tableStructure.setValueAt(MIscore, 0, 1);
-        tableStructure.setValueAt(OOscore, 1, 1);
-        TableColumnModel tcm = tableStructure.getColumnModel();
-        TableColumn tm = tcm.getColumn(2);
-        tm.setCellRenderer(new ColoredTableCellRenderer());
-    }
-
-    public Integer getOOscore() {
-        return OOscore;
-    }
-
-    public Integer getMIscore() {
-        return MIscore;
-    }
-
-    public void setOOscore(Integer s) {
-        OOscore = s;
-    }
-
-    public void setMIscore(Integer s) {
-        MIscore = s;
     }
 
     public void settingAllStatus() {
-        Random rand = new Random();
-        setMIscore(rand.nextInt(100));
-        setOOscore(rand.nextInt(100));
 
         myToolWindowContent = new JPanel();
         defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
@@ -89,6 +51,8 @@ public class MetricsResultWindow implements UpdateObserver {
         ccpageFactory = new CCPageFactory(this, myToolWindowContent);
         halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
         SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
+
+        uManager.addObserver(ccpageFactory);
         label = "Default";
         defaultpageFactory.createPage();
     }
@@ -105,40 +69,14 @@ public class MetricsResultWindow implements UpdateObserver {
     @Override
     public void update(Project project, PsiElement elem) {
         settingAllStatus();
-        tableStructure.setValueAt(MIscore, 0, 1);
-        tableStructure.setValueAt(OOscore, 1, 1);
 
         // color refresh has 5~10 seconds of delay
 
-//        System.out.println(elem);
-//        System.out.println(ParseAdapter.getContainingMethod(elem));
-//        System.out.println(ParseAdapter.getContainingClass(elem));
-//        System.out.println(ParseAdapter.getContainingPackage(elem));
+        System.out.println(elem);
+        System.out.println(ParseAdapter.getContainingMethod(elem));
+        System.out.println(ParseAdapter.getContainingClass(elem));
+        System.out.println(ParseAdapter.getContainingPackage(elem));
     }
-
-    class ColoredTableCellRenderer extends DefaultTableCellRenderer {
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focused,
-                                                       int row, int column) {
-            setEnabled(table == null || table.isEnabled()); // see question above
-            int r, g, b = 0;
-
-            if (row == 0) {
-                r = (int) ((100 - MIscore) * 2.55);
-                g = (int) ((MIscore) * 2.55);
-                Color c = new Color(r, g, b);
-                setBackground(c);
-            } else {
-                r = (int) ((100 - OOscore) * 2.55);
-                g = (int) ((OOscore) * 2.55);
-                Color c = new Color(r, g, b);
-                setBackground(c);
-            }
-
-            super.getTableCellRendererComponent(table, value, selected, focused, row, column);
-
-            return this;
-        }
-    };
 
     public void changeView(String label) {
         this.label=label;

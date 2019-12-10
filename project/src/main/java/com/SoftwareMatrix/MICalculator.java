@@ -15,7 +15,7 @@ public class MICalculator {
      * @param operands  the array of total operands in source code
      * @return  the Halstead Volume of source code.
      */
-    public int calculateHalstead(Object[] operators, Object[] operands) {
+    public static int calculateHalstead(Object[] operators, Object[] operands) {
         Set<String> distinctOperators = new HashSet<>();
         Set<String> distinctOperands = new HashSet<>();
 
@@ -39,7 +39,7 @@ public class MICalculator {
      * @param node  the total number of nodes in source code
      * @return  the Cyclomatic Complexity of source code
      */
-    public int calculateCC(int edge, int node) {
+    public static int calculateCC(int edge, int node) {
         return edge + node + 2;
     }
 
@@ -56,9 +56,9 @@ public class MICalculator {
      * @param cloc  the comment lines of code
      * @return  the Maintainability Index of source code
      */
-    public int calculateMI(Object[] operators, Object[] operands, int edge, int node, int lloc, int loc, int cloc) {
-        int v = this.calculateHalstead(operators, operands); // Halstead Volume
-        int g = this.calculateCC(edge, node);
+    public static int calculateMI(Object[] operators, Object[] operands, int edge, int node, int lloc, int loc, int cloc) {
+        int v = calculateHalstead(operators, operands); // Halstead Volume
+        int g = calculateCC(edge, node);
         double cm = (double)cloc / loc;
 
         return (int) (171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm)))));
