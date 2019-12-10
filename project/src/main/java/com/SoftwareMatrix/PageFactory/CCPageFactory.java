@@ -11,14 +11,11 @@ import java.awt.*;
 
 public class CCPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
-  MetricsResultWindow window;
-  JPanel page;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, backButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
-  Integer edge = 5, node = 4, CCValue = 11;
+  private MetricsResultWindow window;
+  private JPanel page;
+  private JScrollPane tableContent;
+  private JButton resetButton, backButton;
+  private JPanel tablePanel;
 
   public CCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -26,7 +23,7 @@ public class CCPageFactory implements PageFactoryInterface {
   }
 
   @Override
-  public JPanel createPage() {
+  public void createPage() {
     page.removeAll();
     page.setLayout(new BorderLayout());
     generateButtons();
@@ -36,15 +33,14 @@ public class CCPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return page;
   }
 
   @Override
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("Cyclomatic Complexity Details");
+    JLabel mainLabel = new JLabel("Cyclomatic Complexity Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -66,7 +62,7 @@ public class CCPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(backButton);
 
     page.add(bottomPanel, BorderLayout.SOUTH);
@@ -89,10 +85,10 @@ public class CCPageFactory implements PageFactoryInterface {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "CC Features", "Score", "Graph" };
-    String body[][] = { { "Edge", "", "" }, { "Node", "", "" }, { "CC Value", "", "" } };
+    String[] header = { "CC Features", "Score", "Graph" };
+    String[][] body = { { "Edge", "", "" }, { "Node", "", "" }, { "CC Value", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -105,8 +101,11 @@ public class CCPageFactory implements PageFactoryInterface {
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
+    Integer edge = 5;
     table.setValueAt(edge, 0, 1); // Set edge value
+    Integer node = 4;
     table.setValueAt(node, 1, 1); // Set node value
+    Integer CCValue = 11;
     table.setValueAt(CCValue, 2, 1); // Set CC value
 
     table.getColumn("Graph").setCellRenderer(new ProgressRenderer(0, 20));

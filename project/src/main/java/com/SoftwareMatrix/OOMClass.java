@@ -16,8 +16,8 @@ public class OOMClass {
     private List<OOMMethod> methodList;
     private List<OOMAttribute> attributeList;
     private Integer ClassLength;
-    OOMClass parent;
-    List<OOMClass> childrenList;
+    private OOMClass parent;
+    private List<OOMClass> childrenList;
 
     OOMClass(@NotNull PsiClass psiClass) {
         // TODO

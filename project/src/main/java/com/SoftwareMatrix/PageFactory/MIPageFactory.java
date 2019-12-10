@@ -11,13 +11,11 @@ import java.awt.*;
 
 public class MIPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
-  MetricsResultWindow window;
-  JPanel MIPage;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, defaultButton, VButton, GButton, LOCButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+  private MetricsResultWindow window;
+  private JPanel MIPage;
+  private JScrollPane tableContent;
+  private JButton resetButton, defaultButton, VButton, GButton, LOCButton;
+  private JPanel tablePanel;
 
   public MIPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -25,7 +23,7 @@ public class MIPageFactory implements PageFactoryInterface {
   }
 
   @Override
-  public JPanel createPage() {
+  public void createPage() {
     MIPage.removeAll();
     MIPage.setLayout(new BorderLayout());
     generateButtons();
@@ -35,15 +33,14 @@ public class MIPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return MIPage;
   }
 
   @Override
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("MI Details");
+    JLabel mainLabel = new JLabel("MI Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -65,7 +62,7 @@ public class MIPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(defaultButton);
     bottomPanel.add(VButton);
     bottomPanel.add(GButton);
@@ -106,10 +103,10 @@ public class MIPageFactory implements PageFactoryInterface {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "MI Features", "Score", "Graph" };
-    String body[][] = { { "V (Haslstead's volume)", "", "" }, { "G (Cyclomatic complexity)", "", "" },
+    String[] header = { "MI Features", "Score", "Graph" };
+    String[][] body = { { "V (Haslstead's volume)", "", "" }, { "G (Cyclomatic complexity)", "", "" },
         { "SLOC(Source lines of code)", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override

@@ -12,6 +12,7 @@ import javax.swing.tree.TreeModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class RunMainTest extends BasePlatformTestCase {
@@ -26,20 +27,18 @@ public class RunMainTest extends BasePlatformTestCase {
             File f = new File(path);
             FileInputStream fis = new FileInputStream(f);
             data = new byte[(int) f.length()];
-            fis.read(data);
+            if(fis.read(data) == -1) {
+                fail(); // Unexpected EOF
+            }
             fis.close();
 
         } catch (Exception e) {
             e.printStackTrace();
-            assertEquals(null, "fail during file read");
+            fail();
         }
 
         String str = null;
-        try {
-            str = new String(data, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        str = new String(data, StandardCharsets.UTF_8);
 
         PsiFile psiFile = myFixture.configureByText(JavaFileType.INSTANCE, str);
         PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
@@ -51,8 +50,8 @@ public class RunMainTest extends BasePlatformTestCase {
         PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase2.txt");
         System.out.println("ClassLength Test");
 
-        for(int i = 0; i < psiClasses.length; i++) {
-            OOMClass oomClass = new OOMClass(psiClasses[i]);
+        for (PsiClass psiClass : psiClasses) {
+            OOMClass oomClass = new OOMClass(psiClass);
             System.out.println(oomClass.getClassLength());
             assertEquals(oomClass.getClassLength(), (Integer) 52);
         }

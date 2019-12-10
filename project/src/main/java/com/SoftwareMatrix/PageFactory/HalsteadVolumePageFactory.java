@@ -9,23 +9,20 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class HaslstedVolumPageFacotry implements PageFactoryInterface {
-  MetricsResultWindow window;
-  JPanel page;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, backButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+public class HalsteadVolumePageFactory implements PageFactoryInterface {
+  private MetricsResultWindow window;
+  private JPanel page;
+  private JScrollPane tableContent;
+  private JButton resetButton, backButton;
+  private JPanel tablePanel;
 
-  public HaslstedVolumPageFacotry(MetricsResultWindow window, JPanel mainPanel) {
+  public HalsteadVolumePageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.page = mainPanel;
   }
 
   @Override
-  public JPanel createPage() {
-    // TODO Auto-generated method stub
+  public void createPage() {
     page.removeAll();
     page.setLayout(new BorderLayout());
     generateButtons();
@@ -35,15 +32,14 @@ public class HaslstedVolumPageFacotry implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return page;
   }
 
   @Override
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("Haslsted Volum Details");
+    JLabel mainLabel = new JLabel("Haslsted Volume Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -65,7 +61,7 @@ public class HaslstedVolumPageFacotry implements PageFactoryInterface {
 
   @Override
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(backButton);
 
     page.add(bottomPanel, BorderLayout.SOUTH);
@@ -88,10 +84,10 @@ public class HaslstedVolumPageFacotry implements PageFactoryInterface {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "V Features", "Score" };
-    String body[][] = { { "Eta (number of distinct operators & operands)", "" },
+    String[] header = { "V Features", "Score" };
+    String[][] body = { { "Eta (number of distinct operators & operands)", "" },
         { "N (total number of operators & operands)", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override

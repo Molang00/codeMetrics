@@ -358,7 +358,7 @@ public class ParseAdapter {
         for(PsiClass c : _class.getAllInnerClasses())               //recursion for all inner-class
             operands.addAll(getOperands(c));
 
-        while(operands.remove(null)) { ; }
+        for(; operands.remove(null); );
 
         return operands;
     }

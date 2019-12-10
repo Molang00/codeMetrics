@@ -12,14 +12,12 @@ import java.awt.*;
 
 public class DefaultPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
-  MetricsResultWindow window;
-  JPanel DefaultPage;
-  Integer MIscore, OOscore;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, MIButton, OOButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+  private MetricsResultWindow window;
+  private JPanel DefaultPage;
+  private Integer MIscore, OOscore;
+  private JScrollPane tableContent;
+  private JButton resetButton, MIButton, OOButton;
+  private JPanel tablePanel;
 
   public DefaultPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -29,7 +27,7 @@ public class DefaultPageFactory implements PageFactoryInterface {
   /**
    * Constructor of tool window
    */
-  public JPanel createPage() {
+  public void createPage() {
     DefaultPage.removeAll();
     DefaultPage.setLayout(new BorderLayout());
     generateButtons();
@@ -39,14 +37,13 @@ public class DefaultPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return DefaultPage;
   }
 
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("Software Metrics");
+    JLabel mainLabel = new JLabel("Software Metrics");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -72,7 +69,7 @@ public class DefaultPageFactory implements PageFactoryInterface {
   }
 
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(MIButton);
     bottomPanel.add(OOButton);
 
@@ -99,10 +96,10 @@ public class DefaultPageFactory implements PageFactoryInterface {
 
   public void generateTable() {
     tablePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "Type", "Score", "Graph" };
-    String body[][] = { { "MI", "", "" }, { "OO", "", "" } };
+    String[] header = { "Type", "Score", "Graph" };
+    String[][] body = { { "MI", "", "" }, { "OO", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override
       public boolean isCellEditable(int row, int column) {

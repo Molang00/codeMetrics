@@ -157,9 +157,7 @@ public class UpdateManager {
 
     public void notifyObservers() {
         for(UpdateObserver observer: observers) {
-            System.out.println(lastTrackedElement.toString());
             observer.update(project, lastTrackedElement); // note that lastTrackedElement may be null
-
         }
     }
 

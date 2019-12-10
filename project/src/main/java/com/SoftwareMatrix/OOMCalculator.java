@@ -32,10 +32,9 @@ public class OOMCalculator {
      */
     public Map<String, Integer> calculateNM() {
         Map<String, Integer> classNM = new HashMap<String, Integer>();
-        
-        for(int i=0; i<classList.size();i++) {
 
-            classNM.put(classList.get(i).getName(),classList.get(i).calculateNM());
+        for (OOMClass oomClass : classList) {
+            classNM.put(oomClass.getName(), oomClass.calculateNM());
         }
 
         return classNM;
@@ -49,9 +48,8 @@ public class OOMCalculator {
     public Map<String, Integer> calculatePM() {
         Map<String, Integer> classPM = new HashMap<String, Integer>();
 
-        for(int i=0; i<classList.size();i++) {
-
-            classPM.put(classList.get(i).getName(),classList.get(i).calculatePM());
+        for (OOMClass oomClass : classList) {
+            classPM.put(oomClass.getName(), oomClass.calculatePM());
         }
 
         return classPM;
@@ -68,9 +66,8 @@ public class OOMCalculator {
     public Map<String, Integer> calculateNPV() {
         Map<String, Integer> classNPV = new HashMap<String, Integer>();
 
-        for(int i=0; i<classList.size();i++) {
-
-            classNPV.put(classList.get(i).getName(),classList.get(i).calculateNPV());
+        for (OOMClass oomClass : classList) {
+            classNPV.put(oomClass.getName(), oomClass.calculateNPV());
         }
 
         return classNPV;
@@ -86,9 +83,8 @@ public class OOMCalculator {
     public Map<String, Integer> calculateNV( ) {
         Map<String, Integer> classNV = new HashMap<String, Integer>();
 
-        for(int i=0; i<classList.size();i++) {
-
-            classNV.put(classList.get(i).getName(),classList.get(i).calculateNV());
+        for (OOMClass oomClass : classList) {
+            classNV.put(oomClass.getName(), oomClass.calculateNV());
         }
 
         return classNV;
@@ -103,9 +99,8 @@ public class OOMCalculator {
      */
     public Map<String, Integer> calculateNMI() {
         Map<String, Integer> classNMI= new HashMap<String, Integer>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classNMI.put(classList.get(i).getName(),classList.get(i).calculateNMI());
+        for (OOMClass oomClass : classList) {
+            classNMI.put(oomClass.getName(), oomClass.calculateNMI());
         }
 
         return classNMI;
@@ -119,9 +114,8 @@ public class OOMCalculator {
      */
     public Map<String, Integer> calculateNMO( ) {
         Map<String, Integer> classNMO= new HashMap<String, Integer>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classNMO.put(classList.get(i).getName(),classList.get(i).calculateNMO());
+        for (OOMClass oomClass : classList) {
+            classNMO.put(oomClass.getName(), oomClass.calculateNMO());
         }
 
         return classNMO;
@@ -135,9 +129,8 @@ public class OOMCalculator {
      */
     public Map<String, Integer> calculateNMA(String parentClass, String childClass) {
         Map<String, Integer> classNMA= new HashMap<String, Integer>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classNMA.put(classList.get(i).getName(),classList.get(i).calculateNMA());
+        for (OOMClass oomClass : classList) {
+            classNMA.put(oomClass.getName(), oomClass.calculateNMA());
         }
 
         return classNMA;
@@ -152,9 +145,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculateAMS(){
         Map<String, Double> classAMS= new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classAMS.put(classList.get(i).getName(),classList.get(i).calculateAMS());
+        for (OOMClass oomClass : classList) {
+            classAMS.put(oomClass.getName(), oomClass.calculateAMS());
         }
 
         return classAMS;
@@ -168,9 +160,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculatePF() {
         Map<String, Double> classPF= new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classPF.put(classList.get(i).getName(),classList.get(i).calculatePF());
+        for (OOMClass oomClass : classList) {
+            classPF.put(oomClass.getName(), oomClass.calculatePF());
         }
 
         return classPF;
@@ -185,9 +176,8 @@ public class OOMCalculator {
     public Map<String, Double> calculateMHF() {
         Map<String, Double> classMHF= new HashMap<String,Double>();
 
-        for(int i = 0; i<classList.size(); i++) {
-
-            classMHF.put(classList.get(i).getName(),classList.get(i).calculateMHF());
+        for (OOMClass oomClass : classList) {
+            classMHF.put(oomClass.getName(), oomClass.calculateMHF());
         }
 
         return classMHF;
@@ -201,9 +191,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculateMIF() {
         Map<String, Double> classMIF = new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classMIF.put(classList.get(i).getName(),classList.get(i).calculateMIF());
+        for (OOMClass oomClass : classList) {
+            classMIF.put(oomClass.getName(), oomClass.calculateMIF());
         }
 
         return classMIF;
@@ -217,9 +206,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculateAHF( ) {
         Map<String, Double> classAHF= new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classAHF.put(classList.get(i).getName(),classList.get(i).calculateAHF());
+        for (OOMClass oomClass : classList) {
+            classAHF.put(oomClass.getName(), oomClass.calculateAHF());
         }
 
         return classAHF;
@@ -232,9 +220,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculateAIF() {
         Map<String, Double> classAIF= new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classAIF.put(classList.get(i).getName(),classList.get(i).calculateAIF());
+        for (OOMClass oomClass : classList) {
+            classAIF.put(oomClass.getName(), oomClass.calculateAIF());
         }
 
         return classAIF;
@@ -250,16 +237,15 @@ public class OOMCalculator {
     public Map<String, Double> calculateDIT() {
         Double interitanceDepth;
         Map<String, Double> classDIT= new HashMap<String, Double>();
-        for(int i = 0; i<classList.size(); i++) {
-            interitanceDepth=0.0;
-            OOMClass aClass= classList.get(i);
-            while(aClass.getParent()!=null)
-            {
+        for (OOMClass oomClass : classList) {
+            interitanceDepth = 0.0;
+            OOMClass aClass = oomClass;
+            while (aClass.getParent() != null) {
                 interitanceDepth++;
-                aClass= aClass.getParent();
+                aClass = aClass.getParent();
             }
 
-            classDIT.put(classList.get(i).getName(),interitanceDepth);
+            classDIT.put(oomClass.getName(), interitanceDepth);
         }
 
         return classDIT;
@@ -273,9 +259,8 @@ public class OOMCalculator {
      */
     public Map<String, Double> calculateNOC() {
         Map<String, Double> classNOC= new HashMap<String, Double>();;
-        for(int i = 0; i<classList.size(); i++) {
-
-            classNOC.put(classList.get(i).getName(),classList.get(i).calculateNOC());
+        for (OOMClass oomClass : classList) {
+            classNOC.put(oomClass.getName(), oomClass.calculateNOC());
         }
 
         return classNOC;

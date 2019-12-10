@@ -16,25 +16,21 @@ public class MICalculator {
      * @return  the Halstead Volume of source code.
      */
     public int calculateHalstead(Object[] operators, Object[] operands) {
-        int n, v;
         Set<String> distinctOperators = new HashSet<>();
         Set<String> distinctOperands = new HashSet<>();
 
-        for (int i = 0; i < operators.length; i++) {
-            String operator = operators[i].toString();
-            if (!distinctOperators.contains(operator)) {
-                distinctOperators.add(operator);
-            }
+        for (Object value : operators) {
+            String operator = value.toString();
+            distinctOperators.add(operator);
         }
 
-        for (int i = 0; i < operands.length; i++) {
-            String operand = operands[i].toString();
-            if (!distinctOperators.contains(operand)) {
-                distinctOperators.add(operand);
-            }
+        for (Object o : operands) {
+            String operand = o.toString();
+            distinctOperands.add(operand);
         }
 
-        return (int) ((operators.length + operands.length) * (Math.log(distinctOperands.size() + distinctOperators.size()) / Math.log(2)));
+        return (int) ((operators.length + operands.length)
+                * (Math.log(distinctOperands.size() + distinctOperators.size()) / Math.log(2)));
     }
 
     /**
@@ -63,7 +59,7 @@ public class MICalculator {
     public int calculateMI(Object[] operators, Object[] operands, int edge, int node, int lloc, int loc, int cloc) {
         int v = this.calculateHalstead(operators, operands); // Halstead Volume
         int g = this.calculateCC(edge, node);
-        double cm = (double) (cloc / loc);
+        double cm = (double)cloc / loc;
 
         return (int) (171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm)))));
     }

@@ -11,13 +11,11 @@ import java.awt.*;
 
 public class OOPageFactory implements PageFactoryInterface {
   /* Declare private fields here */
-  MetricsResultWindow window;
-  JPanel OOPage;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, defaultButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+  private MetricsResultWindow window;
+  private JPanel OOPage;
+  private JScrollPane tableContent;
+  private JButton resetButton, defaultButton;
+  private JPanel tablePanel;
 
   public OOPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -25,7 +23,7 @@ public class OOPageFactory implements PageFactoryInterface {
   }
 
   @Override
-  public JPanel createPage() {
+  public void createPage() {
     OOPage.removeAll();
     OOPage.setLayout(new BorderLayout());
     generateButtons();
@@ -35,15 +33,14 @@ public class OOPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return OOPage;
   }
 
   @Override
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("OO Details");
+    JLabel mainLabel = new JLabel("OO Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -65,7 +62,7 @@ public class OOPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(defaultButton);
 
     OOPage.add(bottomPanel, BorderLayout.SOUTH);
@@ -88,10 +85,10 @@ public class OOPageFactory implements PageFactoryInterface {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "OO Features", "Score", "Graph" };
-    String body[][] = { { "WMC (Weighted method per class", "", "" }, { "DIT (Depth of Inheritance Tree", "", "" },
+    String[] header = { "OO Features", "Score", "Graph" };
+    String[][] body = { { "WMC (Weighted method per class", "", "" }, { "DIT (Depth of Inheritance Tree", "", "" },
         { "NOC (Number Of Children)", "", "" }, { "CBO (Coupling Between Object classes)", "", "" },
         { "RFC (Response For Class)", "", "" }, { "LOCM (Lack Of Cohesion Metrics)", "", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {

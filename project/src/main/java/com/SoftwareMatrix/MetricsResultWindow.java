@@ -1,53 +1,40 @@
 package com.SoftwareMatrix;
 
-import android.icu.impl.number.Parse;
-import com.google.common.collect.Tables;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
-import com.intellij.ui.components.JBScrollPane;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
-import java.util.Calendar;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
-import com.SoftwareMatrix.PageFactory.HaslstedVolumPageFacotry;
+import com.SoftwareMatrix.PageFactory.HalsteadVolumePageFactory;
 import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
 import com.SoftwareMatrix.PageFactory.MIPageFactory;
 import com.SoftwareMatrix.PageFactory.OOPageFactory;
 import com.SoftwareMatrix.PageFactory.CCPageFactory;
-import com.intellij.openapi.wm.ToolWindow;
 
 
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
 
-    private JPanel myToolWindowContent;
     private JTable tableStructure;
-    private JScrollPane tableContent;
     private Integer MIscore, OOscore;
 
-    JPanel myToolWindowContent;
-    DefaultPageFactory defaultpageFactory;
-    MIPageFactory mipageFactory;
-    OOPageFactory oopageFactory;
-    CCPageFactory ccpageFactory;
-    HaslstedVolumPageFacotry haslstedVolumpageFactory;
-    SLOCPageFactory SLOCpageFactory;
-    String label;
+    private JPanel myToolWindowContent;
+    private DefaultPageFactory defaultpageFactory;
+    private MIPageFactory mipageFactory;
+    private OOPageFactory oopageFactory;
+    private CCPageFactory ccpageFactory;
+    private HalsteadVolumePageFactory halsteadVolumePageFactory;
+    private SLOCPageFactory SLOCpageFactory;
+    private String label;
 
     /**
      * Constructor of tool window
@@ -64,7 +51,7 @@ public class MetricsResultWindow implements UpdateObserver {
         };
         tableStructure = new JTable();
         tableStructure.setModel(model);
-        tableContent = new JScrollPane(tableStructure);
+        JScrollPane tableContent = new JScrollPane(tableStructure);
 
         settingAllStatus();
         tableStructure.setValueAt(MIscore, 0, 1);
@@ -100,11 +87,10 @@ public class MetricsResultWindow implements UpdateObserver {
         mipageFactory = new MIPageFactory(this, myToolWindowContent);
         oopageFactory = new OOPageFactory(this, myToolWindowContent);
         ccpageFactory = new CCPageFactory(this, myToolWindowContent);
-        haslstedVolumpageFactory = new HaslstedVolumPageFacotry(this, myToolWindowContent);
+        halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
         SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
         label = "Default";
         defaultpageFactory.createPage();
-
     }
 
     /**
@@ -116,7 +102,6 @@ public class MetricsResultWindow implements UpdateObserver {
         return myToolWindowContent;
     }
 
-
     @Override
     public void update(Project project, PsiElement elem) {
         settingAllStatus();
@@ -125,15 +110,15 @@ public class MetricsResultWindow implements UpdateObserver {
 
         // color refresh has 5~10 seconds of delay
 
-        System.out.println(elem);
-        System.out.println(ParseAdapter.getContainingMethod(elem));
-        System.out.println(ParseAdapter.getContainingClass(elem));
-        System.out.println(ParseAdapter.getContainingPackage(elem));
+//        System.out.println(elem);
+//        System.out.println(ParseAdapter.getContainingMethod(elem));
+//        System.out.println(ParseAdapter.getContainingClass(elem));
+//        System.out.println(ParseAdapter.getContainingPackage(elem));
     }
 
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focused,
-                int row, int column) {
+                                                       int row, int column) {
             setEnabled(table == null || table.isEnabled()); // see question above
             int r, g, b = 0;
 
@@ -152,9 +137,11 @@ public class MetricsResultWindow implements UpdateObserver {
             super.getTableCellRendererComponent(table, value, selected, focused, row, column);
 
             return this;
+        }
+    };
 
     public void changeView(String label) {
-        this.label = label;
+        this.label=label;
         switch (label) {
         case "Default":
             defaultpageFactory.createPage();
@@ -166,7 +153,7 @@ public class MetricsResultWindow implements UpdateObserver {
             oopageFactory.createPage();
             break;
         case "V":
-            haslstedVolumpageFactory.createPage();
+            halsteadVolumePageFactory.createPage();
             break;
         case "G":
             ccpageFactory.createPage();

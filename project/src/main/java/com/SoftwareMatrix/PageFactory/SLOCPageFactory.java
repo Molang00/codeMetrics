@@ -10,13 +10,11 @@ import java.awt.BorderLayout;
 import java.awt.*;
 
 public class SLOCPageFactory implements PageFactoryInterface {
-  MetricsResultWindow window;
-  JPanel page;
-  JTable table;
-  JScrollPane tableContent;
-  JButton resetButton, backButton;
-  JLabel mainLabel;
-  JPanel tablePanel, bottomPanel, topPanel;
+  private MetricsResultWindow window;
+  private JPanel page;
+  private JScrollPane tableContent;
+  private JButton resetButton, backButton;
+  private JPanel tablePanel;
 
   public SLOCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -24,7 +22,7 @@ public class SLOCPageFactory implements PageFactoryInterface {
   }
 
   @Override
-  public JPanel createPage() {
+  public void createPage() {
     // TODO Auto-generated method stub
     page.removeAll();
     page.setLayout(new BorderLayout());
@@ -35,15 +33,14 @@ public class SLOCPageFactory implements PageFactoryInterface {
     generateCenterView();
     generateBottomView();
 
-    return page;
   }
 
   @Override
   public void generateTopView() {
-    topPanel = new JPanel();
+    JPanel topPanel = new JPanel();
     topPanel.setLayout(new GridLayout(1, 3));
 
-    mainLabel = new JLabel("Source Lines of Code Details");
+    JLabel mainLabel = new JLabel("Source Lines of Code Details");
     mainLabel.setHorizontalAlignment(JLabel.CENTER);
 
     JPanel jp = new JPanel();
@@ -65,7 +62,7 @@ public class SLOCPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateBottomView() {
-    bottomPanel = new JPanel();
+    JPanel bottomPanel = new JPanel();
     bottomPanel.add(backButton);
 
     page.add(bottomPanel, BorderLayout.SOUTH);
@@ -88,10 +85,10 @@ public class SLOCPageFactory implements PageFactoryInterface {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    table = new JTable();
+    JTable table = new JTable();
     tableContent = new JScrollPane(table);
-    String header[] = { "SLOC Features", "Score" };
-    String body[][] = { { "LOC (Physical Line of Code)", "" }, { "LLOC (Logical Line of Code)", "" } };
+    String[] header = { "SLOC Features", "Score" };
+    String[][] body = { { "LOC (Physical Line of Code)", "" }, { "LLOC (Logical Line of Code)", "" } };
     DefaultTableModel model = new DefaultTableModel(body, header) {
       @Override
       public boolean isCellEditable(int row, int column) {

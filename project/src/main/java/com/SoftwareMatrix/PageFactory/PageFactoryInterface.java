@@ -1,9 +1,7 @@
 package com.SoftwareMatrix.PageFactory;
 
-import javax.swing.JPanel;
-
-public interface PageFactoryInterface{
-    public JPanel createPage();
+public interface PageFactoryInterface {
+    public void createPage();
     public void generateTopView();
     public void generateCenterView();
     public void generateBottomView();
