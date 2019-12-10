@@ -117,6 +117,11 @@ public class OOMClass {
      * @return a map: [class name: the number of all methods in this class]
      */
     public int calculateNM() {
+        if(methodList.isEmpty())
+        {
+            return 0;
+        }
+
         return methodList.size();
     }
 
@@ -145,6 +150,11 @@ public class OOMClass {
      * @return a map: [class name: the number of all variables in this class]
      */
     public int calculateNV() {
+
+        if(attributeList.isEmpty())
+        {
+            return 0;
+        }
         return attributeList.size();
     }
 
@@ -241,6 +251,11 @@ public class OOMClass {
      */
     public double calculateAMS() {
 
+        if(calculateNM()==0)
+        {
+            return 0;
+        }
+
         return (double) (this.getClassLength() / calculateNM());
     }
 
@@ -253,7 +268,7 @@ public class OOMClass {
      *         class]
      */
     public double calculatePF() {
-        if (getParent() == null) {
+        if (getParent() == null || getParent().calculateNPV()==0) {
             return 0;
         }
 
@@ -267,6 +282,12 @@ public class OOMClass {
      * @return a map: [class name: ratio of hidden methods in this class]
      */
     public double calculateMHF() {
+
+        if(calculateNM()==0)
+        {
+            return 0;
+        }
+
         return (double) ((calculateNM() - calculatePM()) / calculateNM());
     }
 
@@ -277,6 +298,11 @@ public class OOMClass {
      * @return a map: [class name: ratio of hidden attributes in this class]
      */
     public double calculateAHF() {
+        if(calculateNV()==0)
+        {
+            return 0;
+        }
+
         return (double) ((calculateNV() - calculateNPV()) / calculateNV());
     }
 
@@ -288,6 +314,11 @@ public class OOMClass {
      */
     public double calculateNOC() {
 
+        if(childrenList.isEmpty())
+        {
+            return 0;
+        }
+
         return (double) (childrenList.size());
     }
 
@@ -296,7 +327,7 @@ public class OOMClass {
      * of inherited attributes as a ratio of total attributes
      */
     public double calculateAIF() {
-        if (getParent() == null) {
+        if (getParent() == null || (calculateNV() + getParent().calculateNPPV())==0) {
             return 0;
         }
         return (double) ((getParent().calculateNPPV()) / (calculateNV() + getParent().calculateNPPV()));
@@ -307,7 +338,7 @@ public class OOMClass {
      * inherited methods as a ratio of total methods
      */
     public double calculateMIF() {
-        if (getParent() == null) {
+        if (getParent() == null || (this.calculateNM())==0) {
             return 0;
         }
         return (double) ((getParent().calculateNPPM()) / (this.calculateNM()));
