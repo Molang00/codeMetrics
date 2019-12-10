@@ -91,7 +91,7 @@ public class ParseAdapter {
      * In Switch, default case also be added but need to be filtered after.
      *
      * @param method : a method to get branches
-     * @return the list of PsiElement
+     * @return the set of PsiElement
      */
     public static Set<PsiElement> getBranch(@NotNull PsiMethod method) {
         Set<PsiElement> branch = new HashSet<>();
@@ -102,6 +102,59 @@ public class ParseAdapter {
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiSwitchLabelStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiForeachStatement.class));
         return branch;
+    }
+
+
+    /**
+     * get number of edges in method
+     * @param method : a method to get edges
+     * @return the number of edges
+     */
+    public int getEdge(@NotNull PsiMethod method) {
+        Set<PsiElement> branch = this.getBranch(method);
+
+        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
+
+        int edge = 0;
+
+        for (PsiElement elem : branch) {
+            edge += 1;
+            if(elem instanceof PsiTryStatement) {
+                edge += ((PsiTryStatement) elem).getCatchBlocks().length;
+            }
+            else {
+                edge += 1;
+            }
+        }
+        return edge;
+    }
+
+    /**
+     * get number of nodes in method
+     * @param method : a method to get nodes
+     * @return the number of nodes
+     */
+    public int getNode(@NotNull PsiMethod method) {
+        Set<PsiElement> branch = this.getBranch(method);
+
+        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
+        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiReturnStatement.class));
+
+        int node = 0;
+
+        for (PsiElement elem : branch) {
+            node += 1;
+            if(elem instanceof PsiTryStatement) {
+                node += ((PsiTryStatement) elem).getCatchBlocks().length;
+            }
+            else if (elem instanceof PsiReturnStatement) {
+                continue;
+            }
+            else {
+                node += 1;
+            }
+        }
+        return node;
     }
 
     /**
@@ -345,6 +398,7 @@ public class ParseAdapter {
 
     public static Set<PsiElement> getOperands(@NotNull PsiClass _class)
     {
+        System.out.println(_class.getText());
         Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
 
         for(PsiMethod m : _class.getAllMethods())
