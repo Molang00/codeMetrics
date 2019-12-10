@@ -95,7 +95,9 @@ public class MICalculator {
         int g = calculateCC(edge, node);
         double cm = (double)cloc / loc;
 
-        return (int) (171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm)))));
+        if (v == 0)
+            return 0;
+        return (int) Math.round(171 - (5.2 * Math.log(v) / Math.log(2)) - (0.23 * g) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * cm)))));
     }
 
 }

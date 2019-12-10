@@ -24,6 +24,7 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface, UpdateOb
   private JPanel tablePanel;
   private Set<PsiElement> operators, operands;
   private Integer eta, n;
+  private JTable table;
 
   public HalsteadVolumePageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -32,6 +33,8 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface, UpdateOb
     operands = new HashSet<>();
     eta = 0;
     n = 0;
+
+    generateTable();;
   }
 
   @Override
@@ -53,6 +56,11 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface, UpdateOb
       operands = ParseAdapter.getOperands(ParseAdapter.getContainingClass(elem));
       eta = MICalculator.calculateEta(operators, operands);
       n = MICalculator.calculateN(operators, operands);
+
+      table.setValueAt(eta, 0, 1); // Set V value
+      table.setValueAt(n, 1, 1); // Set G value
+
+      tablePanel.revalidate();
     }
   }
 
@@ -106,7 +114,7 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface, UpdateOb
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "V Features", "Score" };
     String[][] body = { { "Eta (number of distinct operators & operands)", "" },

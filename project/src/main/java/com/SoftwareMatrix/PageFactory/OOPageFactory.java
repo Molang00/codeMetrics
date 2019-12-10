@@ -32,43 +32,45 @@ public class OOPageFactory implements PageFactoryInterface, UpdateObserver {
     AMS = 0; PF = 0; MHF = 0;
     MIF = 0; AHF = 0; AIF = 0;
     DIT = 0; NOC = 0; WMC = 0;
+
+    generateTable();;
   }
 
   public void update(Project project, PsiElement elem){
 
-    if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
-      Set<PsiPackage> allPackages = ParseAdapter.getProjectPackages(project);
-
-      NM = 0; PM = 0; NPV = 0;
-      NV = 0; NMI = 0; NMO = 0;
-      AMS = 0; PF = 0; MHF = 0;
-      MIF = 0; AHF = 0; AIF = 0;
-      DIT = 0; NOC = 0; WMC = 0;
-
-      for(PsiPackage p : allPackages) {
-        oomCalculator = new OOMCalculator(p);
-
-        NM += oomCalculator.GetPackageNM();
-        PM += oomCalculator.GetPackagePM();
-        NPV += oomCalculator.GetPackageNPV();
-
-        NV += oomCalculator.GetPackageNV();
-        NMI += oomCalculator.GetPackageNMI();
-        NMO += oomCalculator.GetPackageNMO();
-
-        AMS += oomCalculator.GetPackageAMS();
-        PF += oomCalculator.GetPackagePF();
-        MHF += oomCalculator.GetPackageMHF();
-
-        MIF += oomCalculator.GetPackageMIF();
-        AHF += oomCalculator.GetPackageAHF();
-        AIF += oomCalculator.GetPackageAIF();
-
-        DIT += oomCalculator.GetPackageDIT();
-        NOC += oomCalculator.GetPackageNOC();
-        WMC += oomCalculator.GetPackageWMC();
-      }
-    }
+//    if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
+//      Set<PsiPackage> allPackages = ParseAdapter.getProjectPackages(project);
+//
+//      NM = 0; PM = 0; NPV = 0;
+//      NV = 0; NMI = 0; NMO = 0;
+//      AMS = 0; PF = 0; MHF = 0;
+//      MIF = 0; AHF = 0; AIF = 0;
+//      DIT = 0; NOC = 0; WMC = 0;
+//
+//      for(PsiPackage p : allPackages) {
+//        oomCalculator = new OOMCalculator(p);
+//
+//        NM += oomCalculator.GetPackageNM();
+//        PM += oomCalculator.GetPackagePM();
+//        NPV += oomCalculator.GetPackageNPV();
+//
+//        NV += oomCalculator.GetPackageNV();
+//        NMI += oomCalculator.GetPackageNMI();
+//        NMO += oomCalculator.GetPackageNMO();
+//
+//        AMS += oomCalculator.GetPackageAMS();
+//        PF += oomCalculator.GetPackagePF();
+//        MHF += oomCalculator.GetPackageMHF();
+//
+//        MIF += oomCalculator.GetPackageMIF();
+//        AHF += oomCalculator.GetPackageAHF();
+//        AIF += oomCalculator.GetPackageAIF();
+//
+//        DIT += oomCalculator.GetPackageDIT();
+//        NOC += oomCalculator.GetPackageNOC();
+//        WMC += oomCalculator.GetPackageWMC();
+//      }
+//    }
   }
 
   @Override

@@ -21,10 +21,14 @@ public class SLOCPageFactory implements PageFactoryInterface, UpdateObserver {
   private JButton resetButton, backButton;
   private JPanel tablePanel;
   private Integer lloc, loc, cloc;
+  private JTable table;
 
   public SLOCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.page = mainPanel;
+
+    lloc = 0; loc = 0; cloc = 0;
+    generateTable();;
   }
 
   public void update(Project project, PsiElement elem){
@@ -33,6 +37,12 @@ public class SLOCPageFactory implements PageFactoryInterface, UpdateObserver {
       lloc = ParseAdapter.getLLoc(ParseAdapter.getContainingClass(elem));
       loc = ParseAdapter.getLoc(ParseAdapter.getContainingClass(elem));
       cloc = ParseAdapter.getCLoc(ParseAdapter.getContainingClass(elem));
+
+      table.setValueAt(loc, 0, 1); // Set loc value
+      table.setValueAt(lloc, 1, 1); // Set lloc value
+      table.setValueAt(cloc, 2, 1); //Set cloc value
+      tablePanel.revalidate();
+
     }
   }
 
@@ -102,7 +112,7 @@ public class SLOCPageFactory implements PageFactoryInterface, UpdateObserver {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "SLOC Features", "Score" };
     String[][] body = { { "LOC (Physical Line of Code)", "" }, { "LLOC (Logical Line of Code)", "" }, {"CLOC (Comment Line of Code)", ""} };

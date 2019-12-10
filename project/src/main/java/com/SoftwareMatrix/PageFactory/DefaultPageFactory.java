@@ -20,6 +20,7 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
   private JScrollPane tableContent;
   private JButton resetButton, MIButton, OOButton;
   private JPanel tablePanel;
+  private JTable table;
   Set<PsiElement> operators, operands;
   int edge, node, lloc, loc, cloc;
 
@@ -28,8 +29,11 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
     this.DefaultPage = mainPanel;
     MIscore = 0;
     OOscore = 0;
+
+    generateTable();
   }
 
+  @Override
   public void update(Project project, PsiElement elem){
     // color refresh has 5~10 seconds of delay
     if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
@@ -45,6 +49,11 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
 
       MIscore = MICalculator.calculateMI(operators, operands, edge, node, lloc, loc, cloc);
 //      OOscore =
+
+      table.setValueAt(MIscore, 0, 1);
+      table.setValueAt(OOscore, 1, 1);
+
+      tablePanel.revalidate();
     }
 
   }
@@ -121,7 +130,7 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
 
   public void generateTable() {
     tablePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "Type", "Score", "Graph" };
     String[][] body = { { "MI", "", "" }, { "OO", "", "" } };

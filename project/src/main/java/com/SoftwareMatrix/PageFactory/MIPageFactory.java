@@ -25,6 +25,7 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
   private Set<PsiElement> operators, operands;
   private int edge, node, lloc, loc, cloc;
   private int v, g;
+  private JTable table;
 
   public MIPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -32,6 +33,8 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
     v = 0;
     g = 0;
     loc = 0;
+
+    generateTable();;
   }
 
   public void update(Project project, PsiElement elem){
@@ -48,6 +51,13 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
       cloc = ParseAdapter.getCLoc(ParseAdapter.getContainingClass(elem));
       v = MICalculator.calculateHalstead(operators, operands);
       g = MICalculator.calculateCC(edge, node);
+
+
+      table.setValueAt(v, 0, 1); // Set V value
+      table.setValueAt(g, 1, 1); // Set G value
+      table.setValueAt(loc, 2, 1); // Set SLOC value
+
+      tablePanel.revalidate();
     }
   }
 
@@ -132,7 +142,7 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "MI Features", "Score", "Graph" };
     String[][] body = { { "V (Haslstead's volume)", "", "" }, { "G (Cyclomatic complexity)", "", "" },

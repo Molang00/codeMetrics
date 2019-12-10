@@ -22,6 +22,7 @@ public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
   private JButton resetButton, backButton;
   private JPanel tablePanel;
   private Integer edge, node, CCValue;
+  private JTable table;
 
   public CCPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
@@ -29,6 +30,8 @@ public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
     edge = 0;
     node = 0;
     CCValue = 0;
+
+    generateTable();;
   }
 
   public void update(Project project, PsiElement elem){
@@ -37,12 +40,14 @@ public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
           edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
           node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
           CCValue = MICalculator.calculateCC(edge, node);
+
+          table.setValueAt(edge, 0, 1); // Set edge value
+          table.setValueAt(node, 1, 1); // Set node value
+          table.setValueAt(CCValue, 2, 1); // Set CC value
+          tablePanel.revalidate();
+
       }
 
-    System.out.println("111" + elem);
-    System.out.println("222" + ParseAdapter.getContainingMethod(elem));
-    System.out.println("333" + ParseAdapter.getContainingClass(elem));
-    System.out.println("444" + ParseAdapter.getContainingPackage(elem));
   }
 
   @Override
@@ -108,7 +113,7 @@ public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
   @Override
   public void generateTable() {
     tablePanel = new JPanel();
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "CC Features", "Score", "Graph" };
     String[][] body = { { "Edge", "", "" }, { "Node", "", "" }, { "CC Value", "", "" } };
