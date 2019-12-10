@@ -1,5 +1,7 @@
 package com.SoftwareMatrix;
 
+import com.intellij.psi.PsiElement;
+
 import java.util.HashSet;
 import java.lang.Math;
 import java.util.Set;
@@ -8,14 +10,13 @@ import java.util.Set;
  *  calculator for Halstead Volume, Cyclomatic Complexity, and Mmaintainability Index.
  */
 public class MICalculator {
-
     /**
      * Calculating Halstead Volume
      * @param operators the array of total operators in source code
      * @param operands  the array of total operands in source code
      * @return  the Halstead Volume of source code.
      */
-    public static int calculateHalstead(Object[] operators, Object[] operands) {
+    public static int calculateEta(Set<PsiElement> operators, Set<PsiElement> operands) {
         Set<String> distinctOperators = new HashSet<>();
         Set<String> distinctOperands = new HashSet<>();
 
@@ -29,7 +30,40 @@ public class MICalculator {
             distinctOperands.add(operand);
         }
 
-        return (int) ((operators.length + operands.length)
+        return (int) (Math.log(distinctOperands.size() + distinctOperators.size()));
+    }
+
+    /**
+     * Calculating Halstead Volume
+     * @param operators the array of total operators in source code
+     * @param operands  the array of total operands in source code
+     * @return  the Halstead Volume of source code.
+     */
+    public static int calculateN(Set<PsiElement> operators, Set<PsiElement> operands) {
+        return (int) (operators.size() + operands.size());
+    }
+
+    /**
+     * Calculating Halstead Volume
+     * @param operators the array of total operators in source code
+     * @param operands  the array of total operands in source code
+     * @return  the Halstead Volume of source code.
+     */
+    public static int calculateHalstead(Set<PsiElement> operators, Set<PsiElement> operands) {
+        Set<String> distinctOperators = new HashSet<>();
+        Set<String> distinctOperands = new HashSet<>();
+
+        for (Object value : operators) {
+            String operator = value.toString();
+            distinctOperators.add(operator);
+        }
+
+        for (Object o : operands) {
+            String operand = o.toString();
+            distinctOperands.add(operand);
+        }
+
+        return (int) ((operators.size() + operands.size())
                 * (Math.log(distinctOperands.size() + distinctOperators.size()) / Math.log(2)));
     }
 
@@ -56,7 +90,7 @@ public class MICalculator {
      * @param cloc  the comment lines of code
      * @return  the Maintainability Index of source code
      */
-    public static int calculateMI(Object[] operators, Object[] operands, int edge, int node, int lloc, int loc, int cloc) {
+    public static int calculateMI(Set<PsiElement> operators, Set<PsiElement> operands, int edge, int node, int lloc, int loc, int cloc) {
         int v = calculateHalstead(operators, operands); // Halstead Volume
         int g = calculateCC(edge, node);
         double cm = (double)cloc / loc;

@@ -1,6 +1,11 @@
 package com.SoftwareMatrix.PageFactory;
 
+import com.SoftwareMatrix.MICalculator;
 import com.SoftwareMatrix.MetricsResultWindow;
+import com.SoftwareMatrix.ParseAdapter;
+import com.SoftwareMatrix.UpdateObserver;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -8,17 +13,25 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.BorderLayout;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
-public class HalsteadVolumePageFactory implements PageFactoryInterface {
+public class HalsteadVolumePageFactory implements PageFactoryInterface, UpdateObserver {
   private MetricsResultWindow window;
   private JPanel page;
   private JScrollPane tableContent;
   private JButton resetButton, backButton;
   private JPanel tablePanel;
+  private Set<PsiElement> operators, operands;
+  private Integer eta, n;
 
   public HalsteadVolumePageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.page = mainPanel;
+    operators = new HashSet<>();
+    operands = new HashSet<>();
+    eta = 0;
+    n = 0;
   }
 
   @Override
@@ -31,7 +44,16 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface {
     generateTopView();
     generateCenterView();
     generateBottomView();
+  }
 
+  public void update(Project project, PsiElement elem){
+    // color refresh has 5~10 seconds of delay
+    if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
+      operators = ParseAdapter.getOperators(ParseAdapter.getContainingClass(elem));
+      operands = ParseAdapter.getOperands(ParseAdapter.getContainingClass(elem));
+      eta = MICalculator.calculateEta(operators, operands);
+      n = MICalculator.calculateN(operators, operands);
+    }
   }
 
   @Override
@@ -101,8 +123,8 @@ public class HalsteadVolumePageFactory implements PageFactoryInterface {
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
-    table.setValueAt(100, 0, 1); // Set V value
-    table.setValueAt(160, 1, 1); // Set G value
+    table.setValueAt(eta, 0, 1); // Set V value
+    table.setValueAt(n, 1, 1); // Set G value
 
     table.getColumnModel().getColumn(0).setPreferredWidth(90);
     table.getColumnModel().getColumn(1).setPreferredWidth(20);

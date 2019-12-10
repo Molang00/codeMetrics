@@ -398,7 +398,6 @@ public class ParseAdapter {
 
     public static Set<PsiElement> getOperands(@NotNull PsiClass _class)
     {
-        System.out.println(_class.getText());
         Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
 
         for(PsiMethod m : _class.getAllMethods())

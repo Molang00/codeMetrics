@@ -52,7 +52,12 @@ public class MetricsResultWindow implements UpdateObserver {
         halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
         SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
 
+        uManager.addObserver(defaultpageFactory);
+        uManager.addObserver(mipageFactory);
+        uManager.addObserver(oopageFactory);
         uManager.addObserver(ccpageFactory);
+        uManager.addObserver(halsteadVolumePageFactory);
+        uManager.addObserver(SLOCpageFactory);
         label = "Default";
         defaultpageFactory.createPage();
     }

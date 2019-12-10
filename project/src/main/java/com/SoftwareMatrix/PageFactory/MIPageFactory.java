@@ -1,6 +1,11 @@
 package com.SoftwareMatrix.PageFactory;
 
+import com.SoftwareMatrix.MICalculator;
 import com.SoftwareMatrix.MetricsResultWindow;
+import com.SoftwareMatrix.ParseAdapter;
+import com.SoftwareMatrix.UpdateObserver;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -8,18 +13,42 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.BorderLayout;
 import java.awt.*;
+import java.util.Set;
 
-public class MIPageFactory implements PageFactoryInterface {
+public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
   /* Declare private fields here */
   private MetricsResultWindow window;
   private JPanel MIPage;
   private JScrollPane tableContent;
   private JButton resetButton, defaultButton, VButton, GButton, LOCButton;
   private JPanel tablePanel;
+  private Set<PsiElement> operators, operands;
+  private int edge, node, lloc, loc, cloc;
+  private int v, g;
 
   public MIPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.MIPage = mainPanel;
+    v = 0;
+    g = 0;
+    loc = 0;
+  }
+
+  public void update(Project project, PsiElement elem){
+    // color refresh has 5~10 seconds of delay
+    if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
+      edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
+      node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
+
+      operators = ParseAdapter.getOperators(ParseAdapter.getContainingClass(elem));
+      operands = ParseAdapter.getOperands(ParseAdapter.getContainingClass(elem));
+
+      lloc = ParseAdapter.getLLoc(ParseAdapter.getContainingClass(elem));
+      loc = ParseAdapter.getLoc(ParseAdapter.getContainingClass(elem));
+      cloc = ParseAdapter.getCLoc(ParseAdapter.getContainingClass(elem));
+      v = MICalculator.calculateHalstead(operators, operands);
+      g = MICalculator.calculateCC(edge, node);
+    }
   }
 
   @Override
@@ -120,9 +149,9 @@ public class MIPageFactory implements PageFactoryInterface {
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
-    table.setValueAt(150, 0, 1); // Set V value
-    table.setValueAt(20, 1, 1); // Set G value
-    table.setValueAt(300, 2, 1); // Set SLOC value
+    table.setValueAt(v, 0, 1); // Set V value
+    table.setValueAt(g, 1, 1); // Set G value
+    table.setValueAt(loc, 2, 1); // Set SLOC value
 
     table.getColumn("Graph").setCellRenderer(new ProgressRenderer(0, 500));
 
