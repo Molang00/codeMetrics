@@ -70,7 +70,7 @@ public class OOPageFactory implements PageFactoryInterface {
 
   @Override
   public void generateButtons() {
-    resetButton = new JButton("reset");
+    resetButton = new JButton("update");
     resetButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at reset");
       window.changeView("OO");

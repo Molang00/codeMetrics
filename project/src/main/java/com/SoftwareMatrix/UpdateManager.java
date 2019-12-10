@@ -29,28 +29,29 @@ public class UpdateManager {
     private PsiElement lastTrackedElement; // last caret position
 
     private void notifyObserversWrapper() {
-        if(thread != null && thread.isAlive()) {
-            ; // do nothing
-        }
-        else {
-            thread = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(3000);
-                        ApplicationManager.getApplication().runReadAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                notifyObservers();
-                            }
-                        });
-                    } catch (InterruptedException ex) {
-                        ; // do nothing
-                    }
-                }
-            };
-            thread.start();
-        }
+        notifyObservers();
+//        if(thread != null && thread.isAlive()) {
+//            ; // do nothing
+//        }
+//        else {
+//            thread = new Thread() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        Thread.sleep(3000);
+//                        ApplicationManager.getApplication().runReadAction(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                notifyObservers();
+//                            }
+//                        });
+//                    } catch (InterruptedException ex) {
+//                        ; // do nothing
+//                    }
+//                }
+//            };
+//            thread.start();
+//        }
     }
 
     private UpdateManager(@NotNull Project project) {

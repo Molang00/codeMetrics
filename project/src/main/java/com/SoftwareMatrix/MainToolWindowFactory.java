@@ -13,12 +13,9 @@ import org.jetbrains.annotations.NotNull;
 public class MainToolWindowFactory implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        MetricsResultWindow psw = new MetricsResultWindow(toolWindow);
+        MetricsResultWindow psw = new MetricsResultWindow(toolWindow, project);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(psw.getContent(), "", false);
         toolWindow.getContentManager().addContent(content);
-
-        UpdateManager uManager = UpdateManager.getInstance(project); // init update manager
-        uManager.addObserver(psw);
     }
 }

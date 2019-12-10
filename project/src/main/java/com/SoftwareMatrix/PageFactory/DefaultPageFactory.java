@@ -1,7 +1,8 @@
 package com.SoftwareMatrix.PageFactory;
 
-import com.SoftwareMatrix.MetricsResultWindow;
-import com.SoftwareMatrix.Tutorial;
+import com.SoftwareMatrix.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.*;
 
-public class DefaultPageFactory implements PageFactoryInterface {
+public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver {
   /* Declare private fields here */
   private MetricsResultWindow window;
   private JPanel DefaultPage;
@@ -18,10 +19,27 @@ public class DefaultPageFactory implements PageFactoryInterface {
   private JScrollPane tableContent;
   private JButton resetButton, MIButton, OOButton;
   private JPanel tablePanel;
+  Object[] operators, operands;
+  int edge, node, lloc, loc, cloc;
 
   public DefaultPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.DefaultPage = mainPanel;
+  }
+
+  public void update(Project project, PsiElement elem){
+    // color refresh has 5~10 seconds of delay
+    if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
+      edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
+      node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
+
+
+    }
+
+    System.out.println("111" + elem);
+    System.out.println("222" + ParseAdapter.getContainingMethod(elem));
+    System.out.println("333" + ParseAdapter.getContainingClass(elem));
+    System.out.println("444" + ParseAdapter.getContainingPackage(elem));
   }
 
   /**
@@ -77,7 +95,7 @@ public class DefaultPageFactory implements PageFactoryInterface {
   }
 
   public void generateButtons() {
-    resetButton = new JButton("reset");
+    resetButton = new JButton("update");
     resetButton.addActionListener(e -> {
       System.out.println("Listen button clicked action at reset");
       window.changeView("Default");
