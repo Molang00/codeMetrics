@@ -10,7 +10,7 @@ public class MaintainabilityMetric extends Metric {
     private LOCMetric locMetric;
     private CLOCMetric clocMetric;
     private LLOCMetric llocMetric;
-    MaintainabilityMetric(String name, double minVal, double maxVal) {
+    public MaintainabilityMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         ccMetric = new CyclomaticMetric(name+"_cc");
         hgMetric = new HalsteadVolumeMetric(name+"_hg");
@@ -18,7 +18,7 @@ public class MaintainabilityMetric extends Metric {
         clocMetric = new CLOCMetric(name+"_cloc");
         llocMetric = new LLOCMetric(name+"_lloc");
     }
-    MaintainabilityMetric(String name) {
+    public MaintainabilityMetric(String name) {
         super(name);
         ccMetric = new CyclomaticMetric(name+"_cc");
         hgMetric = new HalsteadVolumeMetric(name+"_hg");

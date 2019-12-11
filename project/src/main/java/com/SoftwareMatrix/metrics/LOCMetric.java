@@ -6,10 +6,10 @@ import com.intellij.psi.*;
 
 public class LOCMetric extends Metric {
 
-    LOCMetric(String name, double minVal, double maxVal) {
+    public LOCMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-    LOCMetric(String name) {
+    public LOCMetric(String name) {
         super(name);
     }
 

@@ -8,11 +8,11 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 
 public class NMIMetric extends Metric {
-    NMIMetric(String name, double minVal, double maxVal) {
+    public NMIMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    NMIMetric(String name) {
+    public NMIMetric(String name) {
         super(name);
     }
 

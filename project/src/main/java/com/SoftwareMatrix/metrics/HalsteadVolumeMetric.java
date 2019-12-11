@@ -19,7 +19,7 @@ public class HalsteadVolumeMetric extends Metric{
         operandMetric = new OperandMetric(name+"_opd");
         operatorMetric = new OperatorMetric(name+"_opr");
     }
-    HalsteadVolumeMetric(String name) {
+    public HalsteadVolumeMetric(String name) {
         super(name);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
         distinctOperatorMetric = new DistinctOperatorMetric(name+"_dopr");

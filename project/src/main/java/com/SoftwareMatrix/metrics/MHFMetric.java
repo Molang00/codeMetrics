@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public class MHFMetric extends Metric {
     NMMetric nmMetric;
     PMMetric pmMetric;
-    MHFMetric(String name, double minVal, double maxVal) {
+    public MHFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nmMetric = new NMMetric(name);
         pmMetric = new PMMetric(name);
     }
 
-    MHFMetric(String name) {
+    public MHFMetric(String name) {
         super(name);
         nmMetric = new NMMetric(name);
         pmMetric = new PMMetric(name);

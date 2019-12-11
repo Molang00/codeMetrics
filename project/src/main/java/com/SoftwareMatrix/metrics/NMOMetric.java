@@ -7,11 +7,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 
 public class NMOMetric extends Metric {
-    NMOMetric(String name, double minVal, double maxVal) {
+    public NMOMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    NMOMetric(String name) {
+    public NMOMetric(String name) {
         super(name);
     }
 

@@ -4,11 +4,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 public class NOCMetric extends Metric {
-    NOCMetric(String name, double minVal, double maxVal) {
+    public NOCMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    NOCMetric(String name) {
+    public NOCMetric(String name) {
         super(name);
     }
 

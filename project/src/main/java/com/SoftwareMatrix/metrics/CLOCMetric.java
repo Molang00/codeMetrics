@@ -9,10 +9,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CLOCMetric extends Metric {
-    CLOCMetric(String name, double minVal, double maxVal) {
+    public CLOCMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-    CLOCMetric(String name) {
+    public CLOCMetric(String name) {
         super(name);
     }
 

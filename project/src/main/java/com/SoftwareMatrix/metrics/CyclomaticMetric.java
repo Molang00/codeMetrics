@@ -8,10 +8,10 @@ import com.intellij.psi.*;
  * Cyclomatic Complexity extends Metric class
  */
 public class CyclomaticMetric extends Metric{
-    CyclomaticMetric(String name, double minVal, double maxVal) {
+    public CyclomaticMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-    CyclomaticMetric(String name) {
+    public CyclomaticMetric(String name) {
         super(name);
     }
 

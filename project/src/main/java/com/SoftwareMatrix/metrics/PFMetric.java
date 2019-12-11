@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public class PFMetric extends Metric {
     NMOMetric nmoMetric;
     NPVMetric npvMetric;
-    PFMetric(String name, double minVal, double maxVal) {
+    public PFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nmoMetric = new NMOMetric(name+"_nmo");
         npvMetric = new NPVMetric(name+"_p_npv");
     }
 
-    PFMetric(String name) {
+    public PFMetric(String name) {
         super(name);
         nmoMetric = new NMOMetric(name+"_nmo");
         npvMetric = new NPVMetric(name+"_p_npv");

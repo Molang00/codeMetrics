@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public class MIFMetric extends Metric {
     NMIMetric nmiMetric;
     NMMetric nmMetric;
-    MIFMetric(String name, double minVal, double maxVal) {
+    public MIFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nmiMetric = new NMIMetric(name+"_nmi");
         nmMetric = new NMMetric(name+"_nm");
     }
 
-    MIFMetric(String name) {
+    public MIFMetric(String name) {
         super(name);
         nmiMetric = new NMIMetric(name+"_nmi");
         nmMetric = new NMMetric(name+"_nm");
