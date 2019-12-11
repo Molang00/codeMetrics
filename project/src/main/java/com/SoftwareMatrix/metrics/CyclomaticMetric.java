@@ -19,9 +19,7 @@ public class CyclomaticMetric extends Metric{
     public double calculate(Project project, PsiClass target) {
         double result=0;
 
-        for(PsiMethod m : target.getMethods()) {
-            result += (double)(ParseAdapter.getBranch(m).size() + 1);
-        }
+        result += (double)(ParseAdapter.getBranch(target).size() + 1);
         lastResult = result;
 
         return lastResult = result;

@@ -150,7 +150,7 @@ public class ParseAdapter {
         //Class Object Access
         else if(exp instanceof PsiClassObjectAccessExpression)
             operands.add(((PsiClassObjectAccessExpression) exp).getOperand());
-        //Condition
+            //Condition
         else if(exp instanceof PsiConditionalExpression) {
             operands.addAll(getOperandsExp(((PsiConditionalExpression) exp).getCondition()));
             operands.addAll(getOperandsExp(((PsiConditionalExpression) exp).getThenExpression()));
@@ -214,7 +214,7 @@ public class ParseAdapter {
         //Assertion
         if(stmt instanceof PsiAssertStatement)
             operands.addAll(getOperandsExp(((PsiAssertStatement) stmt).getAssertCondition()));
-        //Block
+            //Block
         else if(stmt instanceof PsiBlockStatement) {
             PsiCodeBlock pcb = ((PsiBlockStatement) stmt).getCodeBlock();
             for(PsiStatement s : pcb.getStatements())
@@ -233,7 +233,7 @@ public class ParseAdapter {
         //Variable declaration
         else if(stmt instanceof PsiDeclarationStatement)
             operands.addAll(Arrays.asList(((PsiDeclarationStatement) stmt).getDeclaredElements()));
-        //Do While
+            //Do While
         else if(stmt instanceof PsiDoWhileStatement) {
             operands.addAll(getOperandsExp(((PsiDoWhileStatement) stmt).getCondition()));
             PsiStatement body = ((PsiDoWhileStatement) stmt).getBody();
@@ -248,7 +248,7 @@ public class ParseAdapter {
         //Expression
         else if(stmt instanceof PsiExpressionStatement)
             operands.addAll(getOperandsExp(((PsiExpressionStatement) stmt).getExpression()));
-        //For
+            //For
         else if(stmt instanceof PsiForStatement) {
             operands.addAll(getOperandsExp(((PsiForStatement) stmt).getCondition())); //Need to check duplicate with Initialization
             PsiStatement init = ((PsiForStatement) stmt).getInitialization();
@@ -279,7 +279,7 @@ public class ParseAdapter {
         //return
         else if(stmt instanceof PsiReturnStatement)
             operands.addAll(getOperandsExp(((PsiReturnStatement) stmt).getReturnValue()));
-        //Switch
+            //Switch
         else if(stmt instanceof PsiSwitchStatement){
             operands.addAll(getOperandsExp(((PsiSwitchStatement) stmt).getExpression()));
             PsiCodeBlock pcb = ((PsiSwitchStatement) stmt).getBody();
@@ -318,7 +318,7 @@ public class ParseAdapter {
         //throw
         else if(stmt instanceof PsiThrowStatement)
             operands.addAll(getOperandsExp(((PsiThrowStatement) stmt).getException()));
-        //try catch finally
+            //try catch finally
         else if(stmt instanceof PsiTryStatement)
         {
             PsiCodeBlock tryBlock = ((PsiTryStatement) stmt).getTryBlock();
@@ -349,6 +349,7 @@ public class ParseAdapter {
         }
         else
         {
+            //System.out.println("Unexpected Statement Input");
             /* Consider Following statements;
             - class level declaration already dealt
             - Empty has no operand
@@ -566,6 +567,11 @@ public class ParseAdapter {
                 PsiPackage pack = JavaPsiFacade.getInstance(project).findPackage(PackageName);
                 ret.add(pack);
             }
+        }
+
+        if (ret.isEmpty()) {
+            System.out.println("Can not find packages!");
+            System.out.println("Empty list would be returned");
         }
 
         return Set.copyOf(ret);

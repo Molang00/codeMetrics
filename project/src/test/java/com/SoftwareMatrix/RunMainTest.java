@@ -44,16 +44,4 @@ public class RunMainTest extends BasePlatformTestCase {
         PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
         return psiJavaFile.getClasses();
     }
-
-    @Test
-    public void testClassLength() {
-        PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase2.txt");
-        System.out.println("ClassLength Test");
-
-        for (PsiClass psiClass : psiClasses) {
-            OOMClass oomClass = new OOMClass(psiClass);
-            System.out.println(oomClass.getClassLength());
-            assertEquals(oomClass.getClassLength(), (Integer) 52);
-        }
-    }
 }
