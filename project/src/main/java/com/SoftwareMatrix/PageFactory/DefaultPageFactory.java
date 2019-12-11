@@ -36,6 +36,7 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
   @Override
   public void update(Project project, PsiElement elem){
     // color refresh has 5~10 seconds of delay
+
     if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
       edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
       node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
