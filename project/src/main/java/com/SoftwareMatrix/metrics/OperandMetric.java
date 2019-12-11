@@ -17,7 +17,6 @@ public class OperandMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         if(target==null)
         {
-            System.out.println("No class for calculation!");
             return lastResult;
         }
 

@@ -23,7 +23,6 @@ public class DistinctOperatorMetric extends Metric {
         Set<String> distinctOperators = new HashSet<>();
         if(target==null)
         {
-            System.out.println("No class for calculation!");
             return lastResult;
         }
 

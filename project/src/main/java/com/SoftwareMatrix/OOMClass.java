@@ -49,7 +49,6 @@ public class OOMClass {
         }
 
         // ClassLength
-        System.out.println("CLASSLENGTH");
         Document document = PsiDocumentManager.getInstance(psiClass.getProject())
                 .getDocument(psiClass.getContainingFile());
         ClassLength = document.getLineNumber(psiClass.getTextRange().getEndOffset())

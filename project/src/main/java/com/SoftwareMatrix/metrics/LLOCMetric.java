@@ -21,7 +21,6 @@ public class LLOCMetric extends Metric{
 ////            else {
 ////                lloc += m.getBody().getStatements().length;
 ////                for(PsiStatement s: m.getBody().getStatements()) {
-////                    System.out.println(s.toString());
 ////                }
 ////            }
             lloc += PsiTreeUtil.findChildrenOfType(m, PsiStatement.class).size();

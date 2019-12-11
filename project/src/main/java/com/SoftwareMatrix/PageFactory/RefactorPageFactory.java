@@ -122,7 +122,6 @@ public class RefactorPageFactory implements UpdateObserver {
     public boolean addButton(String name) {
         JButton button = new JButton(name);
         button.addActionListener(e -> {
-//            System.out.println("Listen button clicked action at " + Entry.getKey());
             window.changeView(name);
         });
         return buttonList.add(button);

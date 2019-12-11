@@ -13,10 +13,7 @@ class ProgressRenderer extends JProgressBar implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
                                                     boolean isSelected, boolean hasFocus, int row, int column) {
-        System.out.println(row+" "+((Metric)(table.getValueAt(row, 0))).getRatio()+" "+(int)Math.round(((Metric)(table.getValueAt(row, 0))).getRatio()*100.0));
         this.setValue((int)Math.round(((Metric)(table.getValueAt(row, 0))).getRatio()*100.0));
-//        System.out.println();
-//        this.setValue((int)Math.round(Double.parseDouble(table.getValueAt(row, 1).toString())*100));
         return this;
     }
 }

@@ -25,7 +25,6 @@ public class PFMetric extends Metric {
         if(target.getParent() == null)
             return lastResult = 0;
         if(!(target.getParent() instanceof PsiClass)) {
-            System.out.println("No parent class but not NULL!");
             return -1;
         }
         double temp = npvMetric.calculate(project, (PsiClass)target.getParent());

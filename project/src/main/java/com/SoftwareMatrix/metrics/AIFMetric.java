@@ -22,7 +22,6 @@ public class AIFMetric extends Metric {
         if(target.getParent() == null)
             return lastResult = 0;
         if(!(target.getParent() instanceof PsiClass)) {
-            System.out.println("No parent class but not NULL!");
             return lastResult = -1;
         }
         int nppv=0;     //get parent's nppv value

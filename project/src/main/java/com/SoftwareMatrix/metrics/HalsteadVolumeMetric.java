@@ -32,7 +32,6 @@ public class HalsteadVolumeMetric extends Metric{
         double volume;
         if(target==null)
         {
-            System.out.println("No class for calculation!");
             return lastResult;
         }
 

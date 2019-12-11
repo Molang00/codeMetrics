@@ -24,7 +24,6 @@ public class DistinctOperandMetric extends Metric {
 
         if(target==null)
         {
-            System.out.println("No class for calculation!");
             return lastResult;
         }
 

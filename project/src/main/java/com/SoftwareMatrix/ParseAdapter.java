@@ -382,7 +382,6 @@ public class ParseAdapter {
         }
         else
         {
-            //System.out.println("Unexpected Statement Input");
             /* Consider Following statements;
             - class level declaration already dealt
             - Empty has no operand
@@ -576,11 +575,6 @@ public class ParseAdapter {
                 PsiPackage pack = JavaPsiFacade.getInstance(project).findPackage(PackageName);
                 ret.add(pack);
             }
-        }
-
-        if (ret.isEmpty()) {
-            System.out.println("Can not find packages!");
-            System.out.println("Empty list would be returned");
         }
 
         return Set.copyOf(ret);

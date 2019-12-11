@@ -26,7 +26,6 @@ public class DifficultyMetric extends Metric {
         double difficulty;
         if(target==null)
         {
-            System.out.println("No class for calculation!");
             return lastResult;
         }
 
