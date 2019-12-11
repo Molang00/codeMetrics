@@ -87,13 +87,31 @@ public class ParseAdapter {
     }
 
     /**
-     * get branch PsiElements - If/While/DoWhile/For/Switch/Foreach - as list.
+     * get branch PsiElements - If/While/DoWhile/For/Switch/Foreach - as list in class.
+     * In Switch, default case also be added but need to be filtered after.
+     *
+     * @param _class : a class to get branches
+     * @return the set of PsiElement
+     */
+    public static Set<PsiElement> getBranch(@NotNull PsiClass _class) {
+        Set<PsiElement> branches = new HashSet<>();
+        for(PsiMethod m : _class.getConstructors()) {
+            branches.addAll(getBranchMethod(m));
+        }
+        for(PsiMethod m : _class.getMethods()) {
+            branches.addAll(getBranchMethod(m));
+        }
+        return branches;
+    }
+
+    /**
+     * get branch PsiElements - If/While/DoWhile/For/Switch/Foreach - as list in method.
      * In Switch, default case also be added but need to be filtered after.
      *
      * @param method : a method to get branches
      * @return the set of PsiElement
      */
-    public static Set<PsiElement> getBranch(@NotNull PsiMethod method) {
+    public static Set<PsiElement> getBranchMethod(@NotNull PsiMethod method) {
         Set<PsiElement> branch = new HashSet<>();
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiIfStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiWhileStatement.class));
@@ -102,59 +120,6 @@ public class ParseAdapter {
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiSwitchLabelStatement.class));
         branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiForeachStatement.class));
         return branch;
-    }
-
-
-    /**
-     * get number of edges in method
-     * @param method : a method to get edges
-     * @return the number of edges
-     */
-    public static int getEdge(@NotNull PsiMethod method) {
-        Set<PsiElement> branch = getBranch(method);
-
-        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
-
-        int edge = 0;
-
-        for (PsiElement elem : branch) {
-            edge += 1;
-            if(elem instanceof PsiTryStatement) {
-                edge += ((PsiTryStatement) elem).getCatchBlocks().length;
-            }
-            else {
-                edge += 1;
-            }
-        }
-        return edge;
-    }
-
-    /**
-     * get number of nodes in method
-     * @param method : a method to get nodes
-     * @return the number of nodes
-     */
-    public static int getNode(@NotNull PsiMethod method) {
-        Set<PsiElement> branch = getBranch(method);
-
-        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiTryStatement.class));
-        branch.addAll(PsiTreeUtil.findChildrenOfType(method, PsiReturnStatement.class));
-
-        int node = 0;
-
-        for (PsiElement elem : branch) {
-            node += 1;
-            if(elem instanceof PsiTryStatement) {
-                node += ((PsiTryStatement) elem).getCatchBlocks().length;
-            }
-            else if (elem instanceof PsiReturnStatement) {
-                continue;
-            }
-            else {
-                node += 1;
-            }
-        }
-        return node;
     }
 
     /**
@@ -398,7 +363,6 @@ public class ParseAdapter {
 
     public static Set<PsiElement> getOperands(@NotNull PsiClass _class)
     {
-        System.out.println(_class.getText());
         Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
 
         for(PsiMethod m : _class.getAllMethods())
@@ -443,12 +407,18 @@ public class ParseAdapter {
         // All the brackets, commas, and terminators are considered as operators.
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiArrayAccessExpression.class));
 
+        // All conditional expressions are considered as operators.
+        operators.addAll(PsiTreeUtil.findChildrenOfAnyType(_method, PsiConditionalExpression.class));
+
         // Normal binary/Assign expressions
         for(PsiElement e : PsiTreeUtil.findChildrenOfType(_method, PsiAssignmentExpression.class)) {
             operators.add(((PsiAssignmentExpression)e).getOperationSign());
         }
         for(PsiElement e : PsiTreeUtil.findChildrenOfType(_method, PsiBinaryExpression.class)) {
             operators.add(((PsiBinaryExpression)e).getOperationSign());
+        }
+        for(PsiElement e : PsiTreeUtil.findChildrenOfType(_method, PsiUnaryExpression.class)) {
+            operators.add(((PsiUnaryExpression)e).getOperationSign());
         }
 
         // No way to count . ->
@@ -458,8 +428,14 @@ public class ParseAdapter {
     public static Set<PsiElement> getOperators(@NotNull PsiClass _class)
     {
         Set<PsiElement> operators = new HashSet<>();
-        for(PsiMethod m : _class.getAllMethods())
-            operators.addAll(getOperatorsMethod(m));
+        for(PsiMethod m : _class.getConstructors()) {
+            if(m != null)
+                operators.addAll(getOperatorsMethod(m));
+        }
+        for(PsiMethod m : _class.getAllMethods()) {
+            if(m != null)
+                operators.addAll(getOperatorsMethod(m));
+        }
         return operators;
     }
 
@@ -485,7 +461,7 @@ public class ParseAdapter {
      * @return logical lines of code of its class.
      */
     public static int getLLoc(@NotNull PsiClass _class) {
-        return _class.getChildren().length;
+        return PsiTreeUtil.findChildrenOfType(_class, PsiStatement.class).size();
     }
 
     /**

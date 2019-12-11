@@ -42,7 +42,7 @@ public class MetricsResultWindow implements UpdateObserver {
         settingAllStatus();
     }
 
-    public void settingAllStatus() {
+    private void settingAllStatus() {
 
         myToolWindowContent = new JPanel();
         defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
@@ -52,7 +52,12 @@ public class MetricsResultWindow implements UpdateObserver {
         halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
         SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
 
+        uManager.addObserver(defaultpageFactory);
+        uManager.addObserver(mipageFactory);
+        uManager.addObserver(oopageFactory);
         uManager.addObserver(ccpageFactory);
+        uManager.addObserver(halsteadVolumePageFactory);
+        uManager.addObserver(SLOCpageFactory);
         label = "Default";
         defaultpageFactory.createPage();
     }
@@ -68,14 +73,8 @@ public class MetricsResultWindow implements UpdateObserver {
 
     @Override
     public void update(Project project, PsiElement elem) {
-        settingAllStatus();
-
-        // color refresh has 5~10 seconds of delay
-
-        System.out.println(elem);
-        System.out.println(ParseAdapter.getContainingMethod(elem));
-        System.out.println(ParseAdapter.getContainingClass(elem));
-        System.out.println(ParseAdapter.getContainingPackage(elem));
+//        settingAllStatus();
+        myToolWindowContent.revalidate();
     }
 
     public void changeView(String label) {

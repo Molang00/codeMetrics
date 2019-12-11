@@ -15,7 +15,7 @@ public class OOMCalculator {
 
    private List<OOMClass> classList;
 
-    OOMCalculator(@NotNull PsiPackage psiPackage) {
+    public OOMCalculator(@NotNull PsiPackage psiPackage) {
         // TODO
         classList = new ArrayList<>();
         for(PsiClass p : psiPackage.getClasses()) {
@@ -23,6 +23,7 @@ public class OOMCalculator {
             classList.add(oomClass);
         }
     }
+
 
     /**
      * Lorenz Kidd metrics:
@@ -41,6 +42,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all NM scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NM score in the PsiPackage
+     */
+    public Integer GetPackageNM() {
+        Integer ret = 0;
+        Map<String, Integer> NMmaps = calculateNM();
+
+        for (Integer val: NMmaps.values())
+            ret += val;
+        return ret;
+    }
+
+
+    /**
      * Lorenz Kidd metrics:
      * calculate the Number of Public Methdos (PM): the number of public methods in a class
      * @return a map: [class name: number of public methods in this class]
@@ -55,6 +70,18 @@ public class OOMCalculator {
         return classPM;
     }
 
+    /**
+     * Sum all PM scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total PM score in the PsiPackage
+     */
+    public Integer GetPackagePM() {
+        Integer ret = 0;
+        Map<String, Integer> PMmaps = calculatePM();
+
+        for (Integer val: PMmaps.values())
+            ret += val;
+        return ret;
+    }
 
 
     /**
@@ -71,6 +98,19 @@ public class OOMCalculator {
         }
 
         return classNPV;
+    }
+
+    /**
+     * Sum all NPV scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NPV score in the PsiPackage
+     */
+    public Integer GetPackageNPV() {
+        Integer ret = 0;
+        Map<String, Integer> NPVmaps = calculateNPV();
+
+        for (Integer val: NPVmaps.values())
+            ret += val;
+        return ret;
     }
 
 
@@ -92,6 +132,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all NV scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NV score in the PsiPackage
+     */
+    public Integer GetPackageNV() {
+        Integer ret = 0;
+        Map<String, Integer> NVmaps = calculateNV();
+
+        for (Integer val: NVmaps.values())
+            ret += val;
+        return ret;
+    }
+
+
+    /**
      * Lorenz Kidd metrics:
      * calculate the Number of Methods Inherited by a subclass (NMI): the number of 
      * methods inherited by a subclass
@@ -105,6 +159,20 @@ public class OOMCalculator {
 
         return classNMI;
     }
+
+    /**
+     * Sum all NMI scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NMI score in the PsiPackage
+     */
+    public Integer GetPackageNMI() {
+        Integer ret = 0;
+        Map<String, Integer> NMImaps = calculateNMI();
+
+        for (Integer val: NMImaps.values())
+            ret += val;
+        return ret;
+    }
+
 
     /**
      * Lorenz Kidd metrics:
@@ -123,6 +191,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all NMO scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NMO score in the PsiPackage
+     */
+    public Integer GetPackageNMO() {
+        Integer ret = 0;
+        Map<String, Integer> NMOmaps = calculateNMO();
+
+        for (Integer val: NMOmaps.values())
+            ret += val;
+        return ret;
+    }
+
+
+    /**
      * Lorenz Kidd metrics:
      * calculate the Number of Methods Added by a subclass (NMA)
      * @return the number of methods subclass added
@@ -135,6 +217,7 @@ public class OOMCalculator {
 
         return classNMA;
     }
+
 
     /**
      * Lorenz Kidd metrics:
@@ -153,6 +236,22 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all AMS scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total AMS score in the PsiPackage
+     */
+    public Integer GetPackageAMS() {
+        Double ret = 0.0;
+        Map<String, Double> AMSmaps = calculateAMS();
+
+        for (Double val: AMSmaps.values())
+            ret += val;
+
+        Double average = ret / AMSmaps.size();
+        return average.intValue();
+    }
+
+
+    /**
      * Abreu Metrics:
      * calculate the Polymorphism Factor (PF): Ratio of the number of overriding methods in a
      * class to the total possible number of overridden methods
@@ -166,6 +265,20 @@ public class OOMCalculator {
 
         return classPF;
     }
+
+    /**
+     * Sum all PF scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total PF score in the PsiPackage
+     */
+    public Integer GetPackagePF() {
+        Double ret = 0.0;
+        Map<String, Double> PFmaps = calculatePF();
+
+        for (Double val: PFmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
 
     /**
      * Abreu Metrics:
@@ -184,6 +297,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all MHF scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total MHF score in the PsiPackage
+     */
+    public Integer GetPackageMHF() {
+        Double ret = 0.0;
+        Map<String, Double> MHFmaps = calculateMHF();
+
+        for (Double val: MHFmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
+
+    /**
      * Abreu Metrics:
      * calculate the Method Inheritance Factor (MIF): the number of inherited methods as 
      * a ratio of total methods
@@ -197,6 +324,20 @@ public class OOMCalculator {
 
         return classMIF;
     }
+
+    /**
+     * Sum all MIF scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total MIF score in the PsiPackage
+     */
+    public Integer GetPackageMIF() {
+        Double ret = 0.0;
+        Map<String, Double> MIFmaps = calculateMIF();
+
+        for (Double val: MIFmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
 
     /**
      * Abreu Metrics:
@@ -214,6 +355,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all AHF scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total AHF score in the PsiPackage
+     */
+    public Integer GetPackageAHF() {
+        Double ret = 0.0;
+        Map<String, Double> AHFmaps = calculateAHF();
+
+        for (Double val: AHFmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
+
+    /**
      * Abreu Metrics:
      * calculate the Attribute Inheritance Factor (AIF): the number of inherited attributes 
      * as a ratio of total attributes
@@ -225,6 +380,19 @@ public class OOMCalculator {
         }
 
         return classAIF;
+    }
+
+    /**
+     * Sum all AIF scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total AIF score in the PsiPackage
+     */
+    public Integer GetPackageAIF() {
+        Double ret = 0.0;
+        Map<String, Double> AIFmaps = calculateAIF();
+
+        for (Double val: AIFmaps.values())
+            ret += val;
+        return ret.intValue();
     }
 
 
@@ -253,6 +421,20 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all DIT scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total DIT score in the PsiPackage
+     */
+    public Integer GetPackageDIT() {
+        Double ret = 0.0;
+        Map<String, Double> DITmaps = calculateDIT();
+
+        for (Double val: DITmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
+
+    /**
      * Chidamber and Kemerer Metrics:
      * calculate the Number of Children (NOC): number of subclasses belonging to a class
      * @return the number of subclasses belonging to this class
@@ -267,12 +449,39 @@ public class OOMCalculator {
     }
 
     /**
+     * Sum all NOC scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total NOC score in the PsiPackage
+     */
+    public Integer GetPackageNOC() {
+        Double ret = 0.0;
+        Map<String, Double> NOCmaps = calculateNOC();
+
+        for (Double val: NOCmaps.values())
+            ret += val;
+        return ret.intValue();
+    }
+
+
+    /**
      * Chidamber and Kemerer Metrics:
      * calculate the Weighted Methods per Class (WMC):  the number of methods in a class
      * @return a map: [class name: the number of methods in this class]
      */
     public Map<String, Integer> calculateWMC() {
         return calculateNM();
+    }
+
+    /**
+     * Sum all WMC scores in the PsiPackage which was a parameter of constructor.
+     * @return a Interger: Total WMC score in the PsiPackage
+     */
+    public Integer GetPackageWMC() {
+        Integer ret = 0;
+        Map<String, Integer> WMCmaps = calculateWMC();
+
+        for (Integer val: WMCmaps.values())
+            ret += val;
+        return ret;
     }
 
 }

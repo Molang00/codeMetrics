@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.BorderLayout;
 import java.awt.*;
+import java.util.Set;
 
 public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver {
   /* Declare private fields here */
@@ -19,27 +20,42 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
   private JScrollPane tableContent;
   private JButton resetButton, MIButton, OOButton;
   private JPanel tablePanel;
-  Object[] operators, operands;
+  private JTable table;
+  Set<PsiElement> operators, operands;
   int edge, node, lloc, loc, cloc;
 
   public DefaultPageFactory(MetricsResultWindow window, JPanel mainPanel) {
     this.window = window;
     this.DefaultPage = mainPanel;
+    MIscore = 0;
+    OOscore = 0;
+
+    generateTable();
   }
 
+  @Override
   public void update(Project project, PsiElement elem){
     // color refresh has 5~10 seconds of delay
     if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
       edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
       node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
 
+      operators = ParseAdapter.getOperators(ParseAdapter.getContainingClass(elem));
+      operands = ParseAdapter.getOperands(ParseAdapter.getContainingClass(elem));
 
+      lloc = ParseAdapter.getLLoc(ParseAdapter.getContainingClass(elem));
+      loc = ParseAdapter.getLoc(ParseAdapter.getContainingClass(elem));
+      cloc = ParseAdapter.getCLoc(ParseAdapter.getContainingClass(elem));
+
+      MIscore = MICalculator.calculateMI(operators, operands, edge, node, lloc, loc, cloc);
+//      OOscore =
+
+      table.setValueAt(MIscore, 0, 1);
+      table.setValueAt(OOscore, 1, 1);
+
+      tablePanel.revalidate();
     }
 
-    System.out.println("111" + elem);
-    System.out.println("222" + ParseAdapter.getContainingMethod(elem));
-    System.out.println("333" + ParseAdapter.getContainingClass(elem));
-    System.out.println("444" + ParseAdapter.getContainingPackage(elem));
   }
 
   /**
@@ -114,7 +130,7 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
 
   public void generateTable() {
     tablePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    JTable table = new JTable();
+    table = new JTable();
     tableContent = new JScrollPane(table);
     String[] header = { "Type", "Score", "Graph" };
     String[][] body = { { "MI", "", "" }, { "OO", "", "" } };
@@ -130,7 +146,6 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
     table.getColumnModel().getColumn(0).setCellRenderer(dtcr);
     table.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 
-    settingAllStatus();
     table.setValueAt(MIscore, 0, 1);
     table.setValueAt(OOscore, 1, 1);
 
@@ -163,26 +178,5 @@ public class DefaultPageFactory implements PageFactoryInterface, UpdateObserver 
 
       return this;
     }
-  }
-
-  public Integer getOOsocre() {
-    return OOscore;
-  }
-
-  public Integer getMIscore() {
-    return MIscore;
-  }
-
-  public void setOOscore(Integer s) {
-    OOscore = s;
-  }
-
-  public void setMIscore(Integer s) {
-    MIscore = s;
-  }
-
-  public void settingAllStatus() {
-    setMIscore(90);
-    setOOscore(10);
   }
 }
