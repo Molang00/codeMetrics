@@ -12,10 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import java.awt.*;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,15 +20,12 @@ import org.jetbrains.annotations.NotNull;
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
     private JPanel myToolWindowContent;
-    private RefactorPageFactory PageFactory;
-    private DefaultPageFactory defaultpageFactory;
-//    private MIPageFactory mipageFactory;
-//    private OOPageFactory oopageFactory;
-//    private CCPageFactory ccpageFactory;
-//    private HalsteadVolumePageFactory halsteadVolumePageFactory;
-//    private SLOCPageFactory SLOCpageFactory;
+    private RefactorPageFactory currentPageFactory; // state of this FSM
+    private Map<String, RefactorPageFactory> pfMap;
+
     private String label;
     private UpdateManager uManager;
+    private Stack<String> history;
 
     /**
      * Constructor of tool window
@@ -39,29 +33,84 @@ public class MetricsResultWindow implements UpdateObserver {
     public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
         uManager = UpdateManager.getInstance(project); // init update manager
         myToolWindowContent = new JPanel();
+        pfMap = new HashMap<>();
+        history = new Stack<>();
 
-        PageFactory = new RefactorPageFactory(this, myToolWindowContent);
+        Metric AHF = new AHFMetric("AHF");
+        Metric AIF = new AIFMetric("AIF");
+        Metric AMS = new AMSMetric("AMS");
+        Metric CLOC = new CLOCMetric("CLOC");
+        Metric Cyclomatic = new CyclomaticMetric("Cyclomatic");
+        Metric DIT = new DITMetric("DIT");
+        Metric HalsteadVolume = new HalsteadVolumeMetric("HalsteadVolume");
+        Metric LLOC = new LLOCMetric("LLOC");
+        Metric LOC = new LOCMetric("LOC");
+        Metric Maintainability = new MaintainabilityMetric("Maintainability");
+        Metric MHF = new MHFMetric("MHF");
+        Metric MIF = new MIFMetric("MIF");
+        Metric NMA = new NMAMetric("NMA");
+        Metric NMI = new NMIMetric("NMI");
+        Metric NM = new NMMetric("NM");
+        Metric NMO = new NMOMetric("NMO");
+        Metric NOC = new NOCMetric("NOC");
+        Metric NPV = new NPVMetric("NPV");
+        Metric NV = new NVMetric("NV");
+        Metric PF = new PFMetric("PF");
+        Metric PM = new PMMetric("PM");
 
-//        settingAllStatus();
+        RefactorPageFactory defaultPageFactory = addPageFactory("Default", Arrays.asList(
+                AHF, AIF, AMS, CLOC, Cyclomatic, DIT, HalsteadVolume, LLOC, LOC, Maintainability,
+                MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, PF, PM
+        ), Arrays.asList(
+                "MI", "OO"
+        ));
+
+        addPageFactory("MI", Arrays.asList(
+                Maintainability, HalsteadVolume, Cyclomatic, CLOC, LOC, LLOC
+        ), Arrays.asList(
+                "back", "Halstead", "CC", "LOC"
+        ));
+
+        addPageFactory("Halstead", Arrays.asList(
+                HalsteadVolume
+        ), Arrays.asList(
+                "back"
+        ));
+
+        addPageFactory("CC", Arrays.asList(
+                Cyclomatic
+        ), Arrays.asList(
+                "back"
+        ));
+
+        addPageFactory("LOC", Arrays.asList(
+                LLOC, CLOC, LOC
+        ), Arrays.asList(
+                "back"
+        ));
+
+        addPageFactory("OO", Arrays.asList(
+                AHF, AIF, AMS, DIT, MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, PF, PM
+        ), Arrays.asList(
+                "back"
+        ));
+
+        label = "Default";
+        changeView(label);
     }
 
-    private void settingAllStatus() {
+    // put this to public?
+    private RefactorPageFactory addPageFactory(String label, List<Metric> metrics, List<String> buttons) {
+        RefactorPageFactory pf = new RefactorPageFactory(label, this, myToolWindowContent);
+        for(Metric m: metrics) {
+            pf.addMetric(m);
+        }
+        for(String b: buttons){
+            pf.addButton(b);
+        }
 
-//        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
-//        mipageFactory = new MIPageFactory(this, myToolWindowContent);
-//        oopageFactory = new OOPageFactory(this, myToolWindowContent);
-//        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
-//        halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
-//        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
-
-        uManager.addObserver(defaultpageFactory);
-        uManager.addObserver(mipageFactory);
-        uManager.addObserver(oopageFactory);
-        uManager.addObserver(ccpageFactory);
-        uManager.addObserver(halsteadVolumePageFactory);
-        uManager.addObserver(SLOCpageFactory);
-        label = "Default";
-        defaultpageFactory.createPage();
+        pfMap.put(label, pf);
+        return pf;
     }
 
     /**
@@ -80,8 +129,29 @@ public class MetricsResultWindow implements UpdateObserver {
     }
 
     public void changeView(String label) {
-        this.label=label;
-        PageFactory.createPage(label);
+        if(label.equals("back")){
+            history.pop();
+            label = history.pop();
+        }
+        if(!pfMap.containsKey(label)) {
+            if(currentPageFactory != null)
+                uManager.removeObserver(currentPageFactory);
+            currentPageFactory = pfMap.get("Default");
+            uManager.clearObserver();
+            history.clear();
+            history.push("Default");
+            uManager.addObserver(currentPageFactory);
+            currentPageFactory.createPage();
+            myToolWindowContent.revalidate();
+            return;
+        }
+
+        if(currentPageFactory != null)
+            uManager.removeObserver(currentPageFactory);
+        currentPageFactory = pfMap.get(label);
+        history.push(label);
+        uManager.addObserver(currentPageFactory);
+        currentPageFactory.createPage();
         myToolWindowContent.revalidate();
     }
 }

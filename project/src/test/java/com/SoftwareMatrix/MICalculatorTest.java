@@ -24,6 +24,11 @@ class MICalculatorTest {
     }
 
     @Test
+    void calc () {
+
+    }
+
+    @Test
     void calculateCC() {
         int edges = 10;
         int nodes = 20;

@@ -50,11 +50,7 @@ public class Tutorial {
         addNode("Maintainability_Index", metrics);
         addNode("Halstead_Metrics", metrics);
         addNode("Cyclomatic_Complexity", metrics);
-        DefaultMutableTreeNode OOM = addNode("Object-Oriented_Metrics", metrics);
-        addNode("Object-Oriented_Metrics", OOM);
-        DefaultMutableTreeNode functions = addNode("Functions", root);
-        addNode("Calculations", functions);
-        addNode("Exports", functions);
+        addNode("Object-Oriented_Metrics", metrics);
 
         tree = new Tree(root);
 

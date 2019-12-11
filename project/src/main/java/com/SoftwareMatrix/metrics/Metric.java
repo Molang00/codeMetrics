@@ -29,4 +29,6 @@ public abstract class Metric {
 
     public String getName(){ return name; }
     public double getRatio(){ return (lastResult-minVal)/(maxVal-minVal); }     //return 0~1
+    @Override
+    public String toString(){return name;}
 }
