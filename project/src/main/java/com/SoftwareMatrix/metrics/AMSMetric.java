@@ -25,6 +25,9 @@ public class AMSMetric extends Metric {
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return (locMetric.calculate(project, target) - clocMetric.calculate(project, target)) / nmMetric.calculate(project, target);
+        double temp = nmMetric.calculate(project, target);
+        if(temp==0)
+            return 0;
+        return (locMetric.calculate(project, target) - clocMetric.calculate(project, target)) / temp;
     }
 }

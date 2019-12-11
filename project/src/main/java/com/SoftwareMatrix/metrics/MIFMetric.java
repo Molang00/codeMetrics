@@ -28,6 +28,9 @@ public class MIFMetric extends Metric {
             System.out.println("No parent class but not NULL!");
             return 0;
         }
-        return nmiMetric.calculate(project, (PsiClass)target.getParent()) / nmMetric.calculate(project, target);
+        double temp = nmMetric.calculate(project, target);
+        if(temp==0)
+            return 0;
+        return nmiMetric.calculate(project, (PsiClass)target.getParent()) / temp;
     }
 }

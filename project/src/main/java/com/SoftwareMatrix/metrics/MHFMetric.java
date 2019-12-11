@@ -22,6 +22,9 @@ public class MHFMetric extends Metric {
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return (nmMetric.calculate(project, target) - pmMetric.calculate(project, target)) / nmMetric.calculate(project, target);
+        double temp = nmMetric.calculate(project, target);
+        if(temp==0)
+            return 0;
+        return (temp - pmMetric.calculate(project, target)) / temp;
     }
 }
