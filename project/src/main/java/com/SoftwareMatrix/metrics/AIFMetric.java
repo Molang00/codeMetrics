@@ -30,6 +30,8 @@ public class AIFMetric extends Metric {
             if(!f.hasModifierProperty(PsiModifier.PRIVATE))
                 nppv++;
         }
+        if((double)nppv + nvMetric.calculate(project, target) == 0)
+            return 0;
         return (double)nppv / ((double)nppv + nvMetric.calculate(project, target));
     }
 }

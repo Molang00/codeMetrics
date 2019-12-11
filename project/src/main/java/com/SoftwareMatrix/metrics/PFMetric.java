@@ -28,6 +28,9 @@ public class PFMetric extends Metric {
             System.out.println("No parent class but not NULL!");
             return 0;
         }
-        return nmoMetric.calculate(project, target) / npvMetric.calculate(project, (PsiClass)target.getParent());
+        double temp = npvMetric.calculate(project, (PsiClass)target.getParent());
+        if(temp == 0)
+            return 0;
+        return nmoMetric.calculate(project, target) / temp;
     }
 }
