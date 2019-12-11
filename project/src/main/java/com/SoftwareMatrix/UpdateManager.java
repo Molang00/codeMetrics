@@ -169,4 +169,6 @@ public class UpdateManager {
     public boolean removeObserver(UpdateObserver observer) {
         return observers.remove(observer);
     }
+
+    public void clearObserver() { observers.clear(); }
 }
