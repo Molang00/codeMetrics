@@ -6,13 +6,13 @@ import com.intellij.psi.PsiClass;
 public class EffortMetric extends Metric {
     DifficultyMetric difficultyMetric;
     HalsteadVolumeMetric halsteadVolumeMetric;
-    EffortMetric(String name, double minVal, double maxVal) {
+    public EffortMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         difficultyMetric = new DifficultyMetric(name+"_dif");
         halsteadVolumeMetric = new HalsteadVolumeMetric(name+"_vol");
     }
 
-    EffortMetric(String name) {
+    public EffortMetric(String name) {
         super(name);
         difficultyMetric = new DifficultyMetric(name+"_dif");
         halsteadVolumeMetric = new HalsteadVolumeMetric(name+"_vol");
@@ -20,6 +20,6 @@ public class EffortMetric extends Metric {
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return difficultyMetric.calculate(project, target) * halsteadVolumeMetric.calculate(project, target);
+        return lastResult = difficultyMetric.calculate(project, target) * halsteadVolumeMetric.calculate(project, target);
     }
 }

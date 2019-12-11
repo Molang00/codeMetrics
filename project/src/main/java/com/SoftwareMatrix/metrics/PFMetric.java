@@ -23,14 +23,14 @@ public class PFMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         if(target.getParent() == null)
-            return 0;
+            return lastResult = 0;
         if(!(target.getParent() instanceof PsiClass)) {
             System.out.println("No parent class but not NULL!");
-            return 0;
+            return -1;
         }
         double temp = npvMetric.calculate(project, (PsiClass)target.getParent());
         if(temp == 0)
-            return 0;
-        return nmoMetric.calculate(project, target) / temp;
+            return lastResult = 0;
+        return lastResult = nmoMetric.calculate(project, target) / temp;
     }
 }

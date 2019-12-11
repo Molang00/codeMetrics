@@ -14,6 +14,6 @@ public class NOCMetric extends Metric {
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return (double)target.getAllInnerClasses().length;
+        return lastResult = (double)target.getInnerClasses().length;
     }
 }

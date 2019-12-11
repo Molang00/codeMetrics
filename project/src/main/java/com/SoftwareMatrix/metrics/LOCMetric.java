@@ -17,11 +17,11 @@ public class LOCMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         String str = target.getText();
         if(str == null) {
-            return 0;
+            return lastResult = 0;
         }
         else {
             String[] lines = str.split("\r\n|\r|\n");
-            return lines.length;
+            return lastResult = lines.length;
         }
     }
 }

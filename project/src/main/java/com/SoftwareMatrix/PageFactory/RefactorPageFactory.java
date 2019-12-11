@@ -43,7 +43,13 @@ public class RefactorPageFactory implements UpdateObserver {
         JScrollPane tableContent = new JScrollPane(table);
 
         String[] header = { pageName+" Features", "Score", "Graph" };
-        DefaultTableModel model = new DefaultTableModel(header, metricList.size());
+        DefaultTableModel model = new DefaultTableModel(header, metricList.size()) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
         table.setModel(model);
         DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
         dtcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -85,10 +91,16 @@ public class RefactorPageFactory implements UpdateObserver {
 
 
         JPanel bottomPanel = new JPanel();
-        for (JButton button: buttonList) {
-            bottomPanel.add(button);
-        }
+        JPanel buttonPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
+        JLabel warningMessage = new JLabel("<html>&nbsp;&nbsp;&nbsp;&nbsp;If any value above is -1,<br>&nbsp;&nbsp;&nbsp;&nbsp;it is a value that cannot be calculated <br>&nbsp;&nbsp;&nbsp;&nbsp;in the currently selected class.</html>");
+        warningMessage.setPreferredSize(new Dimension(mainPanel.getWidth(), 50));
+        bottomPanel.add(warningMessage, BorderLayout.NORTH);
 
+        for (JButton button: buttonList) {
+            buttonPanel.add(button);
+        }
+        bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         mainPanel.addComponentListener(new ComponentAdapter() {
@@ -116,7 +128,7 @@ public class RefactorPageFactory implements UpdateObserver {
         return buttonList.add(button);
     }
 
-
+    @Override
     public void update(Project project, PsiElement elem){
         // color refresh has 5~10 seconds of delay
         if(elem == null) return;
@@ -124,10 +136,9 @@ public class RefactorPageFactory implements UpdateObserver {
         if(_class != null) {
             int i = 0;
             for(Metric m : metricList) {
-                table.setValueAt(Math.round(m.calculate(project, _class)), i++, 1); // Set edge value
-                tablePanel.revalidate();
+                table.setValueAt(Math.round(m.calculate(project, _class)*100.0)/100.0, i++, 1); // Set edge value
             }
         }
-
+        tablePanel.revalidate();
     }
 }

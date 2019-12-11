@@ -23,14 +23,14 @@ public class MIFMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         if(target.getParent() == null)
-            return 0;
+            return lastResult = 0;
         if(!(target.getParent() instanceof PsiClass)) {
             System.out.println("No parent class but not NULL!");
-            return 0;
+            return -1;
         }
         double temp = nmMetric.calculate(project, target);
         if(temp==0)
-            return 0;
-        return nmiMetric.calculate(project, (PsiClass)target.getParent()) / temp;
+            return lastResult = 0;
+        return lastResult = nmiMetric.calculate(project, (PsiClass)target.getParent()) / temp;
     }
 }

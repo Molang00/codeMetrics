@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DistinctOperatorMetric extends Metric {
-    DistinctOperatorMetric(String name, double minVal, double maxVal) {
+    public DistinctOperatorMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    DistinctOperatorMetric(String name) {
+    public DistinctOperatorMetric(String name) {
         super(name);
     }
 
@@ -32,6 +32,6 @@ public class DistinctOperatorMetric extends Metric {
             String operator = value.toString();
             distinctOperators.add(operator);
         }
-        return (double)distinctOperators.size();
+        return lastResult = (double)distinctOperators.size();
     }
 }

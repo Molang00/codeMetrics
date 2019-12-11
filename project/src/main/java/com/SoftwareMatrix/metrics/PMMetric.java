@@ -21,10 +21,10 @@ public class PMMetric extends Metric{
     @Override
     public double calculate(Project project, PsiClass target) {
         int cnt=0;
-        for(PsiMethod m : target.getAllMethods()) {
+        for(PsiMethod m : target.getMethods()) {
             if(m.hasModifierProperty(PsiModifier.PUBLIC))
                 cnt++;
         }
-        return (double)cnt;
+        return lastResult = (double)cnt;
     }
 }

@@ -38,10 +38,9 @@ public class MaintainabilityMetric extends Metric {
         double lloc = llocMetric.calculate(project, target);
 
         if(volume == 0 || lloc == 0)
-            return 0;
+            return lastResult = 0;
         result = 171 - (5.2 * Math.log(volume) / Math.log(2)) - (0.23 * ccSum) - (16.2 * Math.log(lloc) / Math.log(2)) + (50 * Math.sin(Math.toRadians(Math.sqrt(2.4 * commentPercent))));
-        lastResult = result;
 
-        return result;
+        return lastResult = result;
     }
 }

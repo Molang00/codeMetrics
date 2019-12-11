@@ -20,18 +20,18 @@ public class AIFMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         if(target.getParent() == null)
-            return 0;
+            return lastResult = 0;
         if(!(target.getParent() instanceof PsiClass)) {
             System.out.println("No parent class but not NULL!");
-            return 0;
+            return lastResult = -1;
         }
         int nppv=0;     //get parent's nppv value
-        for(PsiField f : ((PsiClass)target.getParent()).getAllFields()) {
+        for(PsiField f : ((PsiClass)target.getParent()).getFields()) {
             if(!f.hasModifierProperty(PsiModifier.PRIVATE))
                 nppv++;
         }
         if((double)nppv + nvMetric.calculate(project, target) == 0)
-            return 0;
-        return (double)nppv / ((double)nppv + nvMetric.calculate(project, target));
+            return lastResult = 0;
+        return lastResult = (double)nppv / ((double)nppv + nvMetric.calculate(project, target));
     }
 }

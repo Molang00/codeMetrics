@@ -5,11 +5,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 public class OperandMetric extends Metric {
-    OperandMetric(String name, double minVal, double maxVal) {
+    public OperandMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    OperandMetric(String name) {
+    public OperandMetric(String name) {
         super(name);
     }
 
@@ -21,6 +21,6 @@ public class OperandMetric extends Metric {
             return lastResult;
         }
 
-        return (double)ParseAdapter.getOperands(target).size();
+        return lastResult = (double)ParseAdapter.getOperands(target).size();
     }
 }

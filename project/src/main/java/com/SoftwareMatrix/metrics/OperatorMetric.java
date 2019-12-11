@@ -5,11 +5,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 public class OperatorMetric extends Metric {
-    OperatorMetric(String name, double minVal, double maxVal) {
+    public OperatorMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    OperatorMetric(String name) {
+    public OperatorMetric(String name) {
         super(name);
     }
 
@@ -21,6 +21,6 @@ public class OperatorMetric extends Metric {
             return lastResult;
         }
 
-        return (double)ParseAdapter.getOperators(target).size();
+        return lastResult = (double)ParseAdapter.getOperators(target).size();
     }
 }

@@ -20,10 +20,10 @@ public class NPVMetric extends Metric{
     @Override
     public double calculate(Project project, PsiClass target) {
         int cnt=0;
-        for(PsiField f : target.getAllFields()) {
+        for(PsiField f : target.getFields()) {
             if(f.hasModifierProperty(PsiModifier.PUBLIC))
                 cnt++;
         }
-        return (double)cnt;
+        return lastResult = (double)cnt;
     }
 }

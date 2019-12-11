@@ -18,15 +18,19 @@ public class NMAMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         int cnt=0;
-        for(PsiClass c : target.getAllInnerClasses()) {
-            for(PsiMethod cm : c.getAllMethods()) {
-                for(PsiMethod pm : target.getAllMethods()) {
-                    if(cm.getName().equals(pm.getName()))
-                        continue;
-                    cnt++;
+        for(PsiClass c : target.getInnerClasses()) {
+            for(PsiMethod cm : c.getMethods()) {
+                boolean check = true;
+                for(PsiMethod pm : target.getMethods()) {
+                    if(cm.getName().equals(pm.getName())) {
+                        check = false;
+                        break;
+                    }
                 }
+                if (check)
+                    cnt++;
             }
         }
-        return (double)cnt;
+        return lastResult = (double)cnt;
     }
 }

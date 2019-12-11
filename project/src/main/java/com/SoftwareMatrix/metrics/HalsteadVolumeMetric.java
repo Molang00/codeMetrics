@@ -12,7 +12,7 @@ public class HalsteadVolumeMetric extends Metric{
     DistinctOperatorMetric distinctOperatorMetric;
     OperandMetric operandMetric;
     OperatorMetric operatorMetric;
-    HalsteadVolumeMetric(String name, double minVal, double maxVal) {
+    public HalsteadVolumeMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
         distinctOperatorMetric = new DistinctOperatorMetric(name+"_dopr");
@@ -45,8 +45,7 @@ public class HalsteadVolumeMetric extends Metric{
         N2 = operandMetric.calculate(project, target);
 
         volume = (N1+N2) * ( Math.log(n1+n2) / Math.log(2) );
-        lastResult = volume;
 
-        return volume;
+        return lastResult = volume;
     }
 }

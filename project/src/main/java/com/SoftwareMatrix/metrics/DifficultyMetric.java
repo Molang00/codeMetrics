@@ -7,14 +7,14 @@ public class DifficultyMetric extends Metric {
     DistinctOperandMetric distinctOperandMetric;
     DistinctOperatorMetric distinctOperatorMetric;
     OperandMetric operandMetric;
-    DifficultyMetric(String name, double minVal, double maxVal) {
+    public DifficultyMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
         distinctOperatorMetric = new DistinctOperatorMetric(name+"_dopr");
         operandMetric = new OperandMetric(name+"_opd");
     }
 
-    DifficultyMetric(String name) {
+    public DifficultyMetric(String name) {
         super(name);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
         distinctOperatorMetric = new DistinctOperatorMetric(name+"_dopr");
@@ -38,10 +38,9 @@ public class DifficultyMetric extends Metric {
         N2 = operandMetric.calculate(project, target);
 
         if(n2==0)
-            return 0;
+            return lastResult = 0;
         difficulty = (n1/2) * (N2/n2);
-        lastResult = difficulty;
 
-        return difficulty;
+        return lastResult = difficulty;
     }
 }

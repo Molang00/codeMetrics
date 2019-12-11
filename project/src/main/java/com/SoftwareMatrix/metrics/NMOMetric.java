@@ -18,10 +18,10 @@ public class NMOMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         int cnt=0;
-        for(PsiMethod m : target.getAllMethods()) {
+        for(PsiMethod m : target.getMethods()) {
             if(m.findSuperMethods().length>0)
                 cnt++;
         }
-        return (double)cnt;
+        return lastResult = (double)cnt;
     }
 }

@@ -24,7 +24,7 @@ public class MHFMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         double temp = nmMetric.calculate(project, target);
         if(temp==0)
-            return 0;
-        return (temp - pmMetric.calculate(project, target)) / temp;
+            return lastResult = 0;
+        return lastResult = (temp - pmMetric.calculate(project, target)) / temp;
     }
 }

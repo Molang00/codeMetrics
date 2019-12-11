@@ -23,8 +23,10 @@ public class AHFMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         double temp = nvMetric.calculate(project, target);
-        if(temp==0)
+        if(temp==0) {
+            lastResult = 0;
             return 0;
-        return (temp - npvMetric.calculate(project, target)) / temp;
+        }
+        return lastResult = (temp - npvMetric.calculate(project, target)) / temp;
     }
 }

@@ -29,6 +29,6 @@ public class CLOCMetric extends Metric {
             cloc += lines.length;
         }
 
-        return (double)cloc;
+        return lastResult = (double)cloc;
     }
 }

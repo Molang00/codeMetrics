@@ -16,6 +16,6 @@ public class NMMetric extends Metric {
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return (double)target.getAllMethods().length;
+        return lastResult = (double)target.getMethods().length;
     }
 }

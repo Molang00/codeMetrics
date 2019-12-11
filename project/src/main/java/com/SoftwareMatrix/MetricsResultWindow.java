@@ -36,18 +36,22 @@ public class MetricsResultWindow implements UpdateObserver {
         pfMap = new HashMap<>();
         history = new Stack<>();
 
-        Metric AHF = new AHFMetric("AHF");
-        Metric AIF = new AIFMetric("AIF");
+        Metric AHF = new AHFMetric("AHF", 1, 0);
+        Metric AIF = new AIFMetric("AIF", 0, 1);
         Metric AMS = new AMSMetric("AMS");
         Metric CLOC = new CLOCMetric("CLOC");
-        Metric Cyclomatic = new CyclomaticMetric("Cyclomatic");
+        Metric Cyclomatic = new CyclomaticMetric("Cyclomatic", 20, 0);
+        Metric DistinctOperand = new DistinctOperandMetric("DistinctOperand");
+        Metric DistinctOperator = new DistinctOperatorMetric("DistinctOperator");
         Metric DIT = new DITMetric("DIT");
+        Metric HalsteadDifficulty = new DifficultyMetric("HalsteadDifficulty");
+        Metric HalsteadEffort = new EffortMetric("HalsteadEffort");
         Metric HalsteadVolume = new HalsteadVolumeMetric("HalsteadVolume");
         Metric LLOC = new LLOCMetric("LLOC");
         Metric LOC = new LOCMetric("LOC");
-        Metric Maintainability = new MaintainabilityMetric("Maintainability");
-        Metric MHF = new MHFMetric("MHF");
-        Metric MIF = new MIFMetric("MIF");
+        Metric Maintainability = new MaintainabilityMetric("Maintainability", 0, 100);
+        Metric MHF = new MHFMetric("MHF", 1, 0);
+        Metric MIF = new MIFMetric("MIF", 0, 1);
         Metric NMA = new NMAMetric("NMA");
         Metric NMI = new NMIMetric("NMI");
         Metric NM = new NMMetric("NM");
@@ -55,30 +59,36 @@ public class MetricsResultWindow implements UpdateObserver {
         Metric NOC = new NOCMetric("NOC");
         Metric NPV = new NPVMetric("NPV");
         Metric NV = new NVMetric("NV");
+        Metric Operand = new OperandMetric("Operand");
+        Metric Operator = new OperatorMetric("Operator");
         Metric PF = new PFMetric("PF");
         Metric PM = new PMMetric("PM");
 
         RefactorPageFactory defaultPageFactory = addPageFactory("Default", Arrays.asList(
-                AHF, AIF, AMS, CLOC, Cyclomatic, DIT, HalsteadVolume, LLOC, LOC, Maintainability,
-                MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, PF, PM
+                AHF, AIF, AMS, CLOC, Cyclomatic, DIT, DistinctOperand, DistinctOperator,
+                HalsteadDifficulty, HalsteadEffort, HalsteadVolume, LLOC, LOC, Maintainability,
+                MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, Operand, Operator, PF, PM
         ), Arrays.asList(
                 "MI", "OO"
         ));
 
         addPageFactory("MI", Arrays.asList(
-                Maintainability, HalsteadVolume, Cyclomatic, CLOC, LOC, LLOC
+                Maintainability, HalsteadDifficulty, HalsteadEffort, HalsteadVolume,
+                Cyclomatic, DistinctOperand, DistinctOperator, Operand, Operator,
+                CLOC, LOC, LLOC
+
         ), Arrays.asList(
                 "back", "Halstead", "CC", "LOC"
         ));
 
         addPageFactory("Halstead", Arrays.asList(
-                HalsteadVolume
+                HalsteadDifficulty, HalsteadEffort, HalsteadVolume
         ), Arrays.asList(
                 "back"
         ));
 
         addPageFactory("CC", Arrays.asList(
-                Cyclomatic
+                Cyclomatic, DistinctOperand, DistinctOperator, Operand, Operator
         ), Arrays.asList(
                 "back"
         ));

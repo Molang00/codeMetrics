@@ -21,6 +21,6 @@ public class DITMetric extends Metric {
             depth++;
             class_itr = (PsiClass)(class_itr.getParent());
         }
-        return (double)depth;
+        return lastResult = (double)depth;
     }
 }
