@@ -8,10 +8,10 @@ import com.intellij.psi.PsiStatement;
 import com.intellij.psi.util.PsiTreeUtil;
 
 public class LLOCMetric extends Metric{
-    LLOCMetric(String name, double minVal, double maxVal) {
+    public LLOCMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-    LLOCMetric(String name) {
+    public LLOCMetric(String name) {
         super(name);
     }
 

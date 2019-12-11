@@ -5,20 +5,20 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 
 
-abstract class Metric {
+public abstract class Metric {
     protected String name;
     protected double minVal;
     protected double maxVal;
     protected double lastResult;
 
-    Metric(String name, double minVal, double maxVal){
+    public Metric(String name, double minVal, double maxVal){
         this.name = name;
         this.minVal = minVal;
         this.maxVal = maxVal;
         lastResult = 0;
     }
 
-    Metric(String name){
+    public Metric(String name){
         this.name = name;
         this.minVal = 0;
         this.maxVal = 0;

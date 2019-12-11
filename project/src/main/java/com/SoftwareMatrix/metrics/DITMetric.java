@@ -5,11 +5,11 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.util.PsiTreeUtil;
 
 public class DITMetric extends Metric {
-    DITMetric(String name, double minVal, double maxVal) {
+    public DITMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    DITMetric(String name) {
+    public DITMetric(String name) {
         super(name);
     }
 

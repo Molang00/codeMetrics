@@ -10,11 +10,11 @@ import com.intellij.psi.PsiModifier;
 import java.lang.reflect.Modifier;
 
 public class PMMetric extends Metric{
-    PMMetric(String name, double minVal, double maxVal) {
+    public PMMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    PMMetric(String name) {
+    public PMMetric(String name) {
         super(name);
     }
 

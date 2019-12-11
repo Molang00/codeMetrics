@@ -9,14 +9,14 @@ public class AMSMetric extends Metric {
     NMMetric nmMetric;
     LOCMetric locMetric;
     CLOCMetric clocMetric;
-    AMSMetric(String name, double minVal, double maxVal) {
+    public AMSMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nmMetric = new NMMetric(name+"_nm");
         locMetric = new LOCMetric(name+"_loc");
         clocMetric = new CLOCMetric(name+"_cloc");
     }
 
-    AMSMetric(String name) {
+    public AMSMetric(String name) {
         super(name);
         nmMetric = new NMMetric(name+"_nm");
         locMetric = new LOCMetric(name+"_loc");

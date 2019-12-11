@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElement;
 public class AHFMetric extends Metric {
     NVMetric nvMetric;
     NPVMetric npvMetric;
-    AHFMetric(String name, double minVal, double maxVal) {
+    public AHFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nvMetric = new NVMetric(name+"_nv");
         npvMetric = new NPVMetric(name+"_npv");
     }
 
-    AHFMetric(String name) {
+    public AHFMetric(String name) {
         super(name);
         nvMetric = new NVMetric(name+"_nv");
         npvMetric = new NPVMetric(name+"_npv");

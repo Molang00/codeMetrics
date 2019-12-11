@@ -9,11 +9,11 @@ import com.intellij.psi.PsiModifier;
 
 public class NPVMetric extends Metric{
 
-    NPVMetric(String name, double minVal, double maxVal) {
+    public NPVMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
 
-    NPVMetric(String name) {
+    public NPVMetric(String name) {
         super(name);
     }
 

@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class HalsteadVolumeMetric extends Metric{
-    HalsteadVolumeMetric(String name, double minVal, double maxVal) {
+    public HalsteadVolumeMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-    HalsteadVolumeMetric(String name) {
+    public HalsteadVolumeMetric(String name) {
         super(name);
     }
 

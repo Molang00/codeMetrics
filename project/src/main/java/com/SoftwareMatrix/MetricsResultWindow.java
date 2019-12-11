@@ -1,8 +1,10 @@
 package com.SoftwareMatrix;
 
+import com.SoftwareMatrix.PageFactory.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.PsiElement;
+import com.SoftwareMatrix.metrics.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -11,26 +13,23 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
-import com.SoftwareMatrix.PageFactory.DefaultPageFactory;
-import com.SoftwareMatrix.PageFactory.HalsteadVolumePageFactory;
-import com.SoftwareMatrix.PageFactory.SLOCPageFactory;
-import com.SoftwareMatrix.PageFactory.MIPageFactory;
-import com.SoftwareMatrix.PageFactory.OOPageFactory;
-import com.SoftwareMatrix.PageFactory.CCPageFactory;
 import org.jetbrains.annotations.NotNull;
 
 
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
     private JPanel myToolWindowContent;
+    private RefactorPageFactory PageFactory;
     private DefaultPageFactory defaultpageFactory;
-    private MIPageFactory mipageFactory;
-    private OOPageFactory oopageFactory;
-    private CCPageFactory ccpageFactory;
-    private HalsteadVolumePageFactory halsteadVolumePageFactory;
-    private SLOCPageFactory SLOCpageFactory;
+//    private MIPageFactory mipageFactory;
+//    private OOPageFactory oopageFactory;
+//    private CCPageFactory ccpageFactory;
+//    private HalsteadVolumePageFactory halsteadVolumePageFactory;
+//    private SLOCPageFactory SLOCpageFactory;
     private String label;
     private UpdateManager uManager;
 
@@ -39,18 +38,21 @@ public class MetricsResultWindow implements UpdateObserver {
      */
     public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
         uManager = UpdateManager.getInstance(project); // init update manager
-        settingAllStatus();
+        myToolWindowContent = new JPanel();
+
+        PageFactory = new RefactorPageFactory(this, myToolWindowContent);
+
+//        settingAllStatus();
     }
 
     private void settingAllStatus() {
 
-        myToolWindowContent = new JPanel();
-        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
-        mipageFactory = new MIPageFactory(this, myToolWindowContent);
-        oopageFactory = new OOPageFactory(this, myToolWindowContent);
-        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
-        halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
-        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
+//        defaultpageFactory = new DefaultPageFactory(this, myToolWindowContent);
+//        mipageFactory = new MIPageFactory(this, myToolWindowContent);
+//        oopageFactory = new OOPageFactory(this, myToolWindowContent);
+//        ccpageFactory = new CCPageFactory(this, myToolWindowContent);
+//        halsteadVolumePageFactory = new HalsteadVolumePageFactory(this, myToolWindowContent);
+//        SLOCpageFactory = new SLOCPageFactory(this, myToolWindowContent);
 
         uManager.addObserver(defaultpageFactory);
         uManager.addObserver(mipageFactory);
@@ -79,26 +81,7 @@ public class MetricsResultWindow implements UpdateObserver {
 
     public void changeView(String label) {
         this.label=label;
-        switch (label) {
-        case "Default":
-            defaultpageFactory.createPage();
-            break;
-        case "MI":
-            mipageFactory.createPage();
-            break;
-        case "OO":
-            oopageFactory.createPage();
-            break;
-        case "V":
-            halsteadVolumePageFactory.createPage();
-            break;
-        case "G":
-            ccpageFactory.createPage();
-            break;
-        case "SLOC":
-            SLOCpageFactory.createPage();
-            break;
-        }
+        PageFactory.createPage(label);
         myToolWindowContent.revalidate();
     }
 }

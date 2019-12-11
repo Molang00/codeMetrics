@@ -7,12 +7,12 @@ import com.intellij.psi.PsiModifier;
 
 public class AIFMetric extends Metric {
     NVMetric nvMetric;
-    AIFMetric(String name, double minVal, double maxVal) {
+    public AIFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nvMetric = new NVMetric(name+"_nv");
     }
 
-    AIFMetric(String name) {
+    public AIFMetric(String name) {
         super(name);
         nvMetric = new NVMetric(name+"_nv");
     }
