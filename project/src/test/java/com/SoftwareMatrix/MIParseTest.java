@@ -60,7 +60,7 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
             System.out.println("test simple operator size = " + operators.size());
             j = 0;
             for(PsiElement elem: operators) {
-                System.out.println("operators " + (++j) + " : " + elem.toString());
+                System.out.println("operators " + (++j) + " : " + elem.toString() + " at " + elem.getTextOffset());
             }
             assertEquals(operators.size(), 2);
         }
@@ -83,10 +83,26 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
             System.out.println("test many operator size = " + operators.size());
             j = 0;
             for(PsiElement elem: operators) {
-                System.out.println("operators " + (++j) + " : " + elem.toString());
+                System.out.println("operators " + (++j) + " : " + elem.toString() + " at " + elem.getTextOffset());
             }
-            assertEquals(operators.size(), 21);
+            assertEquals(operators.size(), 22);
         }
     }
 
+    @Test
+    public void testGetOperatorAll() {
+        PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase3.txt");
+        for (PsiClass psiClass : psiClasses) {
+
+            int j = 0;
+
+            Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
+            System.out.println("test operator all operator size = " + operators.size());
+            j = 0;
+            for(PsiElement elem: operators) {
+                System.out.println("operators " + (++j) + " : " + elem.toString() + " at " + elem.getTextOffset());
+            }
+            assertEquals(operators.size(), 75);
+        }
+    }
 }
