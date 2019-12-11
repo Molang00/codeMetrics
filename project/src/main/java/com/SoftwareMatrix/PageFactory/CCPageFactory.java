@@ -37,9 +37,7 @@ public class CCPageFactory implements PageFactoryInterface, UpdateObserver {
   public void update(Project project, PsiElement elem){
     // color refresh has 5~10 seconds of delay
       if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
-          edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
-          node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
-          CCValue = MICalculator.calculateCC(edge, node);
+
 
           table.setValueAt(edge, 0, 1); // Set edge value
           table.setValueAt(node, 1, 1); // Set node value

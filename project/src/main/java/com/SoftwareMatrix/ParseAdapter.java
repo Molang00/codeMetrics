@@ -158,8 +158,10 @@ public class ParseAdapter {
         }
         //Functional Expression???
         //Instance of
-        else if(exp instanceof PsiInstanceOfExpression)
+        else if(exp instanceof PsiInstanceOfExpression) {
             operands.addAll(getOperandsExp(((PsiInstanceOfExpression) exp).getOperand()));
+            operands.add(((PsiInstanceOfExpression) exp).getCheckType());
+        }
         //Lambda
         else if(exp instanceof PsiLambdaExpression) {
             operands.addAll(Arrays.asList((((PsiLambdaExpression) exp).getParameterList()).getParameters()));
@@ -365,6 +367,13 @@ public class ParseAdapter {
     {
         Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
 
+        for(PsiMethod m : _class.getConstructors()) {
+            PsiCodeBlock body = m.getBody();
+            if(body == null) continue;
+            for(PsiStatement s : body.getStatements()) {
+                operands.addAll(getOperandsStmt(s));
+            }
+        }
         for(PsiMethod m : _class.getAllMethods())
         {
             PsiCodeBlock body = m.getBody();
@@ -389,6 +398,7 @@ public class ParseAdapter {
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiMethodCallExpression.class));
 
         // All looping statements are considered as operators.
+        operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiIfStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiWhileStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiDoWhileStatement.class));
         operators.addAll(PsiTreeUtil.findChildrenOfType(_method, PsiForStatement.class));
@@ -429,12 +439,16 @@ public class ParseAdapter {
     {
         Set<PsiElement> operators = new HashSet<>();
         for(PsiMethod m : _class.getConstructors()) {
-            if(m != null)
+            if(m != null) {
+                System.out.println("branch const name : " + m.getName());
                 operators.addAll(getOperatorsMethod(m));
+            }
         }
         for(PsiMethod m : _class.getAllMethods()) {
-            if(m != null)
+            if(m != null) {
+                System.out.println("branch function name : " + m.getName());
                 operators.addAll(getOperatorsMethod(m));
+            }
         }
         return operators;
     }

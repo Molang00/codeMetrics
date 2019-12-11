@@ -40,8 +40,6 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
   public void update(Project project, PsiElement elem){
     // color refresh has 5~10 seconds of delay
     if(elem != null && ParseAdapter.getContainingMethod(elem) != null) {
-      edge = ParseAdapter.getEdge(ParseAdapter.getContainingMethod(elem));
-      node = ParseAdapter.getNode(ParseAdapter.getContainingMethod(elem));
 
       operators = ParseAdapter.getOperators(ParseAdapter.getContainingClass(elem));
       operands = ParseAdapter.getOperands(ParseAdapter.getContainingClass(elem));
@@ -50,7 +48,6 @@ public class MIPageFactory implements PageFactoryInterface, UpdateObserver {
       loc = ParseAdapter.getLoc(ParseAdapter.getContainingClass(elem));
       cloc = ParseAdapter.getCLoc(ParseAdapter.getContainingClass(elem));
       v = MICalculator.calculateHalstead(operators, operands);
-      g = MICalculator.calculateCC(edge, node);
 
 
       table.setValueAt(v, 0, 1); // Set V value

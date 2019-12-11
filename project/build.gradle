@@ -5,6 +5,7 @@ plugins {
 
 group 'com.SoftwareMatrix'
 version '1.0-SNAPSHOT'
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -16,9 +17,6 @@ dependencies {
     testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
 }
 
-test {
-    useJUnitPlatform()
-}
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 // plugins 'java' added because of

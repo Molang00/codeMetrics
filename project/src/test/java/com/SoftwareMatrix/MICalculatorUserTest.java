@@ -48,7 +48,7 @@ public class MICalculatorUserTest extends LightJavaCodeInsightFixtureTestCase {
             Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
             Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
 
-            assertEquals(MICalculator.calculateEta(operators, operands), 39);
+            assertEquals(MICalculator.calculateEta(operators, operands), 40);
         }
     }
 
@@ -60,7 +60,7 @@ public class MICalculatorUserTest extends LightJavaCodeInsightFixtureTestCase {
             Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
             Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
 
-            assertEquals(MICalculator.calculateN(operators, operands), 53);
+            assertEquals(MICalculator.calculateN(operators, operands), 56);
         }
     }
 
@@ -72,7 +72,7 @@ public class MICalculatorUserTest extends LightJavaCodeInsightFixtureTestCase {
             Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
             Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
 
-            assertEquals(MICalculator.calculateHalstead(operators, operands), 280);
+            assertEquals(MICalculator.calculateHalstead(operators, operands), 298);
         }
     }
 

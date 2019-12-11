@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-
+/*
 class MICalculatorTest {
-
+*/
     /** Test cases based on example from : https://en.wikipedia.org/wiki/Halstead_complexity_measures#Example
      * */
+    /*
     private Object operators_string = "main, (), {}, int, scanf, &, &, &, (), (), (), ;, :,  =, +, +, /, ;, printf, ,, ,, ,, ,, ,, ,, ,, ;";
     private Object[] operators = ((String) operators_string).split(", ");       // Single comma is the separator.
 
@@ -43,3 +44,5 @@ class MICalculatorTest {
         Assertions.assertEquals(miCalculator.calculateMI(operators, operands, edges,nodes, lloc, loc, cloc),17);
     }
 }
+
+     */

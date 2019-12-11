@@ -63,13 +63,13 @@ public class OOMParseTest extends LightJavaCodeInsightFixtureTestCase {
         String code1 = basePath + "code1.java";
         PsiFile psiFile = makePsiFile(code1);
 
-        Collection<PsiMethod> methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod.class);
+        Collection<PsiClass> classes = PsiTreeUtil.findChildrenOfType(psiFile, PsiClass.class);
 
 
-        for(PsiMethod method: methods) {
+        for(PsiClass _class: classes) {
             // There is two methods in "code1.java". "main" and "AddOne"
 
-            Set<PsiElement> set = ParseAdapter.getBranch(method);
+            Set<PsiElement> set = ParseAdapter.getBranch(_class);
             assertContainsElements(set); // two methods both contain one if statement
         }
 

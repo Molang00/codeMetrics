@@ -68,24 +68,16 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
 
 
     @Test
-    public void testMIMany() {
-        PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase2.txt");
+    public void testGetOperandsAll() {
+        PsiClass[] psiClasses = this.getPsiClasses("./src/test/resources/testcases/TestCase3.txt");
         for (PsiClass psiClass : psiClasses) {
             Set<PsiElement> operands = ParseAdapter.getOperands(psiClass);
-            System.out.println("test many operand size = " + operands.size());
+            System.out.println("test operand all operand size = " + operands.size());
             int j = 0;
             for(PsiElement elem: operands) {
                 System.out.println("operand " + (++j) + " : " + elem.toString());
             }
-            assertEquals(operands.size(), 31);
-
-            Set<PsiElement> operators = ParseAdapter.getOperators(psiClass);
-            System.out.println("test many operator size = " + operators.size());
-            j = 0;
-            for(PsiElement elem: operators) {
-                System.out.println("operators " + (++j) + " : " + elem.toString() + " at " + elem.getTextOffset());
-            }
-            assertEquals(operators.size(), 22);
+            assertEquals(operands.size(), 142);
         }
     }
 
@@ -102,7 +94,7 @@ public class MIParseTest extends LightJavaCodeInsightFixtureTestCase {
             for(PsiElement elem: operators) {
                 System.out.println("operators " + (++j) + " : " + elem.toString() + " at " + elem.getTextOffset());
             }
-            assertEquals(operators.size(), 75);
+            assertEquals(operators.size(), 95);
         }
     }
 }
