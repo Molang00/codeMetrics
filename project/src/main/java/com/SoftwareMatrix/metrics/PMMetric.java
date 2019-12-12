@@ -13,7 +13,6 @@ public class PMMetric extends Metric{
     public PMMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public PMMetric(String name) {
         super(name);
     }
@@ -25,6 +24,8 @@ public class PMMetric extends Metric{
             if(m.hasModifierProperty(PsiModifier.PUBLIC))
                 cnt++;
         }
-        return lastResult = (double)cnt;
+
+        lastResult = cnt;
+        return lastResult;
     }
 }

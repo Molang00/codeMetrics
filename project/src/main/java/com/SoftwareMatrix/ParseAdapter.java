@@ -557,7 +557,6 @@ public class ParseAdapter {
                         GlobalSearchScope.projectScope(project));
         // Get only java files which is contained by PROJECT
 
-
         for (VirtualFile vf: virtualFiles) {
             PsiFile psifile = PsiManager.getInstance(project).findFile(vf);
 

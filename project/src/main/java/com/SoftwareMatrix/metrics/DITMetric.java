@@ -2,6 +2,7 @@ package com.SoftwareMatrix.metrics;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 
 public class DITMetric extends Metric {
@@ -17,10 +18,14 @@ public class DITMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         int depth=0;
         PsiClass class_itr = target;
-        while (class_itr.getParent() != null && class_itr.getParent() instanceof PsiClass) {
+        PsiElement parent = class_itr.getParent();
+        while (parent instanceof PsiClass) { // parent not null checked in instanceof
             depth++;
-            class_itr = (PsiClass)(class_itr.getParent());
+            class_itr = (PsiClass)parent;
+            parent = class_itr.getParent();
         }
-        return lastResult = (double)depth;
+
+        lastResult = depth;
+        return lastResult;
     }
 }

@@ -10,7 +10,6 @@ public class NMOMetric extends Metric {
     public NMOMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public NMOMetric(String name) {
         super(name);
     }
@@ -19,9 +18,11 @@ public class NMOMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         int cnt=0;
         for(PsiMethod m : target.getMethods()) {
-            if(m.findSuperMethods().length>0)
+            if(m.findSuperMethods().length > 0)
                 cnt++;
         }
-        return lastResult = (double)cnt;
+
+        lastResult = cnt;
+        return lastResult;
     }
 }

@@ -12,7 +12,6 @@ public class DistinctOperatorMetric extends Metric {
     public DistinctOperatorMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public DistinctOperatorMetric(String name) {
         super(name);
     }
@@ -21,16 +20,16 @@ public class DistinctOperatorMetric extends Metric {
     public double calculate(Project project, PsiClass target) {
         Set<PsiElement> operators;
         Set<String> distinctOperators = new HashSet<>();
-        if(target==null)
-        {
+
+        if(target == null)
             return lastResult;
-        }
 
         operators = ParseAdapter.getOperators(target);
         for (PsiElement value : operators) {
-            String operator = value.toString();
-            distinctOperators.add(operator);
+            distinctOperators.add(value.toString());
         }
-        return lastResult = (double)distinctOperators.size();
+
+        lastResult = distinctOperators.size();
+        return lastResult;
     }
 }

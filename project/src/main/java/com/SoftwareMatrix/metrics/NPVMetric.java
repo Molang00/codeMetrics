@@ -7,23 +7,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 
-public class NPVMetric extends Metric{
-
+public class NPVMetric extends Metric {
     public NPVMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public NPVMetric(String name) {
         super(name);
     }
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        int cnt=0;
+        int cnt = 0;
         for(PsiField f : target.getFields()) {
             if(f.hasModifierProperty(PsiModifier.PUBLIC))
                 cnt++;
         }
-        return lastResult = (double)cnt;
+
+        lastResult = cnt;
+        return lastResult;
     }
 }

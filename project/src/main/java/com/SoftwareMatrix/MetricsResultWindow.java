@@ -23,7 +23,6 @@ public class MetricsResultWindow implements UpdateObserver {
     private RefactorPageFactory currentPageFactory; // state of this FSM
     private Map<String, RefactorPageFactory> pfMap;
 
-    private String label;
     private UpdateManager uManager;
     private Stack<String> history;
 
@@ -105,8 +104,7 @@ public class MetricsResultWindow implements UpdateObserver {
                 "back"
         ));
 
-        label = "Default";
-        changeView(label);
+        changeView("Default");
     }
 
     // put this to public?

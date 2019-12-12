@@ -8,7 +8,6 @@ public class OperatorMetric extends Metric {
     public OperatorMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public OperatorMetric(String name) {
         super(name);
     }
@@ -16,10 +15,9 @@ public class OperatorMetric extends Metric {
     @Override
     public double calculate(Project project, PsiClass target) {
         if(target==null)
-        {
             return lastResult;
-        }
 
-        return lastResult = (double)ParseAdapter.getOperators(target).size();
+        lastResult = ParseAdapter.getOperators(target).size();
+        return lastResult;
     }
 }

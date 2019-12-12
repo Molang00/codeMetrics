@@ -9,13 +9,13 @@ public class NVMetric extends Metric {
     public NVMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public NVMetric(String name) {
         super(name);
     }
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        return lastResult = (double)target.getFields().length;
+        lastResult = target.getFields().length;
+        return lastResult;
     }
 }

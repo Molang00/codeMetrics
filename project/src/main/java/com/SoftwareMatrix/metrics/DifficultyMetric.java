@@ -4,9 +4,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 public class DifficultyMetric extends Metric {
-    DistinctOperandMetric distinctOperandMetric;
-    DistinctOperatorMetric distinctOperatorMetric;
-    OperandMetric operandMetric;
+    private DistinctOperandMetric distinctOperandMetric;
+    private DistinctOperatorMetric distinctOperatorMetric;
+    private OperandMetric operandMetric;
+
     public DifficultyMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");

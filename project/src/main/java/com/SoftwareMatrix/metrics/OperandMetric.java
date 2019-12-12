@@ -8,18 +8,16 @@ public class OperandMetric extends Metric {
     public OperandMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public OperandMetric(String name) {
         super(name);
     }
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        if(target==null)
-        {
+        if(target == null)
             return lastResult;
-        }
 
-        return lastResult = (double)ParseAdapter.getOperands(target).size();
+        lastResult = ParseAdapter.getOperands(target).size();
+        return lastResult;
     }
 }

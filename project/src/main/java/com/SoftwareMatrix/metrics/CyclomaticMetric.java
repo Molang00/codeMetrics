@@ -17,11 +17,11 @@ public class CyclomaticMetric extends Metric{
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        double result=0;
+        double result = 0;
 
-        result += (double)(ParseAdapter.getBranch(target).size() + 1);
+        result += ParseAdapter.getBranch(target).size() + 1;
         lastResult = result;
 
-        return lastResult = result;
+        return result;
     }
 }

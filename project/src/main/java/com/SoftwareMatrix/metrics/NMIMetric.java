@@ -11,18 +11,19 @@ public class NMIMetric extends Metric {
     public NMIMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public NMIMetric(String name) {
         super(name);
     }
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        int cnt=0;
+        int cnt = 0;
         for(PsiMethod m : target.getMethods()) {
             if(!m.hasModifierProperty(PsiModifier.PRIVATE))
                 cnt++;
         }
-        return lastResult = (double)cnt;
+
+        lastResult = cnt;
+        return lastResult;
     }
 }

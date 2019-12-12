@@ -21,6 +21,7 @@ public class CLOCMetric extends Metric {
         Set<PsiComment> set = new HashSet<>();
         int cloc = 0;
 
+        // set constraints needed?
         set.addAll(PsiTreeUtil.findChildrenOfType(target, PsiComment.class));
 
         for (PsiComment comment : set) {
@@ -29,6 +30,7 @@ public class CLOCMetric extends Metric {
             cloc += lines.length;
         }
 
-        return lastResult = (double)cloc;
+        lastResult = cloc;
+        return lastResult;
     }
 }

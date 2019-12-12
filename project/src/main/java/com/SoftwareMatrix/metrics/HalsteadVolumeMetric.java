@@ -8,10 +8,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class HalsteadVolumeMetric extends Metric{
-    DistinctOperandMetric distinctOperandMetric;
-    DistinctOperatorMetric distinctOperatorMetric;
-    OperandMetric operandMetric;
-    OperatorMetric operatorMetric;
+    private DistinctOperandMetric distinctOperandMetric;
+    private DistinctOperatorMetric distinctOperatorMetric;
+    private OperandMetric operandMetric;
+    private OperatorMetric operatorMetric;
+
     public HalsteadVolumeMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
@@ -31,9 +32,7 @@ public class HalsteadVolumeMetric extends Metric{
     public double calculate(Project project, PsiClass target) {
         double volume;
         if(target==null)
-        {
             return lastResult;
-        }
 
         //n1, n2: count of unique operators, operands
         //N1, N2: count of all operators, operands
@@ -45,6 +44,7 @@ public class HalsteadVolumeMetric extends Metric{
 
         volume = (N1+N2) * ( Math.log(n1+n2) / Math.log(2) );
 
-        return lastResult = volume;
+        lastResult = volume;
+        return lastResult;
     }
 }

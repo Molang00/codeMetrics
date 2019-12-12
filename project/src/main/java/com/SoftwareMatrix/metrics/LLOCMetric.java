@@ -14,7 +14,8 @@ public class LLOCMetric extends Metric{
     }
 
     @Override
-    public double calculate(Project project, PsiClass target) {int lloc=0;
+    public double calculate(Project project, PsiClass target) {
+        int lloc = 0;
         for(PsiMethod m : target.getMethods()) {
 //            if(m.getBody()==null || m.getBody().getStatements() == null)
 ////                continue;
@@ -26,12 +27,16 @@ public class LLOCMetric extends Metric{
             lloc += PsiTreeUtil.findChildrenOfType(m, PsiStatement.class).size();
             lloc -= PsiTreeUtil.findChildrenOfType(m, PsiBlockStatement.class).size();
         }
-        for(PsiField f : target.getFields())
-            lloc++;
+
+        lloc += target.getFields().length;
+
+        // possible bug here (is this intended?)
         for(PsiClass c : target.getInnerClasses()) {
             lloc = (int)Math.round(calculate(project, c));
         }
-        return lastResult = (double)lloc;
+
+        lastResult = lloc;
+        return lastResult;
 
     }
 }

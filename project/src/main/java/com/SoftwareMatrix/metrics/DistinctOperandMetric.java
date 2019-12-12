@@ -12,26 +12,23 @@ public class DistinctOperandMetric extends Metric {
     public DistinctOperandMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public DistinctOperandMetric(String name) {
         super(name);
     }
 
     @Override
     public double calculate(Project project, PsiClass target) {
-        Set<PsiElement> operands;
         Set<String> distinctOperands = new HashSet<>();
 
-        if(target==null)
-        {
+        if(target == null)
             return lastResult;
+
+        Set<PsiElement> operands = ParseAdapter.getOperands(target);
+        for (PsiElement o : operands) {
+            distinctOperands.add(o.toString());
         }
 
-        operands = ParseAdapter.getOperands(target);
-        for (PsiElement o : operands) {
-            String operand = o.toString();
-            distinctOperands.add(operand);
-        }
-        return lastResult = (double)distinctOperands.size();
+        lastResult = distinctOperands.size();
+        return lastResult;
     }
 }

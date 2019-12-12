@@ -10,7 +10,6 @@ public class NMAMetric extends Metric {
     public NMAMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
     }
-
     public NMAMetric(String name) {
         super(name);
     }
@@ -31,6 +30,8 @@ public class NMAMetric extends Metric {
                     cnt++;
             }
         }
-        return lastResult = (double)cnt;
+
+        lastResult = cnt;
+        return lastResult;
     }
 }

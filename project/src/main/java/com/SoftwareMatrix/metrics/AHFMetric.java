@@ -6,14 +6,14 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 
 public class AHFMetric extends Metric {
-    NVMetric nvMetric;
-    NPVMetric npvMetric;
+    private NVMetric nvMetric;
+    private NPVMetric npvMetric;
+
     public AHFMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         nvMetric = new NVMetric(name+"_nv");
         npvMetric = new NPVMetric(name+"_npv");
     }
-
     public AHFMetric(String name) {
         super(name);
         nvMetric = new NVMetric(name+"_nv");
@@ -27,6 +27,8 @@ public class AHFMetric extends Metric {
             lastResult = 0;
             return 0;
         }
-        return lastResult = (temp - npvMetric.calculate(project, target)) / temp;
+
+        lastResult = (temp - npvMetric.calculate(project, target)) / temp;
+        return lastResult;
     }
 }
