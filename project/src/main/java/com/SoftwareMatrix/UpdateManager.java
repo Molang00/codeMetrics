@@ -18,6 +18,10 @@ import java.util.List;
 /*
     Singleton class that manages update events
  */
+
+/**
+ * Class for event listening that updates results. It includes cursor change, typing, file change, and etc.
+ */
 public class UpdateManager {
     private static UpdateManager instance = null;
 
@@ -28,6 +32,9 @@ public class UpdateManager {
 
     private PsiElement lastTrackedElement; // last caret position
 
+    /**
+     * Notifies all observers in observers list
+     */
     private void notifyObserversWrapper() {
         notifyObservers();
 //        if(thread != null && thread.isAlive()) {
@@ -54,6 +61,10 @@ public class UpdateManager {
 //        }
     }
 
+    /**
+     * Constructor that initiate event listeners and override them to call notifyObserversWrapper.
+     * @param project : project to deal with those listeners.
+     */
     private UpdateManager(@NotNull Project project) {
         observers = new ArrayList<>();
         lastTrackedElement = null;
@@ -149,6 +160,12 @@ public class UpdateManager {
         }
     }
 
+    /**
+     * Since UpdateManager is singleton class, this methods calls a constructor when there is no
+     * existing class, while return instance(saved one) when it exists.
+     * @param project : project to deal with listeners(parameter for constructor)
+     * @return UpdateManager class
+     */
     public static UpdateManager getInstance(@NotNull Project project) {
         if(instance == null) {
             instance = new UpdateManager(project);
@@ -156,19 +173,35 @@ public class UpdateManager {
         return instance;
     }
 
+    /**
+     * Call every observers' update function using lastTrackedElement.
+     */
     public void notifyObservers() {
         for(UpdateObserver observer: observers) {
             observer.update(project, lastTrackedElement); // note that lastTrackedElement may be null
         }
     }
 
+    /**
+     * Add new observer to list.
+     * @param observer : observer to add
+     * @return true when addition was successful, otherwise false.
+     */
     public boolean addObserver(UpdateObserver observer) {
         return observers.add(observer);
     }
 
+    /**
+     * Remove observer from list.
+     * @param observer : observer to remove
+     * @return true when deletion was successful, otherwise false.
+     */
     public boolean removeObserver(UpdateObserver observer) {
         return observers.remove(observer);
     }
 
+    /**
+     * Remove all observers from list.
+     */
     public void clearObserver() { observers.clear(); }
 }

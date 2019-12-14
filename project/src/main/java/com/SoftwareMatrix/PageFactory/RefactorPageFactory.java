@@ -16,6 +16,9 @@ import java.awt.event.ComponentEvent;
 import java.util.*;
 import java.util.List;
 
+/**
+ * PageFactory that implements UpdateObservers, which shows calculation result on the panel.
+ */
 public class RefactorPageFactory implements UpdateObserver {
     private List<Metric> metricList;
     private List<JButton> buttonList;
@@ -25,6 +28,13 @@ public class RefactorPageFactory implements UpdateObserver {
     private JTable table;
     private JPanel tablePanel;
 
+    /**
+     * Constructor of RefactorPageFacotry
+     *
+     * @param name Name of page
+     * @param _window Window containing page, which panels will be located in
+     * @param _mainPanel Main panel for result
+     */
     public RefactorPageFactory(String name, MetricsResultWindow _window, JPanel _mainPanel){
         window = _window;
         mainPanel = _mainPanel;
@@ -34,6 +44,10 @@ public class RefactorPageFactory implements UpdateObserver {
         buttonList = new ArrayList<>();
     }
 
+    /**
+     * Build tables and basic GUI on the window.
+     * Adds tutorial, makes result table, and buttons
+     */
     public void createPage() {
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout());
@@ -115,10 +129,22 @@ public class RefactorPageFactory implements UpdateObserver {
         });
     }
 
+    /**
+     * Add new Metric
+     *
+     * @param metric Metric to add
+     * @return true if metric is added to list successfully, otherwise false
+     */
     public boolean addMetric(Metric metric) {
         return metricList.add(metric);
     }
 
+    /**
+     * Add new Button and listener
+     *
+     * @param name Name of page
+     * @return true if button is added to list successfully, otherwise false
+     */
     public boolean addButton(String name) {
         JButton button = new JButton(name);
         button.addActionListener(e -> {
@@ -127,6 +153,12 @@ public class RefactorPageFactory implements UpdateObserver {
         return buttonList.add(button);
     }
 
+    /**
+     * Update table with given calculated value.
+     *
+     * @param project Project that our plugin analyzes and shows about
+     * @param elem PsiElement that makes event
+     */
     @Override
     public void update(Project project, PsiElement elem){
         // color refresh has 5~10 seconds of delay

@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/*
-    Contains functions related to parsing
+/**
+ *   Contains functions related to parsing
  */
 public class ParseAdapter {
     /**
@@ -363,6 +363,11 @@ public class ParseAdapter {
         return operands;
     }
 
+    /**
+     * get List of operands from class, checking fields, methods, inner class with following order.
+     * @param _class : class to calculate the list of operands
+     * @return List of Operands
+     */
     public static Set<PsiElement> getOperands(@NotNull PsiClass _class)
     {
         Set<PsiElement> operands = new HashSet<>(Arrays.asList(_class.getAllFields()));       //All global variables
@@ -390,6 +395,11 @@ public class ParseAdapter {
         return operands;
     }
 
+    /**
+     * get List of operands from a given method
+     * @param _method : method to calculate list of operands
+     * @return list of operands
+     */
     public static Set<PsiElement> getOperatorsMethod(PsiMethod _method)
     {
         Set<PsiElement> operators = new HashSet<>();
@@ -435,6 +445,11 @@ public class ParseAdapter {
         return operators;
     }
 
+    /**
+     * get List of operator in given class. It checks Constructor and methods
+     * @param _class : class to calculate list of operator
+     * @return list of operator
+     */
     public static Set<PsiElement> getOperators(@NotNull PsiClass _class)
     {
         Set<PsiElement> operators = new HashSet<>();

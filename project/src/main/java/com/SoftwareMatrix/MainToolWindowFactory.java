@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
  * A factory class to create a Metrics Result Table tool window
  */
 public class MainToolWindowFactory implements ToolWindowFactory {
+    /**
+     * Make default plugin window and add contents.
+     * @param project : Parameters for MetricsResultWindow, which is a target for calculation
+     * @param toolWindow : window to add contents
+     */
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         MetricsResultWindow psw = new MetricsResultWindow(toolWindow, project);
