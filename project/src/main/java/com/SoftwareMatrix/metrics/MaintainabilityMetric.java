@@ -4,6 +4,14 @@ import com.SoftwareMatrix.ParseAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
+/**
+ * Calculate Maintainability Index:
+ * Maintainability Index (MI) is a software metric that measures how maintainable (easy to support and change) your source code is.
+ * A high value means better maintainability: A rating between 20 and 100 indicates that your code has good maintainability;
+ * A rating between 10 and 19 indicates that your code is moderately maintainable;
+ * A rating lower than 10 indicates your code has low maintainability, it would be a good idea for you to work more on this aspect.
+ */
+
 public class MaintainabilityMetric extends Metric {
     private CyclomaticMetric ccMetric;
     private HalsteadVolumeMetric hgMetric;
@@ -11,6 +19,12 @@ public class MaintainabilityMetric extends Metric {
     private CLOCMetric clocMetric;
     private LLOCMetric llocMetric;
 
+    /**
+     * Initialise parameters for maintainability visualisation such as maximum and minimum value of MI
+     * @param name the name of Class.
+     * @param minVal the minimum number of this metrics
+     * @param maxVal the maximum number of this metrics
+     */
     public MaintainabilityMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         ccMetric = new CyclomaticMetric(name+"_cc");
@@ -28,6 +42,12 @@ public class MaintainabilityMetric extends Metric {
         llocMetric = new LLOCMetric(name+"_lloc");
     }
 
+    /**
+     * Calculate MI using calculated values of cyclomatic complexity and Halstead values
+     * @param project the project working on.
+     * @param target the class to be calculated.
+     * @return MI
+     */
     @Override
     public double calculate(Project project, PsiClass target) {
         double result;

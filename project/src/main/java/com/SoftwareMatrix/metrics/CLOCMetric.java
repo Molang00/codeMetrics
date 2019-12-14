@@ -8,6 +8,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Calculate the Comment Line of Code (CLOC).
+ * The lines of code including blank lines and comments lines.
+ */
 public class CLOCMetric extends Metric {
     public CLOCMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
@@ -16,6 +20,12 @@ public class CLOCMetric extends Metric {
         super(name);
     }
 
+    /**
+     * Calculate CLOC.
+     * @param project the project working on.
+     * @param target the class to be calculated.
+     * @return the value of CLOC.
+     */
     @Override
     public double calculate(Project project, PsiClass target) {
         Set<PsiComment> set = new HashSet<>();

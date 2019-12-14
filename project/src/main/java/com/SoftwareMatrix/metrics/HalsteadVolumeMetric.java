@@ -7,12 +7,32 @@ import com.intellij.psi.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Calculate the Halstead Volume Metric.
+ * Halstead's volume (V) describes the size of the implementation of an algorithm.
+ * The computation of V is based on the number of operations performed and operands
+ * handled in the algorithm. Therefore V is less sensitive to code layout than
+ * the lines-of-code measures.
+ *
+ * Methods:
+ *
+ * 1. Cal these criteria:
+ *    1. $\eta$ = the number of distinct operators & operands
+ *    2. $N$ = the total number of operators & operands
+ * 2. Cal the volume: $V=N\times log_2 \eta $
+ */
 public class HalsteadVolumeMetric extends Metric{
     private DistinctOperandMetric distinctOperandMetric;
     private DistinctOperatorMetric distinctOperatorMetric;
     private OperandMetric operandMetric;
     private OperatorMetric operatorMetric;
 
+    /**
+     * Initialize HalsteadVolumeMetric object.
+     * @param name the name of Class.
+     * @param minVal the minimum number of this metrics
+     * @param maxVal the maximum number of this metrics
+     */
     public HalsteadVolumeMetric(String name, double minVal, double maxVal) {
         super(name, minVal, maxVal);
         distinctOperandMetric = new DistinctOperandMetric(name+"_dopd");
@@ -28,6 +48,12 @@ public class HalsteadVolumeMetric extends Metric{
         operatorMetric = new OperatorMetric(name+"_opr");
     }
 
+    /**
+     * Calculate Halstead Volume Metric.
+     * @param project the project working on.
+     * @param target the class to be calculated.
+     * @return the value of Halstead Volume Metric.
+     */
     @Override
     public double calculate(Project project, PsiClass target) {
         double volume;
