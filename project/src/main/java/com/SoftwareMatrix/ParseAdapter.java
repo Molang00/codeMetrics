@@ -455,13 +455,13 @@ public class ParseAdapter {
         Set<PsiElement> operators = new HashSet<>();
         for(PsiMethod m : _class.getConstructors()) {
             if(m != null) {
-                System.out.println("branch const name : " + m.getName());
+//                System.out.println("branch const name : " + m.getName());
                 operators.addAll(getOperatorsMethod(m));
             }
         }
         for(PsiMethod m : _class.getAllMethods()) {
             if(m != null) {
-                System.out.println("branch function name : " + m.getName());
+//                System.out.println("branch function name : " + m.getName());
                 operators.addAll(getOperatorsMethod(m));
             }
         }

@@ -34,6 +34,7 @@ public class UpdateManager {
 
     /**
      * Notifies all observers in observers list
+     * Decoration of notification (such as 3 second delay) might be put here
      */
     private void notifyObserversWrapper() {
         notifyObservers();
