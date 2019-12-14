@@ -16,7 +16,9 @@ import java.util.*;
 
 import org.jetbrains.annotations.NotNull;
 
-
+/**
+ * Class for showing window, which contains the result of calculating metrics
+ */
 public class MetricsResultWindow implements UpdateObserver {
     /* Declare private fields here */
     private JPanel myToolWindowContent;
@@ -27,7 +29,12 @@ public class MetricsResultWindow implements UpdateObserver {
     private Stack<String> history;
 
     /**
-     * Constructor of tool window
+     * Constructor of MetricsResultWindow
+     * This makes all metrics which our plugin use,
+     * and add the metrics to appropriate page
+     *
+     * @param toolWindow window to add contents
+     * @param project the project which our plugin analyzes and shows about
      */
     public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
         uManager = UpdateManager.getInstance(project); // init update manager
@@ -107,7 +114,14 @@ public class MetricsResultWindow implements UpdateObserver {
         changeView("Default");
     }
 
-    // put this to public?
+    /**
+     * Makes new RefactorPageFactory with name label, adding metrics and buttons to page.
+     *
+     * @param label The name of page
+     * @param metrics Metrics which are added to page
+     * @param buttons Buttons which are added to page
+     * @return RefactorPageFactory with label, containing metrics and buttons
+     */
     private RefactorPageFactory addPageFactory(String label, List<Metric> metrics, List<String> buttons) {
         RefactorPageFactory pf = new RefactorPageFactory(label, this, myToolWindowContent);
         for(Metric m: metrics) {
@@ -130,12 +144,23 @@ public class MetricsResultWindow implements UpdateObserver {
         return myToolWindowContent;
     }
 
+    /**
+     * Update the MetricsResultWindow, calling revalidate of window content
+     *
+     * @param project the project which our plugin analyzes and shows about
+     * @param elem PsiElement which makes event
+     */
     @Override
     public void update(Project project, PsiElement elem) {
 //        settingAllStatus();
         myToolWindowContent.revalidate();
     }
 
+    /**
+     * Changes the current view to a page named label.
+     *
+     * @param label Name of page to replace view
+     */
     public void changeView(String label) {
         if(label.equals("back")){
             history.pop();

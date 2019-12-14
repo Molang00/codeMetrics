@@ -25,7 +25,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
-
+/**
+ * Class for showing tutorial of our project on window
+ */
 public class Tutorial {
     private JTree tree;
     private DefaultMutableTreeNode root;
@@ -34,16 +36,30 @@ public class Tutorial {
     private static final Icon folderIcon = MetalIconFactory.getTreeFolderIcon();
     private static final Icon leafIcon = MetalIconFactory.getFileChooserDetailViewIcon();
 
+    /**
+     * Constructor of Tutorial class.
+     */
     public Tutorial() {
         root = new DefaultMutableTreeNode("Tutorial");
     }
 
+    /**
+     * Add node to Tutorial tree
+     * @param nodeName The name of new node
+     * @param parent the node that new node will be attached
+     * @return DefaultMutableTreeNode which is newly added
+     */
     private DefaultMutableTreeNode addNode(String nodeName, DefaultMutableTreeNode parent){
         DefaultMutableTreeNode child = new DefaultMutableTreeNode(nodeName);
         parent.add(child);
         return child;
     }
 
+    /**
+     * Returns the Tutorial tree
+     *
+     * @return JTree of Tutorial
+     */
     public JTree getResult() {
         addNode("Project_Description", root);
         DefaultMutableTreeNode metrics = addNode("Metrics", root);
