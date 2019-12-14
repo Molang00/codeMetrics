@@ -1,6 +1,8 @@
 # Software Matrix
 
-#### Project 1: Software Metrics
+#### Project: Software Metrics
+
+<a name="description"></a>
 
 1. Description
 
@@ -13,6 +15,34 @@ Java 11
 
 3. How to run
 
-> * Clone our project
-> * Set SDK and Gradle JVM version to 11.
-> * Use ```gradle runIde``` to terminal.
+> - Clone our project
+> - Set SDK and Gradle JVM version to 11.
+> - Use `gradle runIde` to terminal.
+
+4. Metircs
+
+   <a name="Maintainability Index"></a>
+
+   1. MI
+
+   <a name="Cyclomatic Complexity"></a>
+
+   2. CC
+
+   <a name="Halstead Metircs"></a>
+
+   3. Halstead
+
+   <a name="Object-Oriented Metrics"></a>
+
+   4. OOM
+
+5. Functions
+
+   <a name="Calculations"></a>
+
+   1. Calculations
+
+   <a name="Exports"></a>
+
+   2. Export as file

@@ -1,0 +1,115 @@
+import java.util.*;
+
+public class TestCase3 {
+    int i;
+    int j;
+    List<int> list;
+    byte u;
+    boolean bool;
+
+    public TestCase3(int i, int j, byte u, boolean bool) {
+        this.i = i;
+        this.j = j;
+        this.list = new ArrayList<int>();
+        this.u = u;
+        this.bool = bool;
+    }
+
+    public void f() {
+        return;
+    }
+
+    public void useAllOperators() {
+        //function call operators
+        f();
+
+        //branch operators including break, continue
+        if(true) {}
+        while(true) {break;}
+        do{} while(false);
+        for(int n = 0; n < 5; n++) {continue;}
+        for(int n : arr) {}
+
+
+
+        i = 0;
+        j = 0;
+        u = 0;
+        bool = true;
+        int[] arr = {1, 2, 3};
+
+        //ArrayAccess operator
+        arr[0] = arr[1];
+
+
+
+
+
+        //Unary operators - postfix
+        i = i++;
+        i = i--;
+
+        //Unary operators - prefix
+        i = ++i;
+        i = --i;
+        i = +i;
+        i = -i;
+        u = ~u;
+        bool = !bool;
+
+        //Arithmetic operators
+        i = i + 1;
+        i = i - 1;
+        i = i * 1;
+        i = i / 1;
+        i = i % 1;
+
+        //Shift operators
+        u = u << 1;
+        u = u >> 1;
+        u = u >>> 1;
+
+        //Relational operators
+        bool = i > j;
+        bool = i < j;
+        bool = i >= j;
+        bool = i <= j;
+        bool = (i instanceof int);
+        bool = i == j;
+        bool = i != j;
+
+        //Bitwise operators
+        bool = i & j;
+        bool = i ^ j;
+        bool = i | j;
+
+        //Logical operators
+        bool = bool && bool;
+        bool = bool || bool;
+
+        //Ternary operators
+        bool = bool ? bool : bool;
+
+
+        //Assignment operators;
+        i = j;
+        i += j;
+        i -= j;
+        i *= j;
+
+        //prevent divide-by-zero
+        j = 1;
+
+        i /= j;
+        i %= j;
+        i &= j;
+        i ^= j;
+        i |= j;
+        i <<= j;
+        i >>= j;
+        i >>>= j;
+
+        return;
+
+    }
+}
