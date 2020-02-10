@@ -1,17 +1,14 @@
 package com.SoftwareMatrix;
 
-import com.SoftwareMatrix.PageFactory.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.PsiElement;
 import com.SoftwareMatrix.metrics.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,171 +17,108 @@ import org.jetbrains.annotations.NotNull;
  * Class for showing window, which contains the result of calculating metrics
  */
 public class MetricsResultWindow implements UpdateObserver {
-    /* Declare private fields here */
-    private JPanel myToolWindowContent;
-    private RefactorPageFactory currentPageFactory; // state of this FSM
-    private Map<String, RefactorPageFactory> pfMap;
+        /* Declare private fields here */
+        private JPanel myToolWindowContent;
+        private Map<String, RefactorPageFactory> pfMap;
+        private List<Metric> metrics;
 
-    private UpdateManager uManager;
-    private Stack<String> history;
+        private UpdateManager uManager;
 
-    /**
-     * Constructor of MetricsResultWindow
-     * This makes all metrics which our plugin use,
-     * and add the metrics to appropriate page
-     *
-     * @param toolWindow window to add contents
-     * @param project the project which our plugin analyzes and shows about
-     */
-    public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
-        uManager = UpdateManager.getInstance(project); // init update manager
-        myToolWindowContent = new JPanel();
-        pfMap = new HashMap<>();
-        history = new Stack<>();
+        /**
+         * Constructor of MetricsResultWindow This makes all metrics which our plugin
+         * use, and add the metrics to appropriate page
+         *
+         * @param toolWindow window to add contents
+         * @param project    the project which our plugin analyzes and shows about
+         */
+        public MetricsResultWindow(ToolWindow toolWindow, @NotNull Project project) {
+                uManager = UpdateManager.getInstance(project); // init update manager
+                myToolWindowContent = new JPanel();
+                pfMap = new HashMap<>();
 
-        Metric AHF = new AHFMetric("AHF", 1, 0);
-        Metric AIF = new AIFMetric("AIF", 0, 1);
-        Metric AMS = new AMSMetric("AMS");
-        Metric CLOC = new CLOCMetric("CLOC");
-        Metric Cyclomatic = new CyclomaticMetric("Cyclomatic", 20, 0);
-        Metric DistinctOperand = new DistinctOperandMetric("DistinctOperand");
-        Metric DistinctOperator = new DistinctOperatorMetric("DistinctOperator");
-        Metric DIT = new DITMetric("DIT");
-        Metric HalsteadDifficulty = new DifficultyMetric("HalsteadDifficulty");
-        Metric HalsteadEffort = new EffortMetric("HalsteadEffort");
-        Metric HalsteadVolume = new HalsteadVolumeMetric("HalsteadVolume");
-        Metric LLOC = new LLOCMetric("LLOC");
-        Metric LOC = new LOCMetric("LOC");
-        Metric Maintainability = new MaintainabilityMetric("Maintainability", 0, 100);
-        Metric MHF = new MHFMetric("MHF", 1, 0);
-        Metric MIF = new MIFMetric("MIF", 0, 1);
-        Metric NMA = new NMAMetric("NMA");
-        Metric NMI = new NMIMetric("NMI");
-        Metric NM = new NMMetric("NM");
-        Metric NMO = new NMOMetric("NMO");
-        Metric NOC = new NOCMetric("NOC");
-        Metric NPV = new NPVMetric("NPV");
-        Metric NV = new NVMetric("NV");
-        Metric Operand = new OperandMetric("Operand");
-        Metric Operator = new OperatorMetric("Operator");
-        Metric PF = new PFMetric("PF");
-        Metric PM = new PMMetric("PM");
+                Metric CLOC = new CLOCMetric("CLOC");
+                Metric Cyclomatic = new CyclomaticMetric("Cyclomatic");
+                Metric DistinctOperand = new DistinctOperandMetric("DistinctOperand");
+                Metric DistinctOperator = new DistinctOperatorMetric("DistinctOperator");
+                Metric HalsteadVolume = new HalsteadVolumeMetric("HalsteadVolume");
+                Metric LLOC = new LLOCMetric("LLOC");
+                Metric LOC = new LOCMetric("LOC");
+                Metric Maintainability = new MaintainabilityMetric("Maintainability");
+                Metric Operand = new OperandMetric("Operand");
+                Metric Operator = new OperatorMetric("Operator");
+                metrics = Arrays.asList(Maintainability, Operand, Operator, DistinctOperand, DistinctOperator,
+                                HalsteadVolume, Cyclomatic, LOC, LLOC, CLOC);
 
-        RefactorPageFactory defaultPageFactory = addPageFactory("Default", Arrays.asList(
-                AHF, AIF, AMS, CLOC, Cyclomatic, DIT, DistinctOperand, DistinctOperator,
-                HalsteadDifficulty, HalsteadEffort, HalsteadVolume, LLOC, LOC, Maintainability,
-                MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, Operand, Operator, PF, PM
-        ), Arrays.asList(
-                "MI", "OO"
-        ));
+                RefactorPageFactory defaultPageFactory = addPageFactory("Default",
+                                Arrays.asList(Maintainability, Operand, Operator, DistinctOperand, DistinctOperator,
+                                                HalsteadVolume, Cyclomatic, LOC, LLOC, CLOC));
 
-        addPageFactory("MI", Arrays.asList(
-                Maintainability, HalsteadDifficulty, HalsteadEffort, HalsteadVolume,
-                Cyclomatic, DistinctOperand, DistinctOperator, Operand, Operator,
-                CLOC, LOC, LLOC
-
-        ), Arrays.asList(
-                "back", "Halstead", "CC", "LOC"
-        ));
-
-        addPageFactory("Halstead", Arrays.asList(
-                HalsteadDifficulty, HalsteadEffort, HalsteadVolume
-        ), Arrays.asList(
-                "back"
-        ));
-
-        addPageFactory("CC", Arrays.asList(
-                Cyclomatic, DistinctOperand, DistinctOperator, Operand, Operator
-        ), Arrays.asList(
-                "back"
-        ));
-
-        addPageFactory("LOC", Arrays.asList(
-                LLOC, CLOC, LOC
-        ), Arrays.asList(
-                "back"
-        ));
-
-        addPageFactory("OO", Arrays.asList(
-                AHF, AIF, AMS, DIT, MHF, MIF, NMA, NMI, NM, NMO, NOC, NPV, NV, PF, PM
-        ), Arrays.asList(
-                "back"
-        ));
-
-        changeView("Default");
-    }
-
-    /**
-     * Makes new RefactorPageFactory with name label, adding metrics and buttons to page.
-     *
-     * @param label The name of page
-     * @param metrics Metrics which are added to page
-     * @param buttons Buttons which are added to page
-     * @return RefactorPageFactory with label, containing metrics and buttons
-     */
-    private RefactorPageFactory addPageFactory(String label, List<Metric> metrics, List<String> buttons) {
-        RefactorPageFactory pf = new RefactorPageFactory(label, this, myToolWindowContent);
-        for(Metric m: metrics) {
-            pf.addMetric(m);
-        }
-        for(String b: buttons){
-            pf.addButton(b);
+                uManager.addObserver(defaultPageFactory);
+                defaultPageFactory.createPage();
+                myToolWindowContent.revalidate();
         }
 
-        pfMap.put(label, pf);
-        return pf;
-    }
-
-    /**
-     * Returns content of this tool window
-     * 
-     * @return whole content of tool window
-     */
-    public JPanel getContent() {
-        return myToolWindowContent;
-    }
-
-    /**
-     * Update the MetricsResultWindow, calling revalidate of window content
-     *
-     * @param project the project which our plugin analyzes and shows about
-     * @param elem PsiElement which makes event
-     */
-    @Override
-    public void update(Project project, PsiElement elem) {
-//        settingAllStatus();
-        myToolWindowContent.revalidate();
-    }
-
-    /**
-     * Changes the current view to a page named label.
-     *
-     * @param label Name of page to replace view
-     */
-    public void changeView(String label) {
-        if(label.equals("back")){
-            history.pop();
-            label = history.pop();
-        }
-        if(!pfMap.containsKey(label)) {
-            if(currentPageFactory != null)
-                uManager.removeObserver(currentPageFactory);
-            currentPageFactory = pfMap.get("Default");
-            uManager.clearObserver();
-            history.clear();
-            history.push("Default");
-            uManager.addObserver(currentPageFactory);
-            currentPageFactory.createPage();
-            myToolWindowContent.revalidate();
-            return;
+        public void exitReport() throws IOException {
+                double total = 0;
+                double error = 0;
+                String report = "";
+                PrintWriter pw = new PrintWriter("out.txt");
+                report += "이 코드는 일반적인 코드에 비해 ";
+                for (Metric m : metrics) {
+                        String sentance = m.generateReport();
+                        report += sentance;
+                        total++;
+                        if (sentance.contains("매우"))
+                                error++;
+                }
+                double errorPercent = error / total;
+                if (errorPercent < 0.25) {
+                        report += "유지 및 보수하기 좋은 구조로 되어 있습니다.\n";
+                } else if (errorPercent < 0.75) {
+                        report += "평범한 수준으로 개발되어 있습니다.\n";
+                } else {
+                        report += "전체적으로 수정이 요구됩니다.\n";
+                }
+                System.out.println(report);
         }
 
-        if(currentPageFactory != null)
-            uManager.removeObserver(currentPageFactory);
-        currentPageFactory = pfMap.get(label);
-        history.push(label);
-        uManager.addObserver(currentPageFactory);
-        currentPageFactory.createPage();
-        myToolWindowContent.revalidate();
-    }
+        /**
+         * Makes new RefactorPageFactory with name label, adding metrics and buttons to
+         * page.
+         *
+         * @param label   The name of page
+         * @param metrics Metrics which are added to page
+         * @param buttons Buttons which are added to page
+         * @return RefactorPageFactory with label, containing metrics and buttons
+         */
+        private RefactorPageFactory addPageFactory(String label, List<Metric> metrics) {
+                RefactorPageFactory pf = new RefactorPageFactory(label, this, myToolWindowContent);
+                for (Metric m : metrics) {
+                        pf.addMetric(m);
+                }
+
+                pfMap.put(label, pf);
+                return pf;
+        }
+
+        /**
+         * Returns content of this tool window
+         * 
+         * @return whole content of tool window
+         */
+        public JPanel getContent() {
+                return myToolWindowContent;
+        }
+
+        /**
+         * Update the MetricsResultWindow, calling revalidate of window content
+         *
+         * @param project the project which our plugin analyzes and shows about
+         * @param elem    PsiElement which makes event
+         */
+        @Override
+        public void update(Project project, PsiElement elem) {
+                // settingAllStatus();
+                myToolWindowContent.revalidate();
+        }
 }

@@ -9,27 +9,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Calculate the Distinct Operator Metric.
- * Distinct Operator is am important parameter in calculating Halstead Metric.
+ * Calculate the Distinct Operator Metric. Distinct Operator is am important
+ * parameter in calculating Halstead Metric.
  */
 public class DistinctOperatorMetric extends Metric {
-    /**
-     * Initialize DistinctOperatorMetric object.
-     * @param name the name of Class.
-     * @param minVal the minimum number of this metrics
-     * @param maxVal the maximum number of this metrics
-     */
-    public DistinctOperatorMetric(String name, double minVal, double maxVal) {
-        super(name, minVal, maxVal);
-    }
     public DistinctOperatorMetric(String name) {
         super(name);
     }
 
     /**
      * Calculate Distinct Operator Metric.
+     * 
      * @param project the project working on.
-     * @param target the class to be calculated.
+     * @param target  the class to be calculated.
      * @return the value of Distinct Operator Metric.
      */
     @Override
@@ -37,7 +29,7 @@ public class DistinctOperatorMetric extends Metric {
         Set<PsiElement> operators;
         Set<String> distinctOperators = new HashSet<>();
 
-        if(target == null)
+        if (target == null)
             return lastResult;
 
         operators = ParseAdapter.getOperators(target);
@@ -47,5 +39,22 @@ public class DistinctOperatorMetric extends Metric {
 
         lastResult = distinctOperators.size();
         return lastResult;
+    }
+
+    @Override
+    public String generateReport() {
+        String rst = "별개의 연산자가 ";
+        if (lastResult < 5) {
+            rst += "매우 적고, ";
+        } else if (lastResult < 30) {
+            rst += "적고, ";
+        } else if (lastResult < 200) {
+            rst += "보통이고, ";
+        } else if (lastResult < 500) {
+            rst += "많고, ";
+        } else {
+            rst += "매우 많고, ";
+        }
+        return rst;
     }
 }

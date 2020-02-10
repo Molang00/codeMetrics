@@ -1,6 +1,5 @@
 package com.SoftwareMatrix;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.CaretEvent;
@@ -20,7 +19,8 @@ import java.util.List;
  */
 
 /**
- * Class for event listening that updates results. It includes cursor change, typing, file change, and etc.
+ * Class for event listening that updates results. It includes cursor change,
+ * typing, file change, and etc.
  */
 public class UpdateManager {
     private static UpdateManager instance = null;
@@ -33,37 +33,39 @@ public class UpdateManager {
     private PsiElement lastTrackedElement; // last caret position
 
     /**
-     * Notifies all observers in observers list
-     * Decoration of notification (such as 3 second delay) might be put here
+     * Notifies all observers in observers list Decoration of notification (such as
+     * 3 second delay) might be put here
      */
     private void notifyObserversWrapper() {
         notifyObservers();
-//        if(thread != null && thread.isAlive()) {
-//            ; // do nothing
-//        }
-//        else {
-//            thread = new Thread() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(3000);
-//                        ApplicationManager.getApplication().runReadAction(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                notifyObservers();
-//                            }
-//                        });
-//                    } catch (InterruptedException ex) {
-//                        ; // do nothing
-//                    }
-//                }
-//            };
-//            thread.start();
-//        }
+        // if(thread != null && thread.isAlive()) {
+        // ; // do nothing
+        // }
+        // else {
+        // thread = new Thread() {
+        // @Override
+        // public void run() {
+        // try {
+        // Thread.sleep(3000);
+        // ApplicationManager.getApplication().runReadAction(new Runnable() {
+        // @Override
+        // public void run() {
+        // notifyObservers();
+        // }
+        // });
+        // } catch (InterruptedException ex) {
+        // ; // do nothing
+        // }
+        // }
+        // };
+        // thread.start();
+        // }
     }
 
     /**
-     * Constructor that initiate event listeners and override them to call notifyObserversWrapper.
+     * Constructor that initiate event listeners and override them to call
+     * notifyObserversWrapper.
+     * 
      * @param project : project to deal with those listeners.
      */
     private UpdateManager(@NotNull Project project) {
@@ -93,7 +95,7 @@ public class UpdateManager {
             public void caretPositionChanged(@NotNull CaretEvent event) {
                 PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(event.getEditor().getDocument());
                 Caret caret = event.getCaret();
-                if(caret != null && pFile != null) {
+                if (caret != null && pFile != null) {
                     lastTrackedElement = pFile.findElementAt(caret.getOffset());
                 }
                 notifyObserversWrapper();
@@ -103,7 +105,7 @@ public class UpdateManager {
             public void caretAdded(@NotNull CaretEvent event) {
                 PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(event.getEditor().getDocument());
                 Caret caret = event.getCaret();
-                if(caret != null && pFile != null) {
+                if (caret != null && pFile != null) {
                     lastTrackedElement = pFile.findElementAt(caret.getOffset());
                 }
                 notifyObserversWrapper();
@@ -116,13 +118,13 @@ public class UpdateManager {
             public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
                 super.fileOpened(source, file);
                 Editor editor = source.getSelectedTextEditor();
-                if(editor != null) {
+                if (editor != null) {
                     editor.getCaretModel().removeCaretListener(caretListener);
                     editor.getCaretModel().addCaretListener(caretListener);
 
                     PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
                     Caret caret = editor.getCaretModel().getCurrentCaret();
-                    if(pFile != null) {
+                    if (pFile != null) {
                         lastTrackedElement = pFile.findElementAt(caret.getOffset());
                     }
                     notifyObserversWrapper();
@@ -139,13 +141,13 @@ public class UpdateManager {
             public void selectionChanged(@NotNull FileEditorManagerEvent event) {
                 super.selectionChanged(event);
                 Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                if(editor != null) {
+                if (editor != null) {
                     editor.getCaretModel().removeCaretListener(caretListener);
                     editor.getCaretModel().addCaretListener(caretListener);
 
                     PsiFile pFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
                     Caret caret = editor.getCaretModel().getCurrentCaret();
-                    if(pFile != null) {
+                    if (pFile != null) {
                         lastTrackedElement = pFile.findElementAt(caret.getOffset());
                     }
                     notifyObserversWrapper();
@@ -154,7 +156,7 @@ public class UpdateManager {
         });
 
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-        if(editor != null) {
+        if (editor != null) {
             editor.getCaretModel().removeCaretListener(caretListener);
             editor.getCaretModel().addCaretListener(caretListener);
             notifyObserversWrapper();
@@ -162,13 +164,14 @@ public class UpdateManager {
     }
 
     /**
-     * Since UpdateManager is singleton class, this methods calls a constructor when there is no
-     * existing class, while return instance(saved one) when it exists.
+     * Since UpdateManager is singleton class, this methods calls a constructor when
+     * there is no existing class, while return instance(saved one) when it exists.
+     * 
      * @param project : project to deal with listeners(parameter for constructor)
      * @return UpdateManager class
      */
     public static UpdateManager getInstance(@NotNull Project project) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UpdateManager(project);
         }
         return instance;
@@ -178,13 +181,14 @@ public class UpdateManager {
      * Call every observers' update function using lastTrackedElement.
      */
     public void notifyObservers() {
-        for(UpdateObserver observer: observers) {
+        for (UpdateObserver observer : observers) {
             observer.update(project, lastTrackedElement); // note that lastTrackedElement may be null
         }
     }
 
     /**
      * Add new observer to list.
+     * 
      * @param observer : observer to add
      * @return true when addition was successful, otherwise false.
      */
@@ -194,6 +198,7 @@ public class UpdateManager {
 
     /**
      * Remove observer from list.
+     * 
      * @param observer : observer to remove
      * @return true when deletion was successful, otherwise false.
      */
@@ -204,5 +209,7 @@ public class UpdateManager {
     /**
      * Remove all observers from list.
      */
-    public void clearObserver() { observers.clear(); }
+    public void clearObserver() {
+        observers.clear();
+    }
 }

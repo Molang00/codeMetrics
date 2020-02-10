@@ -1,0 +1,52 @@
+public class TestCase2 {
+    int sw;
+    int k;
+    boolean aField;
+
+    public TestCase2(boolean aField, int k, int sw)
+    {
+        this.aField = aField;
+        this.k = k;
+        this.sw = sw;
+    }
+
+
+    // Some empty lines
+    public void getOption()
+    {
+        switch(k)
+        {
+            case 1:
+                if(sw>0)
+                    System.out.println("option option");
+                System.out.println("option 1");
+                break;
+            case 2:
+                System.out.println("option 2");
+                break;
+        }
+    }
+
+    public boolean getAField()
+    {
+        if(k>0)
+            System.out.println("K verified");
+        else if(k<0)
+            System.out.println("K under 0");
+        else
+            System.out.println("???");
+        return aField;
+    }
+
+    private void testMethod() {
+        try {
+            int i = 0;
+            while (i < 10) {
+                i++;
+            }
+        }
+        catch (Exception e) {
+            System.out.println("exception!");
+        }
+    }
+}
